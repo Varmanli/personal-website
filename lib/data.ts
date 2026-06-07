@@ -1,0 +1,295 @@
+import { and, desc, eq } from "drizzle-orm";
+import { db } from "@/db";
+import {
+  projects,
+  services,
+  portfolioItems,
+  contactMessages,
+  siteSettings,
+} from "@/db/schema";
+import type {
+  Project,
+  Service,
+  PortfolioItem,
+  ContactMessage,
+  SiteSettings,
+} from "@/types";
+import {
+  placeholderProjects,
+  placeholderServices,
+  placeholderPortfolio,
+  placeholderMessages,
+  placeholderProfile,
+} from "@/lib/placeholder-data";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
+import {
+  localizeProject,
+  localizeService,
+  localizePortfolioItem,
+  localizeProfile,
+  type LocalizedProject,
+} from "@/lib/i18n/localize";
+
+/**
+ * Data-access layer.
+ *
+ * Every public/admin page and the public API routes read through these
+ * functions instead of touching `db` or `placeholder-data` directly.
+ *
+ * Behaviour:
+ *  - DB reachable      → returns real rows (an empty table returns []).
+ *  - DB unreachable    → falls back to placeholder data so local dev and
+ *                        `next build` work without a running Postgres.
+ *
+ * This means an *empty* database renders real empty states, while a *missing*
+ * database renders the placeholder content. Replace/remove the fallbacks once
+ * a database is always present in your environments.
+ */
+
+let warned = false;
+function warnOnce(scope: string, error: unknown) {
+  if (warned) return;
+  warned = true;
+  const message = error instanceof Error ? error.message : String(error);
+  console.warn(
+    `[data] Database unavailable (${scope}: ${message}). Falling back to placeholder content. ` +
+      `Set DATABASE_URL and run \`npm run db:push && npm run db:seed\` to use real data.`,
+  );
+}
+
+/** Run a DB query, falling back to placeholder content on connection errors. */
+async function query<T>(
+  scope: string,
+  run: () => Promise<T>,
+  fallback: T,
+): Promise<T> {
+  try {
+    return await run();
+  } catch (error) {
+    warnOnce(scope, error);
+    return fallback;
+  }
+}
+
+/* ----------------------------------- Projects ---------------------------------- */
+
+/** All published projects, featured first, newest first — localized. */
+export async function getPublishedProjects(
+  locale: Locale = defaultLocale,
+): Promise<LocalizedProject[]> {
+  const rows = await query(
+    "projects",
+    () =>
+      db
+        .select()
+        .from(projects)
+        .where(eq(projects.status, "published"))
+        .orderBy(desc(projects.isFeatured), desc(projects.createdAt)),
+    placeholderProjects,
+  );
+  return rows.map((p) => localizeProject(p, locale));
+}
+
+/** Featured published projects, limited for previews (e.g. the home page). */
+export async function getFeaturedProjects(
+  limit = 3,
+  locale: Locale = defaultLocale,
+): Promise<LocalizedProject[]> {
+  const rows = await query(
+    "projects",
+    () =>
+      db
+        .select()
+        .from(projects)
+        .where(
+          and(
+            eq(projects.status, "published"),
+            eq(projects.isFeatured, true),
+          ),
+        )
+        .orderBy(desc(projects.createdAt)),
+    placeholderProjects.filter((p) => p.isFeatured),
+  );
+  return rows.slice(0, limit).map((p) => localizeProject(p, locale));
+}
+
+/** A single published project by slug, or null when not found — localized. */
+export async function getProjectBySlug(
+  slug: string,
+  locale: Locale = defaultLocale,
+): Promise<LocalizedProject | null> {
+  const row = await query(
+    "projects",
+    async () => {
+      const [r] = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.slug, slug))
+        .limit(1);
+      return r ?? null;
+    },
+    placeholderProjects.find((p) => p.slug === slug) ?? null,
+  );
+  return row ? localizeProject(row, locale) : null;
+}
+
+/** All projects regardless of status (admin). */
+export function getAllProjects(): Promise<Project[]> {
+  return query(
+    "projects",
+    () => db.select().from(projects).orderBy(desc(projects.createdAt)),
+    placeholderProjects,
+  );
+}
+
+/** A single project by id, or null when not found (admin edit). */
+export function getProjectById(id: number): Promise<Project | null> {
+  return query(
+    "projects",
+    async () => {
+      const [row] = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.id, id))
+        .limit(1);
+      return row ?? null;
+    },
+    placeholderProjects.find((p) => p.id === id) ?? null,
+  );
+}
+
+/* ----------------------------------- Services ---------------------------------- */
+
+/** All published services, featured first — localized. */
+export async function getPublishedServices(
+  locale: Locale = defaultLocale,
+): Promise<Service[]> {
+  const rows = await query(
+    "services",
+    () =>
+      db
+        .select()
+        .from(services)
+        .where(eq(services.status, "published"))
+        .orderBy(desc(services.isFeatured), services.priceCents),
+    placeholderServices,
+  );
+  return rows.map((s) => localizeService(s, locale));
+}
+
+/** All services regardless of status (admin). */
+export function getAllServices(): Promise<Service[]> {
+  return query(
+    "services",
+    () => db.select().from(services).orderBy(desc(services.createdAt)),
+    placeholderServices,
+  );
+}
+
+/** A single service by id, or null when not found (admin edit). */
+export function getServiceById(id: number): Promise<Service | null> {
+  return query(
+    "services",
+    async () => {
+      const [row] = await db
+        .select()
+        .from(services)
+        .where(eq(services.id, id))
+        .limit(1);
+      return row ?? null;
+    },
+    placeholderServices.find((s) => s.id === id) ?? null,
+  );
+}
+
+/* --------------------------------- Portfolio ----------------------------------- */
+
+/** All published portfolio items, featured first — localized. */
+export async function getPublishedPortfolio(
+  locale: Locale = defaultLocale,
+): Promise<PortfolioItem[]> {
+  const rows = await query(
+    "portfolio",
+    () =>
+      db
+        .select()
+        .from(portfolioItems)
+        .where(eq(portfolioItems.status, "published"))
+        .orderBy(desc(portfolioItems.isFeatured), desc(portfolioItems.createdAt)),
+    placeholderPortfolio,
+  );
+  return rows.map((p) => localizePortfolioItem(p, locale));
+}
+
+/** All portfolio items regardless of status (admin). */
+export function getAllPortfolio(): Promise<PortfolioItem[]> {
+  return query(
+    "portfolio",
+    () =>
+      db
+        .select()
+        .from(portfolioItems)
+        .orderBy(desc(portfolioItems.createdAt)),
+    placeholderPortfolio,
+  );
+}
+
+/** A single portfolio item by id, or null when not found (admin edit). */
+export function getPortfolioItemById(id: number): Promise<PortfolioItem | null> {
+  return query(
+    "portfolio",
+    async () => {
+      const [row] = await db
+        .select()
+        .from(portfolioItems)
+        .where(eq(portfolioItems.id, id))
+        .limit(1);
+      return row ?? null;
+    },
+    placeholderPortfolio.find((p) => p.id === id) ?? null,
+  );
+}
+
+/* ---------------------------------- Messages ----------------------------------- */
+
+/** All contact messages, newest first (admin). */
+export function getMessages(): Promise<ContactMessage[]> {
+  return query(
+    "messages",
+    () =>
+      db
+        .select()
+        .from(contactMessages)
+        .orderBy(desc(contactMessages.createdAt)),
+    placeholderMessages,
+  );
+}
+
+/* ----------------------------------- Profile ----------------------------------- */
+
+/** Owner profile / site settings (first row), localized, with placeholder fallback. */
+export async function getProfile(
+  locale: Locale = defaultLocale,
+): Promise<SiteSettings> {
+  const row = await query(
+    "site_settings",
+    async () => {
+      const [r] = await db.select().from(siteSettings).limit(1);
+      return r ?? placeholderProfile;
+    },
+    placeholderProfile,
+  );
+  return localizeProfile(row, locale);
+}
+
+/** Raw profile/site settings for the admin settings form (no localization). */
+export function getRawProfile(): Promise<SiteSettings | null> {
+  return query(
+    "site_settings",
+    async () => {
+      const [r] = await db.select().from(siteSettings).limit(1);
+      return r ?? null;
+    },
+    null,
+  );
+}
