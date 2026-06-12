@@ -39,6 +39,13 @@ export default async function AdminProjectsPage() {
     },
     { header: tbl.status, cell: (p) => <StatusBadge status={p.status} /> },
     { header: tbl.featured, cell: (p) => (p.isFeatured ? tbl.yes : "—") },
+    {
+      header: tbl.homepage,
+      cell: (p) =>
+        p.isFeaturedOnHome
+          ? `#${p.homeOrder || 0}`
+          : "—",
+    },
     { header: tbl.updated, cell: (p) => formatDate(p.updatedAt) },
     {
       header: tbl.actions,

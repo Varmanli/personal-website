@@ -72,6 +72,7 @@ export interface TimelineEntry {
 export interface TechGroup {
   category: string;
   items: string[];
+  description?: string;
 }
 
 /** A working-style value / principle. */

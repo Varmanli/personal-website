@@ -11,8 +11,7 @@ import {
 } from "react-icons/fa6";
 import { SiNextdotjs, SiReact, SiNestjs, SiPostgresql } from "react-icons/si";
 import { Container } from "@/components/ui/Container";
-import { ButtonLink } from "@/components/ui/Button";
-import { mainNav } from "@/lib/config";
+import { mainNav, type MainNavItem } from "@/lib/config";
 import { getProfile } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 
@@ -21,6 +20,12 @@ const technologies = [
   { name: "React", icon: <SiReact /> },
   { name: "NestJS", icon: <SiNestjs /> },
   { name: "PostgreSQL", icon: <SiPostgresql /> },
+];
+
+const serviceLinks: MainNavItem[] = [
+  { href: "/services", key: "services" },
+  { href: "/projects", key: "projects" },
+  { href: "/portfolio", key: "portfolio" },
 ];
 
 function getSocialIcon(label: string) {
@@ -62,49 +67,8 @@ export async function Footer() {
         className="absolute -right-40 top-10 h-72 w-72 rounded-full bg-accent/10 blur-[110px]"
       />
 
-      <Container className="relative py-12 sm:py-16">
-        {/* CTA */}
-        <div className="neon-card relative overflow-hidden rounded-3xl p-6 sm:p-8">
-          <div
-            aria-hidden
-            className="absolute -right-24 -top-24 h-56 w-56 rounded-full bg-primary/20 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-28 left-10 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
-          />
-
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl space-y-3">
-              <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary-light backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_14px_rgba(72,255,170,0.7)]" />
-                {f.available}
-              </p>
-
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {f.ctaTitle}
-              </h2>
-
-              <p className="max-w-xl text-sm leading-relaxed text-muted">
-                {f.ctaText}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <ButtonLink href="/contact">
-                {f.startProject}
-                <span aria-hidden>→</span>
-              </ButtonLink>
-
-              <ButtonLink href="/projects" variant="outline">
-                {f.viewWork}
-              </ButtonLink>
-            </div>
-          </div>
-        </div>
-
-        {/* Main content */}
-        <div className="grid gap-10 py-12 lg:grid-cols-12">
+      <Container className="relative py-12 sm:py-14">
+        <div className="grid gap-10 py-4 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-5">
             <Link
@@ -121,7 +85,7 @@ export async function Footer() {
             </Link>
 
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
-              {profile.headline ?? f.ctaText}
+              {f.brandText}
             </p>
 
             <div className="mt-5 grid max-w-md grid-cols-2 gap-2 sm:grid-cols-4">
@@ -160,14 +124,33 @@ export async function Footer() {
             </ul>
           </div>
 
+          <div className="lg:col-span-2">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-faint">
+              {f.services}
+            </h3>
+
+            <ul className="mt-4 space-y-3">
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted transition-colors hover:text-foreground"
+                  >
+                    {dict.nav[link.key]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Connect */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-2">
             <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-faint">
               {f.connect}
             </h3>
 
             {profile.socialLinks?.length ? (
-              <ul className="mt-4 grid grid-cols-2 gap-2.5">
+              <ul className="mt-4 grid gap-2.5">
                 {profile.socialLinks.map((social) => (
                   <li key={social.url}>
                     <a

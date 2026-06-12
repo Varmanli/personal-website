@@ -13,8 +13,6 @@ export async function Header() {
   const { locale, dict } = await getI18n();
   const profile = await getProfile(locale);
   const brand = "Varmanli";
-  // Prefer an uploaded résumé for the CV button; fall back to the contact page.
-  const cvHref = profile.resumeUrl || "/contact";
 
   return (
     <header className="sticky top-0 z-40 border-b border-border glass backdrop-blur-md">
@@ -47,12 +45,11 @@ export async function Header() {
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
           <ButtonLink
-            href={cvHref}
-            external={Boolean(profile.resumeUrl)}
+            href="/start-project"
             size="sm"
             className="hidden sm:inline-flex"
           >
-            {dict.common.downloadCv}
+            {dict.common.startProject}
           </ButtonLink>
           <MobileNav />
         </div>

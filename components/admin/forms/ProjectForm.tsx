@@ -17,9 +17,16 @@ import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { GalleryUploadField } from "@/components/admin/forms/GalleryUploadField";
 import { TechnologyPicker } from "@/components/admin/forms/TechnologyPicker";
 import { StringListField } from "@/components/admin/forms/StringListField";
+import { MetricListField } from "@/components/admin/forms/MetricListField";
 import { Tabs } from "@/components/admin/ui/Tabs";
 import { Collapsible } from "@/components/admin/ui/Collapsible";
-import { FiFileText, FiSliders, FiSettings, FiImage } from "react-icons/fi";
+import {
+  FiFileText,
+  FiSliders,
+  FiSettings,
+  FiImage,
+  FiMonitor,
+} from "react-icons/fi";
 import { type ActionState, initialActionState } from "@/lib/form";
 import { getStatusOptions } from "@/lib/admin/options";
 import { useI18n } from "@/lib/i18n/context";
@@ -40,6 +47,14 @@ const L = {
     description: "توضیح کامل",
     client: "مشتری",
     role: "نقش من",
+    typeBadge: "نوع پروژه / Badge",
+    typeBadgePh: "Marketplace",
+    metrics: "متریک‌ها",
+    metricLabelPh: "مثلاً: کاربر",
+    metricValuePh: "مثلاً: ۶۰k+",
+    addMetric: "افزودن متریک",
+    highlights: "نکات فنی",
+    addHighlight: "افزودن نکته",
     tags: "برچسب‌ها",
     challenges: "چالش‌های پروژه",
     solution: "راه‌حل",
@@ -53,6 +68,14 @@ const L = {
     description: "Full description",
     client: "Client",
     role: "My role",
+    typeBadge: "Project type / badge",
+    typeBadgePh: "Marketplace",
+    metrics: "Metrics",
+    metricLabelPh: "Example: Users",
+    metricValuePh: "Example: 60k+",
+    addMetric: "Add metric",
+    highlights: "Technical highlights",
+    addHighlight: "Add highlight",
     tags: "Tags",
     challenges: "Project challenges",
     solution: "Solution",
@@ -69,6 +92,7 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
   const fieldError = (name: string) => state.fieldErrors?.[name];
   const statusOptions = getStatusOptions(dict);
   const coverDefault = initial?.coverImageUrl ?? initial?.thumbnailUrl ?? null;
+  const previewDefault = initial?.previewImageUrl ?? coverDefault;
 
   const challengesFaDefault =
     initial?.challengesFa && initial.challengesFa.length
@@ -79,7 +103,7 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
       ? initial.challengesEn
       : initial?.challengeEn;
 
-  const faPanel = (
+  const faContentPanel = (
     <div className="space-y-5" dir="rtl">
       <TextInput name="titleFa" label={L.fa.title} dir="rtl" defaultValue={initial?.titleFa ?? ""} error={fieldError("titleFa")} />
       <TextInput name="shortDescriptionFa" label={L.fa.excerpt} dir="rtl" defaultValue={initial?.shortDescriptionFa ?? ""} />
@@ -95,7 +119,31 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
     </div>
   );
 
-  const enPanel = (
+  const faHomePanel = (
+    <div className="space-y-5" dir="rtl">
+      <TextInput name="projectTypeFa" label={L.fa.typeBadge} dir="rtl" defaultValue={initial?.projectTypeFa ?? ""} placeholder={L.fa.typeBadgePh} />
+      <MetricListField
+        name="homeMetricsFa"
+        label={L.fa.metrics}
+        dir="rtl"
+        defaultValue={initial?.homeMetricsFa}
+        labelPlaceholder={L.fa.metricLabelPh}
+        valuePlaceholder={L.fa.metricValuePh}
+        addLabel={L.fa.addMetric}
+        error={fieldError("homeMetricsFa")}
+      />
+      <StringListField
+        name="technicalHighlightsFa"
+        label={L.fa.highlights}
+        dir="rtl"
+        defaultValue={initial?.technicalHighlightsFa}
+        placeholder={L.fa.challengePh}
+        addLabel={L.fa.addHighlight}
+      />
+    </div>
+  );
+
+  const enContentPanel = (
     <div className="space-y-5" dir="ltr">
       <TextInput name="titleEn" label={L.en.title} dir="ltr" defaultValue={initial?.titleEn ?? ""} error={fieldError("titleEn")} />
       <TextInput name="shortDescriptionEn" label={L.en.excerpt} dir="ltr" defaultValue={initial?.shortDescriptionEn ?? ""} />
@@ -111,6 +159,30 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
     </div>
   );
 
+  const enHomePanel = (
+    <div className="space-y-5" dir="ltr">
+      <TextInput name="projectTypeEn" label={L.en.typeBadge} dir="ltr" defaultValue={initial?.projectTypeEn ?? ""} placeholder={L.en.typeBadgePh} />
+      <MetricListField
+        name="homeMetricsEn"
+        label={L.en.metrics}
+        dir="ltr"
+        defaultValue={initial?.homeMetricsEn}
+        labelPlaceholder={L.en.metricLabelPh}
+        valuePlaceholder={L.en.metricValuePh}
+        addLabel={L.en.addMetric}
+        error={fieldError("homeMetricsEn")}
+      />
+      <StringListField
+        name="technicalHighlightsEn"
+        label={L.en.highlights}
+        dir="ltr"
+        defaultValue={initial?.technicalHighlightsEn}
+        placeholder={L.en.challengePh}
+        addLabel={L.en.addHighlight}
+      />
+    </div>
+  );
+
   return (
     <form action={formAction} className="space-y-5">
       <FormError message={state.error} />
@@ -123,8 +195,8 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
       <FormSection title={f.content} description={f.contentHint} icon={<FiFileText />}>
         <Tabs
           items={[
-            { id: "fa", label: f.persian, content: faPanel },
-            { id: "en", label: f.english, content: enPanel },
+            { id: "fa", label: f.persian, content: faContentPanel },
+            { id: "en", label: f.english, content: enContentPanel },
           ]}
         />
       </FormSection>
@@ -134,8 +206,51 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
           <TextInput name="year" label={f.year} dir="ltr" defaultValue={initial?.year ?? ""} placeholder="2024" />
           <SelectInput name="status" label={f.status} options={statusOptions} defaultValue={initial?.status ?? "draft"} />
         </FormGrid>
-        <TechnologyPicker name="technologies" label={f.tech} defaultValue={initial?.technologies} />
         <SwitchField name="isFeatured" label={f.featured} description={f.featuredHint} defaultChecked={initial?.isFeatured ?? false} />
+      </FormSection>
+
+      <FormSection title={f.homeDisplay} description={f.homeDisplayHint} icon={<FiMonitor />}>
+        <FormGrid>
+          <SwitchField
+            name="isFeaturedOnHome"
+            label={f.homeFeatured}
+            description={f.homeFeaturedHint}
+            defaultChecked={initial?.isFeaturedOnHome ?? false}
+          />
+          <TextInput
+            name="homeOrder"
+            type="number"
+            min={0}
+            dir="ltr"
+            label={f.homeOrder}
+            hint={f.homeOrderHint}
+            defaultValue={String(initial?.homeOrder ?? 0)}
+            error={fieldError("homeOrder")}
+          />
+        </FormGrid>
+
+        <FileUploadField
+          name="previewImageUrl"
+          label={f.previewImage}
+          type="project"
+          shape="wide"
+          preview="image"
+          defaultValue={previewDefault}
+          error={fieldError("previewImageUrl")}
+        />
+
+        <TechnologyPicker
+          name="technologies"
+          label={f.homeTechStack}
+          defaultValue={initial?.technologies}
+        />
+
+        <Tabs
+          items={[
+            { id: "home-fa", label: f.persian, content: faHomePanel },
+            { id: "home-en", label: f.english, content: enHomePanel },
+          ]}
+        />
       </FormSection>
 
       <Collapsible title={f.advanced} description={f.advancedHint} icon={<FiSliders />}>

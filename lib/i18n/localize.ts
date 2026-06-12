@@ -51,6 +51,20 @@ function pickArr(
   return base ?? [];
 }
 
+/** Like pickArr but for arrays of objects. */
+function pickObjArr<T>(
+  locale: Locale,
+  fa: T[] | null | undefined,
+  en: T[] | null | undefined,
+  base: T[] | null | undefined,
+): T[] {
+  const primary = locale === "fa" ? fa : en;
+  const secondary = locale === "fa" ? en : fa;
+  if (primary && primary.length) return primary;
+  if (secondary && secondary.length) return secondary;
+  return base ?? [];
+}
+
 /** A project with the localized, normalized `challenges` array attached. */
 export type LocalizedProject = Project & { challenges: string[] };
 
@@ -110,6 +124,24 @@ export function localizeProject(
     ),
     outcome: pick(locale, project.outcomeFa, project.outcomeEn, project.outcome),
     tags: pickArr(locale, project.tagsFa, project.tagsEn, project.tags),
+    projectType: pick(
+      locale,
+      project.projectTypeFa,
+      project.projectTypeEn,
+      project.projectType,
+    ),
+    homeMetrics: pickObjArr(
+      locale,
+      project.homeMetricsFa,
+      project.homeMetricsEn,
+      project.homeMetrics,
+    ),
+    technicalHighlights: pickArr(
+      locale,
+      project.technicalHighlightsFa,
+      project.technicalHighlightsEn,
+      project.technicalHighlights,
+    ),
   };
 }
 

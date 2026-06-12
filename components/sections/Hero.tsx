@@ -5,21 +5,22 @@ import { getI18n } from "@/lib/i18n/server";
 import { format } from "@/lib/i18n/dictionaries";
 import { FaReact, FaNodeJs } from "react-icons/fa";
 import {
+  SiDocker,
+  SiGithubactions,
   SiNextdotjs,
-  SiTypescript,
   SiNestjs,
-  SiTailwindcss,
   SiPostgresql,
-  SiDrizzle,
+  SiTailwindcss,
+  SiTypescript,
 } from "react-icons/si";
 
 const techs = [
-  { name: "React", icon: <FaReact size={16} className="text-primary" /> },
   { name: "Next.js", icon: <SiNextdotjs size={16} className="text-primary" /> },
   {
     name: "TypeScript",
     icon: <SiTypescript size={16} className="text-primary" />,
   },
+  { name: "React", icon: <FaReact size={16} className="text-primary" /> },
   { name: "Node.js", icon: <FaNodeJs size={16} className="text-primary" /> },
   { name: "NestJS", icon: <SiNestjs size={16} className="text-primary" /> },
   {
@@ -30,12 +31,17 @@ const techs = [
     name: "PostgreSQL",
     icon: <SiPostgresql size={16} className="text-primary" />,
   },
-  { name: "Drizzle", icon: <SiDrizzle size={16} className="text-primary" /> },
+  { name: "Docker", icon: <SiDocker size={16} className="text-primary" /> },
+  {
+    name: "GitHub Actions",
+    icon: <SiGithubactions size={16} className="text-primary" />,
+  },
 ];
 
 export async function Hero({ firstName }: { firstName: string }) {
   const { dict } = await getI18n();
   const h = dict.hero;
+
   return (
     <section className="relative overflow-hidden border-b border-border">
       {/* Grid & radial glows */}
@@ -52,43 +58,40 @@ export async function Hero({ firstName }: { firstName: string }) {
         className="absolute -right-20 top-0 h-96 w-96 rounded-full bg-accent/20 blur-[120px]"
       />
 
-      <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-        {/* Left content — minimalist and professional */}
-        <div className="space-y-6">
-          {/* Greeting */}
-          <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/50 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-muted backdrop-blur">
-            {format(h.greeting, { name: firstName })}{" "}
-            <span aria-hidden>👋</span>
+      <Container className="relative grid items-center gap-10 py-14 sm:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-22">
+        <div className="order-1 space-y-6">
+          <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/55 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-primary-light backdrop-blur sm:text-sm">
+            <span className="h-2 w-2 rounded-full bg-success shadow-[0_0_14px_rgba(52,211,153,0.75)]" />
+            {format(h.greeting, { name: firstName })}
           </p>
 
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
-            {h.headlineLead} <br />
-            <span className="text-gradient">{h.headlineHighlight}</span>
-          </h1>
+          <div className="space-y-5">
+            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.1] text-foreground sm:text-5xl lg:text-6xl">
+              {h.headlineLead}
+              <br />
+              <span className="text-gradient">{h.headlineHighlight}</span>
+            </h1>
 
-          {/* Description */}
-          <p className="max-w-lg text-lg sm:text-xl leading-relaxed text-muted">
-            {h.subtitle}
-          </p>
+            <p className="max-w-2xl text-base leading-8 text-muted sm:text-lg">
+              {h.subtitle}
+            </p>
+          </div>
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-4 pt-2">
-            <ButtonLink href="/projects" size="lg" className="px-6">
-              {h.viewProjects}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <ButtonLink href="/start-project" size="lg" className="w-full sm:w-auto sm:min-w-52">
+              {h.primaryCta}
             </ButtonLink>
             <ButtonLink
-              href="/contact"
+              href="/projects"
               size="lg"
               variant="outline"
-              className="px-6"
+              className="w-full sm:w-auto sm:min-w-44"
             >
-              {h.contactMe}
+              {h.secondaryCta}
             </ButtonLink>
           </div>
 
-          {/* Tech Pills */}
-          <div className="flex flex-wrap gap-2 pt-2">
+          <div className="flex flex-wrap gap-2 pt-1">
             {techs.map((tech) => (
               <span
                 key={tech.name}
@@ -101,8 +104,9 @@ export async function Hero({ firstName }: { firstName: string }) {
           </div>
         </div>
 
-        {/* Right — animated developer visual */}
-        <DeveloperHeroVisual availableLabel={h.available} />
+        <div className="order-2">
+          <DeveloperHeroVisual />
+        </div>
       </Container>
     </section>
   );

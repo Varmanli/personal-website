@@ -118,7 +118,7 @@ export function MobileNav() {
 
               <div className="mt-2 border-t border-border/80 p-2">
                 <ButtonLink
-                  href="/contact"
+                  href="/start-project"
                   size="sm"
                   className="w-full justify-center"
                   onClick={() => setOpen(false)}

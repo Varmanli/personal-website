@@ -29,12 +29,18 @@ const projectL10nNull = {
   roleEn: null,
   clientFa: null,
   clientEn: null,
+  projectTypeFa: null,
+  projectTypeEn: null,
   challengeFa: null,
   challengeEn: null,
   solutionFa: null,
   solutionEn: null,
   outcomeFa: null,
   outcomeEn: null,
+  homeMetricsFa: [] as { label: string; value: string }[],
+  homeMetricsEn: [] as { label: string; value: string }[],
+  technicalHighlightsFa: [] as string[],
+  technicalHighlightsEn: [] as string[],
   tagsFa: [] as string[],
   tagsEn: [] as string[],
   challengesFa: [] as string[],
@@ -42,6 +48,49 @@ const projectL10nNull = {
   coverImageUrl: null,
   galleryImages: [] as string[],
 };
+
+const projectHomeDefaults = {
+  projectType: null as string | null,
+  previewImageUrl: null as string | null,
+  isFeaturedOnHome: false,
+  homeOrder: 0,
+  homeMetrics: [] as { label: string; value: string }[],
+  technicalHighlights: [] as string[],
+};
+
+type BaseProject = Omit<
+  Project,
+  | keyof typeof projectL10nNull
+  | "projectType"
+  | "projectTypeFa"
+  | "projectTypeEn"
+  | "previewImageUrl"
+  | "isFeaturedOnHome"
+  | "homeOrder"
+  | "homeMetrics"
+  | "homeMetricsFa"
+  | "homeMetricsEn"
+  | "technicalHighlights"
+  | "technicalHighlightsFa"
+  | "technicalHighlightsEn"
+> &
+  Partial<
+    Pick<
+      Project,
+      | "projectType"
+      | "projectTypeFa"
+      | "projectTypeEn"
+      | "previewImageUrl"
+      | "isFeaturedOnHome"
+      | "homeOrder"
+      | "homeMetrics"
+      | "homeMetricsFa"
+      | "homeMetricsEn"
+      | "technicalHighlights"
+      | "technicalHighlightsFa"
+      | "technicalHighlightsEn"
+    >
+  >;
 
 const serviceL10nNull = {
   nameFa: null,
@@ -113,24 +162,66 @@ export const placeholderProfile: SiteSettings = {
   updatedAt: now,
 };
 
-const baseProjects: Omit<Project, keyof typeof projectL10nNull>[] = [
+const baseProjects: BaseProject[] = [
   {
     id: 1,
-    title: "Commerce Platform",
-    slug: "commerce-platform",
+    title: "Negareh",
+    slug: "negareh",
     shortDescription:
-      "A scalable storefront and admin dashboard for a growing retail brand.",
+      "An art-file marketplace with admin tools, artist dashboards, subscriptions, and revenue flows.",
     description:
-      "A full e-commerce platform with product management, cart and checkout, order tracking, and a custom admin dashboard. Built for performance and easy day-to-day management by a non-technical team.",
+      "A full marketplace for selling artistic files with payments, subscriptions, limited downloads, and separate management spaces for the internal team and artists.",
     thumbnailUrl: null,
     media: [],
-    technologies: ["Next.js", "PostgreSQL", "Stripe", "Tailwind CSS"],
-    tags: ["E-commerce", "SaaS", "Full-stack"],
+    technologies: ["Next.js", "NestJS", "PostgreSQL", "Prisma", "Redis", "Docker", "Nginx"],
+    tags: ["Marketplace", "Full-stack", "Commerce"],
     role: "Full-stack developer & UI designer",
-    client: "Northwind Retail",
+    client: "Negareh",
     year: "2024",
+    projectType: "Marketplace",
+    isFeaturedOnHome: true,
+    homeOrder: 1,
+    homeMetrics: [
+      { label: "Users", value: "60k+" },
+      { label: "Products", value: "30k+" },
+      { label: "Pages", value: "120+" },
+      { label: "Panels", value: "Admin / Artist" },
+    ],
+    homeMetricsFa: [
+      { label: "کاربر", value: "۶۰k+" },
+      { label: "محصول", value: "۳۰k+" },
+      { label: "صفحه", value: "۱۲۰+" },
+      { label: "پنل", value: "Admin / Artist" },
+    ],
+    homeMetricsEn: [
+      { label: "Users", value: "60k+" },
+      { label: "Products", value: "30k+" },
+      { label: "Pages", value: "120+" },
+      { label: "Panels", value: "Admin / Artist" },
+    ],
+    technicalHighlights: [
+      "Full-stack architecture with Next.js and NestJS",
+      "Payments, wallet flows, and revenue split logic",
+      "Subscription and download-limit management",
+      "SEO, caching, and performance tuning",
+      "Docker and Nginx deployment",
+    ],
+    technicalHighlightsFa: [
+      "معماری فول‌استک با Next.js و NestJS",
+      "سیستم پرداخت، کیف پول و تقسیم درآمد",
+      "مدیریت اشتراک و محدودیت دانلود",
+      "بهینه‌سازی سئو، کش و عملکرد",
+      "دیپلوی با Docker و Nginx",
+    ],
+    technicalHighlightsEn: [
+      "Full-stack architecture with Next.js and NestJS",
+      "Payments, wallet flows, and revenue split logic",
+      "Subscription and download-limit management",
+      "SEO, caching, and performance tuning",
+      "Docker and Nginx deployment",
+    ],
     challenge:
-      "The client was outgrowing an off-the-shelf store builder that couldn't support custom pricing rules or their internal fulfilment workflow.",
+      "The product needed reliable payment flows, restricted downloads, subscriptions, and a structure ready for scale.",
     solution:
       "I built a bespoke storefront on Next.js with a typed PostgreSQL data layer, integrated Stripe for payments, and shipped an admin dashboard tailored to their fulfilment process.",
     outcome:
@@ -144,21 +235,60 @@ const baseProjects: Omit<Project, keyof typeof projectL10nNull>[] = [
   },
   {
     id: 2,
-    title: "Analytics Dashboard",
-    slug: "analytics-dashboard",
+    title: "Developer portfolio and brand site",
+    slug: "developer-brand-website",
     shortDescription:
-      "Real-time metrics, reporting, and team workspaces for a B2B SaaS.",
+      "A multilingual website for showcasing services, projects, portfolio samples, and inbound project requests.",
     description:
-      "A data-dense analytics product with real-time charts, custom report builders, and role-based team workspaces. Designed to make complex data approachable.",
+      "A premium personal brand website that combines multilingual content, admin-managed projects and services, and a clear conversion path for collaboration requests.",
     thumbnailUrl: null,
     media: [],
-    technologies: ["React", "Node.js", "PostgreSQL", "Redis"],
-    tags: ["SaaS", "Data", "Dashboard"],
-    role: "Lead frontend engineer",
-    client: "Loop Analytics",
-    year: "2023",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Drizzle ORM", "PostgreSQL"],
+    tags: ["Brand site", "Portfolio", "Full-stack"],
+    role: "Full-stack developer",
+    client: "Personal brand",
+    year: "2024",
+    projectType: "Brand Site",
+    isFeaturedOnHome: true,
+    homeOrder: 2,
+    homeMetrics: [
+      { label: "Language", value: "Multilingual" },
+      { label: "CMS", value: "Dashboard" },
+      { label: "SEO", value: "Ready" },
+      { label: "Layout", value: "Responsive" },
+    ],
+    homeMetricsFa: [
+      { label: "زبان", value: "چندزبانه" },
+      { label: "محتوا", value: "داشبورد" },
+      { label: "سئو", value: "SEO-ready" },
+      { label: "طراحی", value: "ریسپانسیو" },
+    ],
+    homeMetricsEn: [
+      { label: "Language", value: "Multilingual" },
+      { label: "CMS", value: "Dashboard" },
+      { label: "SEO", value: "Ready" },
+      { label: "Layout", value: "Responsive" },
+    ],
+    technicalHighlights: [
+      "Persian and English multilingual structure",
+      "Dashboard-managed content workflows",
+      "Dark, fast, responsive UI system",
+      "Contact funnel and project request flow",
+    ],
+    technicalHighlightsFa: [
+      "ساختار چندزبانه فارسی و انگلیسی",
+      "مدیریت محتوا از داشبورد",
+      "طراحی دارک، سریع و واکنش‌گرا",
+      "فرم تماس و مسیر دریافت پروژه",
+    ],
+    technicalHighlightsEn: [
+      "Persian and English multilingual structure",
+      "Dashboard-managed content workflows",
+      "Dark, fast, responsive UI system",
+      "Contact funnel and project request flow",
+    ],
     challenge:
-      "Users struggled to extract insight from a firehose of raw data, and the existing UI couldn't keep up with real-time updates.",
+      "The site needed to feel premium, stay fast, and remain fully manageable through the admin dashboard.",
     solution:
       "I designed a component-driven dashboard with streaming updates, a flexible report builder, and sensible defaults so new users see value immediately.",
     outcome:
@@ -172,21 +302,60 @@ const baseProjects: Omit<Project, keyof typeof projectL10nNull>[] = [
   },
   {
     id: 3,
-    title: "Booking & Scheduling App",
-    slug: "booking-scheduling-app",
+    title: "Custom admin dashboard",
+    slug: "custom-admin-dashboard",
     shortDescription:
-      "Appointment scheduling with reminders for small service businesses.",
+      "A role-based management panel for operational control, reporting, advanced forms, and data workflows.",
     description:
-      "A booking system that lets small businesses accept appointments online, manage availability, and reduce no-shows with automated reminders.",
+      "A tailored admin suite built around real daily operations, with filters, reporting, status flows, and expandable modules.",
     thumbnailUrl: null,
     media: [],
-    technologies: ["Next.js", "PostgreSQL", "Tailwind CSS"],
-    tags: ["Web app", "Scheduling"],
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "REST API"],
+    tags: ["Admin suite", "Operations", "Dashboard"],
     role: "Full-stack developer",
-    client: "Bright Booking",
-    year: "2023",
+    client: "Internal operations",
+    year: "2024",
+    projectType: "Admin Suite",
+    isFeaturedOnHome: true,
+    homeOrder: 3,
+    homeMetrics: [
+      { label: "Access", value: "Role-based" },
+      { label: "Reports", value: "Management" },
+      { label: "Forms", value: "Advanced" },
+      { label: "Data", value: "Operational" },
+    ],
+    homeMetricsFa: [
+      { label: "دسترسی", value: "Role-based" },
+      { label: "گزارش", value: "مدیریتی" },
+      { label: "فرم", value: "پیشرفته" },
+      { label: "داده", value: "عملیاتی" },
+    ],
+    homeMetricsEn: [
+      { label: "Access", value: "Role-based" },
+      { label: "Reports", value: "Management" },
+      { label: "Forms", value: "Advanced" },
+      { label: "Data", value: "Operational" },
+    ],
+    technicalHighlights: [
+      "UX designed for repeated daily operations",
+      "Filters, search, pagination, and status workflows",
+      "Precise forms with validation rules",
+      "Extensible structure for future modules",
+    ],
+    technicalHighlightsFa: [
+      "طراحی تجربه کاربری برای عملیات روزانه",
+      "فیلتر، جستجو، صفحه‌بندی و مدیریت وضعیت‌ها",
+      "فرم‌های دقیق با اعتبارسنجی",
+      "ساختار قابل توسعه برای ماژول‌های جدید",
+    ],
+    technicalHighlightsEn: [
+      "UX designed for repeated daily operations",
+      "Filters, search, pagination, and status workflows",
+      "Precise forms with validation rules",
+      "Extensible structure for future modules",
+    ],
     challenge:
-      "The business relied on phone bookings and a paper calendar, leading to double-bookings and missed appointments.",
+      "The team needed a stable internal system for recurring operations instead of fragmented spreadsheets and ad-hoc tools.",
     solution:
       "I built a self-serve booking flow with real-time availability, calendar sync, and automated email reminders.",
     outcome:
@@ -283,6 +452,7 @@ const baseProjects: Omit<Project, keyof typeof projectL10nNull>[] = [
 
 export const placeholderProjects: Project[] = baseProjects.map((p) => ({
   ...projectL10nNull,
+  ...projectHomeDefaults,
   ...p,
 }));
 

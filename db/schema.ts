@@ -22,6 +22,12 @@ export interface EstimateBreakdownItem {
   priceImpact?: number;
 }
 
+/** Small case-study metric shown on homepage project cards. */
+export interface ProjectMetric {
+  label: string;
+  value: string;
+}
+
 /**
  * Shared enums.
  * Keep these small and explicit so the admin UI can map over them safely.
@@ -72,6 +78,15 @@ export const projects = pgTable("projects", {
   role: varchar("role", { length: 160 }),
   client: varchar("client", { length: 200 }),
   year: varchar("year", { length: 16 }),
+  // Homepage case-study card fields.
+  projectType: varchar("project_type", { length: 120 }),
+  previewImageUrl: text("preview_image_url"),
+  isFeaturedOnHome: boolean("is_featured_on_home").notNull().default(false),
+  homeOrder: integer("home_order").notNull().default(0),
+  homeMetrics: jsonb("home_metrics").$type<ProjectMetric[]>().default([]),
+  technicalHighlights: jsonb("technical_highlights")
+    .$type<string[]>()
+    .default([]),
   // Case-study narrative sections (all optional).
   challenge: text("challenge"),
   solution: text("solution"),
@@ -87,6 +102,16 @@ export const projects = pgTable("projects", {
   roleEn: varchar("role_en", { length: 160 }),
   clientFa: varchar("client_fa", { length: 200 }),
   clientEn: varchar("client_en", { length: 200 }),
+  projectTypeFa: varchar("project_type_fa", { length: 120 }),
+  projectTypeEn: varchar("project_type_en", { length: 120 }),
+  homeMetricsFa: jsonb("home_metrics_fa").$type<ProjectMetric[]>().default([]),
+  homeMetricsEn: jsonb("home_metrics_en").$type<ProjectMetric[]>().default([]),
+  technicalHighlightsFa: jsonb("technical_highlights_fa")
+    .$type<string[]>()
+    .default([]),
+  technicalHighlightsEn: jsonb("technical_highlights_en")
+    .$type<string[]>()
+    .default([]),
   challengeFa: text("challenge_fa"),
   challengeEn: text("challenge_en"),
   // Multiple challenges (localized). Nullable/defaulted; the legacy single

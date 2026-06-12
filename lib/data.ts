@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
   projects,
@@ -104,11 +104,17 @@ export async function getFeaturedProjects(
         .where(
           and(
             eq(projects.status, "published"),
-            eq(projects.isFeatured, true),
+            eq(projects.isFeaturedOnHome, true),
           ),
         )
-        .orderBy(desc(projects.createdAt)),
-    placeholderProjects.filter((p) => p.isFeatured),
+        .orderBy(asc(projects.homeOrder), desc(projects.createdAt)),
+    placeholderProjects
+      .filter((p) => p.isFeaturedOnHome)
+      .sort((a, b) => {
+        const orderDiff = a.homeOrder - b.homeOrder;
+        if (orderDiff !== 0) return orderDiff;
+        return b.createdAt.getTime() - a.createdAt.getTime();
+      }),
   );
   return rows.slice(0, limit).map((p) => localizeProject(p, locale));
 }

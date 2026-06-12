@@ -16,47 +16,41 @@ const testimonialsByLocale: Record<Locale, Testimonial[]> = {
   fa: [
     {
       quote:
-        "دقیقاً همان چیزی را که نیاز داشتیم تحویل داد، به‌موقع و فراتر از انتظار. پنل مدیریت هر هفته ساعت‌ها در وقت تیم ما صرفه‌جویی می‌کند.",
-      author: "سارا لیندکوئیست",
-      role: "بنیان‌گذار",
-      company: "نورث‌وایند استودیو",
+        "برای ما فقط ظاهر سایت مهم نبود؛ نیاز داشتیم پنل مدیریت، پرداخت، دانلود و ساختار مالی دقیق کار کند. خروجی هم از نظر فنی هم تجربه کاربری قابل اعتماد بود.",
+      author: "مدیر پروژه نگاره",
+      role: "مارکت‌پلیس فایل هنری",
     },
     {
       quote:
-        "ارتباط شفاف، کد تمیز و علاقه‌ی واقعی به نتیجه‌ی کسب‌وکار ما. با کمال میل دوباره همکاری می‌کنم.",
-      author: "پریا شاه",
-      role: "مدیر محصول",
-      company: "لوپ آنالیتیکس",
+        "فرآیند همکاری شفاف بود. قبل از پیاده‌سازی، مسیر فنی و بخش‌های اصلی پروژه دقیق مشخص شد و همین باعث شد تصمیم‌گیری راحت‌تر شود.",
+      author: "کارفرمای پروژه اختصاصی",
+      role: "وب‌اپلیکیشن مدیریتی",
     },
     {
       quote:
-        "یک ایده‌ی مبهم را گرفت و به یک وب‌اپ سریع و حرفه‌ای تبدیل کرد. نرخ تبدیل ما پس از انتشار به‌وضوح بهتر شد.",
-      author: "دنیل ریس",
-      role: "مدیر بازاریابی",
-      company: "برایت‌ساید",
+        "در کنار طراحی تمیز، به جزئیات فنی مثل سرعت، سئو، ساختار دیتابیس و توسعه‌پذیری هم توجه شد.",
+      author: "همکار فنی پروژه",
+      role: "توسعه محصول وب",
     },
   ],
   en: [
     {
       quote:
-        "Delivered exactly what we needed, on time and beyond expectations. The admin panel saved our team hours every week.",
-      author: "Alex Morgan",
-      role: "Founder",
-      company: "Northwind Studio",
+        "We needed more than a polished UI. The admin area, payments, downloads, and financial flows all had to work together, and the final product felt dependable.",
+      author: "Negareh project lead",
+      role: "Art file marketplace",
     },
     {
       quote:
-        "Clear communication, clean code, and a genuine interest in our business outcomes. Would happily work together again.",
-      author: "Priya Shah",
-      role: "Product Lead",
-      company: "Loop Analytics",
+        "The collaboration was transparent from the start. The technical direction and the key parts of the build were clear before implementation, which made decisions much easier.",
+      author: "Custom client",
+      role: "Management web application",
     },
     {
       quote:
-        "Took a vague idea and turned it into a polished, fast web app. Our conversion rate noticeably improved after launch.",
-      author: "Daniel Reyes",
-      role: "Marketing Director",
-      company: "Brightside",
+        "Alongside a clean interface, real attention was given to performance, SEO, database structure, and future maintainability.",
+      author: "Technical collaborator",
+      role: "Web product development",
     },
   ],
 };
@@ -124,17 +118,35 @@ export function getExperience(locale: Locale): TimelineEntry[] {
 
 // Tech names are universal; only the category labels are localized.
 const techCategories: Record<Locale, [string, string, string]> = {
-  fa: ["فرانت‌اند", "بک‌اند", "ابزارها و DevOps"],
-  en: ["Frontend", "Backend", "Tooling & DevOps"],
+  fa: ["فرانت‌اند", "بک‌اند", "DevOps و تحویل"],
+  en: ["Frontend", "Backend", "DevOps & Delivery"],
 };
 
 const techItems: string[][] = [
   ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux"],
-  ["Node.js", "PostgreSQL", "Drizzle ORM", "REST APIs", "Redis"],
-  ["Git", "Docker", "Vercel", "GitHub Actions", "Vitest"],
+  ["NestJS", "Node.js", "PostgreSQL", "Prisma", "Redis", "REST API"],
+  ["Docker", "Nginx", "VPS", "CI/CD", "GitHub Actions"],
 ];
+
+const techDescriptions: Record<Locale, [string, string, string]> = {
+  fa: [
+    "ساخت رابط‌های سریع، واکنش‌گرا، سئو محور و قابل توسعه.",
+    "طراحی API، احراز هویت، ساختار دیتابیس، داشبورد و منطق‌های پیچیده.",
+    "استقرار، مانیتورینگ، بهینه‌سازی عملکرد و آماده‌سازی پروژه برای استفاده واقعی.",
+  ],
+  en: [
+    "Fast, responsive, SEO-aware interfaces that stay maintainable as the product grows.",
+    "APIs, authentication, database structure, dashboards, and the heavier business logic behind them.",
+    "Deployment, monitoring, performance tuning, and the delivery work that makes a product production-ready.",
+  ],
+};
 
 export function getTechStack(locale: Locale): TechGroup[] {
   const labels = techCategories[locale] ?? techCategories.en;
-  return labels.map((category, i) => ({ category, items: techItems[i] }));
+  const descriptions = techDescriptions[locale] ?? techDescriptions.en;
+  return labels.map((category, i) => ({
+    category,
+    items: techItems[i],
+    description: descriptions[i],
+  }));
 }

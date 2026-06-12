@@ -20,7 +20,7 @@ const en = {
   },
   common: {
     downloadCv: "Download CV",
-    startProject: "Start a project",
+    startProject: "Project estimate",
     language: "Language",
     menu: "Toggle navigation menu",
   },
@@ -49,24 +49,27 @@ const en = {
   },
   hero: {
     greeting: "Hey, I'm {name}",
-    headlineLead: "Crafting elegant,",
-    headlineHighlight: "full-stack web experiences",
+    headlineLead: "Designing and building",
+    headlineHighlight: "fast, scalable web applications ready to grow",
     subtitle:
-      "I build modern, scalable web products and dashboards that combine performance, design, and seamless user experience.",
-    viewProjects: "View Projects",
-    contactMe: "Contact Me",
+      "From interface design to backend implementation, dashboards, authentication, payments, SEO, and deployment, I cover the full path to a professional web product.",
+    primaryCta: "Request project estimate",
+    secondaryCta: "View selected work",
     available: "Available for work",
-    fast: "Fast & Performant",
-    clean: "Clean & Modern",
+    supportingText:
+      "Full-stack delivery for products that need clean UX, stable architecture, and room to scale.",
   },
   footer: {
     available: "Available for new projects",
-    ctaTitle: "Let's build something great together.",
+    ctaTitle: "Have a project in mind?",
     ctaText:
-      "I help businesses ship clean websites, dashboards, admin panels, and full-stack products with performance and polished UX.",
-    startProject: "Start a project",
+      "Describe the idea and I’ll map out the technical path, timeline, and a realistic cost range.",
+    brandText:
+      "Websites, web applications, admin panels, and digital products built with quality, speed, and long-term maintainability in mind.",
+    startProject: "Request project estimate",
     viewWork: "View work",
     navigate: "Navigate",
+    services: "Services",
     connect: "Connect",
     connectEmpty:
       "Social links will appear here once they are added to your profile settings.",
@@ -76,60 +79,59 @@ const en = {
   home: {
     featured: {
       eyebrow: "Selected work",
-      title: "Featured | projects",
-      subtitle: "A few projects I'm proud of. Browse all to see more.",
-      all: "All projects",
-    },
-    services: {
-      eyebrow: "Work with me",
-      title: "Services & | plans",
-      subtitle: "Flexible engagements for projects of any size.",
-      all: "See all plans",
+      title: "Selected | projects",
+      subtitle:
+        "A few product builds shaped around performance, user experience, and maintainable architecture.",
+      all: "View all projects",
+      details: "View details",
     },
     skills: {
-      eyebrow: "Toolbox",
-      title: "Skills & | tech stack",
-      subtitle: "The technologies I reach for to ship reliable products.",
+      eyebrow: "Capabilities",
+      title: "Technology with | business value",
+      subtitle:
+        "The stack matters, but what clients actually buy is clarity, speed, and reliable delivery.",
       tools: "tools",
     },
     process: {
-      eyebrow: "How I work",
-      title: "A clear, | collaborative process",
+      eyebrow: "Process",
+      title: "A clear path | from idea to delivery",
       subtitle:
-        "From first call to launch, you always know what's happening next.",
+        "Compact, transparent, and structured so every phase of the project stays understandable.",
       steps: [
         {
-          title: "Discovery",
+          title: "Discovery and project goals",
           description:
-            "We start with a call to understand your goals, audience, and constraints. I turn that into a clear scope and timeline.",
+            "We clarify the business goals, users, core flows, and constraints before any implementation starts.",
         },
         {
-          title: "Design & plan",
+          title: "Technical direction and architecture",
           description:
-            "I map the architecture, data model, and key flows, then agree on milestones so there are no surprises.",
+            "Pages, data models, APIs, and the delivery path are defined so the project has a stable technical backbone.",
         },
         {
-          title: "Build",
+          title: "Development, testing, optimization",
           description:
-            "Iterative development with regular previews. You see progress early and give feedback continuously.",
+            "Implementation happens in clear iterations with attention to quality, speed, and production stability.",
         },
         {
-          title: "Launch & support",
+          title: "Handover, training, support",
           description:
-            "I handle deployment, testing, and handover — plus optional ongoing support and improvements.",
+            "The final delivery is ready to use, and the next steps for future growth are clear from day one.",
         },
       ],
     },
     testimonials: {
       eyebrow: "Testimonials",
-      title: "What clients | say",
-      subtitle: "Placeholder quotes — replace with real client feedback.",
+      title: "What clients | noticed",
+      subtitle:
+        "Feedback focused on delivery quality, clarity, and technical trust rather than generic praise.",
     },
     cta: {
       title: "Have a project in mind?",
       description:
-        "Tell me what you're building and I'll get back to you with how I can help — usually within a day.",
-      cta: "Start a conversation",
+        "Explain the idea and I’ll outline the technical direction, timing, and a realistic rough estimate.",
+      cta: "Request project estimate",
+      secondary: "View selected work",
     },
   },
   about: {
@@ -592,6 +594,7 @@ const en = {
       slug: "Slug",
       status: "Status",
       featured: "Featured",
+      homepage: "Homepage",
       updated: "Updated",
       price: "Price",
       period: "Period",
@@ -650,6 +653,16 @@ const en = {
       pricingHint: "Price, billing period, and currency.",
       media: "Media & links",
       mediaHint: "Image and external project link.",
+      homeDisplay: "Homepage display",
+      homeDisplayHint:
+        "Manage how this project appears on the homepage. At most 3 projects are shown there.",
+      homeFeatured: "Show on homepage",
+      homeFeaturedHint:
+        "Homepage shows only the first 3 published projects sorted by this order.",
+      homeOrder: "Homepage order",
+      homeOrderHint: "Lower numbers appear first.",
+      previewImage: "Homepage preview image",
+      homeTechStack: "Homepage tech stack",
       profile: "Profile",
       profileHint: "Your name, headline, bio, and skills per language.",
       sharedFields: "Shared details",
@@ -732,6 +745,9 @@ const en = {
       db: "Couldn't reach the database, so nothing was saved. Check your connection and try again.",
       slugTaken: "That slug is already in use. Choose a different one.",
       invalidId: "Invalid id.",
+      invalidHomeOrder: "Homepage order must be a valid non-negative number.",
+      invalidMetric:
+        "Each metric row must include both a label and a value.",
     },
     auth: {
       title: "Admin sign in",
@@ -768,7 +784,7 @@ const fa: DeepPartial<Dictionary> = {
   },
   common: {
     downloadCv: "دانلود رزومه",
-    startProject: "شروع پروژه",
+    startProject: "برآورد پروژه",
     language: "زبان",
     menu: "باز/بستن منوی پیمایش",
   },
@@ -795,24 +811,27 @@ const fa: DeepPartial<Dictionary> = {
   },
   hero: {
     greeting: "سلام، من {name} هستم",
-    headlineLead: "ساخت تجربه‌های وب",
-    headlineHighlight: "فول‌استک و حرفه‌ای",
+    headlineLead: "طراحی و توسعه",
+    headlineHighlight: "وب‌اپلیکیشن‌های سریع، مقیاس‌پذیر و آماده رشد",
     subtitle:
-      "محصولات و داشبوردهای وب مدرن و مقیاس‌پذیری می‌سازم که کارایی، طراحی و تجربه‌ی کاربری روان را با هم ترکیب می‌کنند.",
-    viewProjects: "مشاهده پروژه‌ها",
-    contactMe: "تماس با من",
+      "از طراحی رابط کاربری تا پیاده‌سازی بک‌اند، داشبورد، احراز هویت، پرداخت، سئو و دیپلوی، یک مسیر کامل برای ساخت محصول وب حرفه‌ای.",
+    primaryCta: "درخواست برآورد پروژه",
+    secondaryCta: "مشاهده نمونه‌کارها",
     available: "آماده‌ی همکاری",
-    fast: "سریع و بهینه",
-    clean: "تمیز و مدرن",
+    supportingText:
+      "برای محصولاتی که هم ظاهر حرفه‌ای می‌خواهند و هم ساختار فنی قابل اتکا و آماده توسعه.",
   },
   footer: {
     available: "آماده‌ی پروژه‌های جدید",
-    ctaTitle: "بیایید با هم چیز فوق‌العاده‌ای بسازیم.",
+    ctaTitle: "پروژه‌ای در ذهن داری؟",
     ctaText:
-      "به کسب‌وکارها کمک می‌کنم وب‌سایت‌ها، داشبوردها، پنل‌های مدیریت و محصولات فول‌استک تمیز با کارایی و تجربه‌ی کاربری حرفه‌ای منتشر کنند.",
-    startProject: "شروع پروژه",
+      "ایده‌ات را توضیح بده؛ مسیر فنی، زمان‌بندی و هزینه تقریبی را شفاف بهت می‌گم.",
+    brandText:
+      "طراحی و توسعه وب‌سایت‌ها، وب‌اپلیکیشن‌ها، پنل‌های مدیریتی و محصولات دیجیتال با تمرکز روی کیفیت، سرعت و توسعه‌پذیری.",
+    startProject: "درخواست برآورد پروژه",
     viewWork: "مشاهده کارها",
     navigate: "پیمایش",
+    services: "خدمات",
     connect: "ارتباط",
     connectEmpty:
       "پس از افزودن لینک‌های اجتماعی در تنظیمات پروفایل، اینجا نمایش داده می‌شوند.",
@@ -822,59 +841,59 @@ const fa: DeepPartial<Dictionary> = {
   home: {
     featured: {
       eyebrow: "کارهای منتخب",
-      title: "پروژه‌های | شاخص",
-      subtitle: "چند پروژه‌ای که به آن‌ها افتخار می‌کنم. برای دیدن بقیه کلیک کنید.",
-      all: "همه‌ی پروژه‌ها",
-    },
-    services: {
-      eyebrow: "همکاری با من",
-      title: "خدمات و | پلن‌ها",
-      subtitle: "همکاری منعطف برای پروژه‌هایی در هر اندازه.",
-      all: "مشاهده همه‌ی پلن‌ها",
+      title: "پروژه‌های | منتخب",
+      subtitle:
+        "چند نمونه از محصولاتی که با تمرکز روی عملکرد، تجربه کاربری و توسعه‌پذیری ساخته شده‌اند.",
+      all: "مشاهده همه پروژه‌ها",
+      details: "مشاهده جزئیات",
     },
     skills: {
-      eyebrow: "ابزارها",
-      title: "مهارت‌ها و | تکنولوژی‌ها",
-      subtitle: "تکنولوژی‌هایی که برای ساخت محصولات مطمئن استفاده می‌کنم.",
+      eyebrow: "توانمندی‌ها",
+      title: "تکنولوژی در خدمت | نتیجه تجاری",
+      subtitle:
+        "فقط فهرست ابزارها مهم نیست؛ مهم این است که این استک چطور به محصول سریع‌تر، پایدارتر و قابل توسعه‌تر تبدیل می‌شود.",
       tools: "ابزار",
     },
     process: {
-      eyebrow: "روش کار من",
-      title: "فرایندی | شفاف و مشارکتی",
-      subtitle: "از اولین تماس تا انتشار، همیشه در جریان مراحل بعدی هستید.",
+      eyebrow: "فرآیند همکاری",
+      title: "مسیر شفاف | از ایده تا تحویل",
+      subtitle:
+        "مراحل پروژه فشرده، واضح و قابل پیگیری است تا تصمیم‌گیری و اجرا بدون ابهام پیش برود.",
       steps: [
         {
-          title: "کشف و بررسی",
+          title: "کشف نیاز و هدف پروژه",
           description:
-            "با یک تماس شروع می‌کنیم تا اهداف، مخاطب و محدودیت‌ها را بفهمم و آن را به یک محدوده و زمان‌بندی روشن تبدیل کنم.",
+            "ابتدا نیازها، کاربران، مسیرهای اصلی و هدف تجاری پروژه را شفاف می‌کنیم.",
         },
         {
-          title: "طراحی و برنامه‌ریزی",
+          title: "طراحی مسیر و معماری",
           description:
-            "معماری، مدل داده و مسیرهای کلیدی را ترسیم می‌کنم و بر سر نقاط عطف توافق می‌کنیم تا غافلگیری‌ای نباشد.",
+            "ساختار صفحات، مدل داده، APIها و مسیر توسعه پروژه مشخص می‌شود.",
         },
         {
-          title: "ساخت",
+          title: "توسعه، تست و بهینه‌سازی",
           description:
-            "توسعه‌ی تدریجی با پیش‌نمایش‌های منظم. پیشرفت را زود می‌بینید و پیوسته بازخورد می‌دهید.",
+            "پیاده‌سازی مرحله‌به‌مرحله انجام می‌شود و روی کیفیت، سرعت و پایداری تمرکز می‌کنیم.",
         },
         {
-          title: "انتشار و پشتیبانی",
+          title: "تحویل، آموزش و پشتیبانی",
           description:
-            "استقرار، تست و تحویل را انجام می‌دهم — به‌همراه پشتیبانی و بهبود مستمر اختیاری.",
+            "در پایان، پروژه آماده استفاده تحویل داده می‌شود و برای توسعه‌های بعدی مسیر مشخص است.",
         },
       ],
     },
     testimonials: {
       eyebrow: "نظرات",
-      title: "نظر | مشتری‌ها",
-      subtitle: "نقل‌قول‌های نمونه — با بازخورد واقعی مشتری‌ها جایگزین کنید.",
+      title: "بازخورد | همکاری",
+      subtitle:
+        "نقل‌قول‌هایی که روی شفافیت همکاری، کیفیت فنی و اعتمادپذیری خروجی تمرکز دارند.",
     },
     cta: {
-      title: "پروژه‌ای در ذهن دارید؟",
+      title: "پروژه‌ای در ذهن داری؟",
       description:
-        "بگویید چه می‌سازید تا برایتان توضیح دهم چطور می‌توانم کمک کنم — معمولاً ظرف یک روز پاسخ می‌دهم.",
-      cta: "شروع گفتگو",
+        "ایده‌ات را توضیح بده؛ مسیر فنی، زمان‌بندی و هزینه تقریبی را شفاف بهت می‌گم.",
+      cta: "درخواست برآورد پروژه",
+      secondary: "مشاهده نمونه‌کارها",
     },
   },
   about: {
@@ -1332,6 +1351,7 @@ const fa: DeepPartial<Dictionary> = {
       slug: "اسلاگ",
       status: "وضعیت",
       featured: "شاخص",
+      homepage: "صفحه اصلی",
       updated: "به‌روزرسانی",
       price: "قیمت",
       period: "دوره",
@@ -1389,6 +1409,16 @@ const fa: DeepPartial<Dictionary> = {
       pricingHint: "قیمت، دوره‌ی صورت‌حساب و واحد پول.",
       media: "رسانه و لینک‌ها",
       mediaHint: "تصویر و لینک خارجی پروژه.",
+      homeDisplay: "نمایش در صفحه اصلی",
+      homeDisplayHint:
+        "نحوه نمایش پروژه در صفحه اصلی را مدیریت کنید. حداکثر ۳ پروژه در صفحه اصلی نمایش داده می‌شود.",
+      homeFeatured: "نمایش در صفحه اصلی",
+      homeFeaturedHint:
+        "صفحه اصلی فقط ۳ پروژه منتشرشده اول را بر اساس این ترتیب نمایش می‌دهد.",
+      homeOrder: "ترتیب نمایش در صفحه اصلی",
+      homeOrderHint: "عدد کمتر، نمایش زودتر.",
+      previewImage: "تصویر پیش‌نمایش صفحه اصلی",
+      homeTechStack: "تکنولوژی‌های کارت صفحه اصلی",
       profile: "پروفایل",
       profileHint: "نام، تیتر، بیوگرافی و مهارت‌ها به‌تفکیک زبان.",
       sharedFields: "اطلاعات مشترک",
@@ -1468,6 +1498,10 @@ const fa: DeepPartial<Dictionary> = {
       db: "ارتباط با پایگاه‌داده برقرار نشد، چیزی ذخیره نشد. اتصال را بررسی و دوباره تلاش کنید.",
       slugTaken: "این اسلاگ قبلاً استفاده شده است. مورد دیگری انتخاب کنید.",
       invalidId: "شناسه نامعتبر است.",
+      invalidHomeOrder:
+        "ترتیب نمایش در صفحه اصلی باید یک عدد معتبر و صفر یا بیشتر باشد.",
+      invalidMetric:
+        "هر متریک باید هم برچسب و هم مقدار داشته باشد.",
     },
     auth: {
       title: "ورود مدیر",
