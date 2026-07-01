@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { FiEdit3, FiGlobe, FiArchive, FiBriefcase, FiUser, FiZap } from "react-icons/fi";
+import { FiEdit3, FiGlobe, FiArchive } from "react-icons/fi";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 /** Option shape consumed by the reusable admin CustomSelect. */
@@ -22,15 +22,6 @@ export function getStatusOptions(dict: Dictionary): SelectOption[] {
     { value: "draft", label: s.draft, icon: <FiEdit3 /> },
     { value: "published", label: s.published, icon: <FiGlobe /> },
     { value: "archived", label: s.archived, icon: <FiArchive /> },
-  ];
-}
-
-export function getPortfolioTypeOptions(dict: Dictionary): SelectOption[] {
-  const c = dict.card.types;
-  return [
-    { value: "personal", label: c.personal, icon: <FiUser /> },
-    { value: "commercial", label: c.commercial, icon: <FiBriefcase /> },
-    { value: "freelance", label: c.freelance, icon: <FiZap /> },
   ];
 }
 

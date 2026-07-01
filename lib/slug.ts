@@ -1,6 +1,6 @@
 import { and, eq, ne } from "drizzle-orm";
 import { db } from "@/db";
-import { projects, portfolioItems, services } from "@/db/schema";
+import { projects, services } from "@/db/schema";
 
 /**
  * Slug generation — server-side source of truth.
@@ -78,25 +78,6 @@ export function ensureUniqueProjectSlug(
     const [row] = await db
       .select({ id: projects.id })
       .from(projects)
-      .where(where)
-      .limit(1);
-    return Boolean(row);
-  });
-}
-
-/** Ensure a portfolio slug is unique (ignoring `existingId` on edit). */
-export function ensureUniquePortfolioSlug(
-  base: string,
-  existingId?: number,
-): Promise<string> {
-  return makeUnique(base, async (candidate) => {
-    const where =
-      existingId != null
-        ? and(eq(portfolioItems.slug, candidate), ne(portfolioItems.id, existingId))
-        : eq(portfolioItems.slug, candidate);
-    const [row] = await db
-      .select({ id: portfolioItems.id })
-      .from(portfolioItems)
       .where(where)
       .limit(1);
     return Boolean(row);

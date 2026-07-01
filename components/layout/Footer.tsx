@@ -12,6 +12,7 @@ import {
 import { SiNextdotjs, SiReact, SiNestjs, SiPostgresql } from "react-icons/si";
 import { Container } from "@/components/ui/Container";
 import { mainNav, type MainNavItem } from "@/lib/config";
+import { getFooterSocialLinks } from "@/lib/contact-page";
 import { getProfile } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 
@@ -25,7 +26,7 @@ const technologies = [
 const serviceLinks: MainNavItem[] = [
   { href: "/services", key: "services" },
   { href: "/projects", key: "projects" },
-  { href: "/portfolio", key: "portfolio" },
+  { href: "/contact", key: "contact" },
 ];
 
 function getSocialIcon(label: string) {
@@ -35,9 +36,8 @@ function getSocialIcon(label: string) {
   if (normalized.includes("linkedin")) return <FaLinkedinIn />;
   if (normalized.includes("telegram")) return <FaTelegram />;
   if (normalized.includes("instagram")) return <FaInstagram />;
-  if (normalized.includes("twitter") || normalized.includes("x")) {
+  if (normalized.includes("twitter") || normalized.includes("x"))
     return <FaXTwitter />;
-  }
   if (normalized.includes("dribbble")) return <FaDribbble />;
   if (normalized.includes("behance")) return <FaBehance />;
 
@@ -50,51 +50,56 @@ export async function Footer() {
   const { locale, dict } = await getI18n();
   const profile = await getProfile(locale);
   const f = dict.footer;
+  const socialLinks = getFooterSocialLinks(profile);
+
+  const brandName = profile.ownerName?.trim() || "Varmanli";
+  const brandInitial = brandName.charAt(0) || "V";
 
   return (
-    <footer className="relative mt-auto overflow-hidden border-t border-border bg-background">
-      {/* Background effects */}
+    <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-[#050714] text-foreground">
       <div
         aria-hidden
-        className="absolute inset-0 grid-bg opacity-25 mask-[linear-gradient(to_top,black,transparent_78%)]"
+        className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/45 to-transparent"
       />
       <div
         aria-hidden
-        className="absolute -bottom-36 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]"
-      />
-      <div
-        aria-hidden
-        className="absolute -right-40 top-10 h-72 w-72 rounded-full bg-accent/10 blur-[110px]"
+        className="absolute -bottom-48 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/12 blur-[130px]"
       />
 
-      <Container className="relative py-12 sm:py-14">
-        <div className="grid gap-10 py-4 lg:grid-cols-12">
+      <Container className="relative py-10 sm:py-12">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-5">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 text-base font-bold text-foreground"
+              className="group inline-flex items-center gap-3"
+              aria-label={brandName}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-accent text-sm font-bold text-white shadow-lg shadow-primary/30">
-                {profile.ownerName.charAt(0)}
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/4.5 text-sm font-black text-white shadow-[0_0_24px_rgba(79,124,255,0.2)] transition-all group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary-light">
+                {brandInitial}
               </span>
 
-              <span className="text-lg tracking-tight">
-                {profile.ownerName}
+              <span className="flex flex-col">
+                <span className="text-lg font-black tracking-tight text-white">
+                  {brandName}
+                </span>
+                <span className="text-xs font-medium text-faint">
+                  Full-stack Developer
+                </span>
               </span>
             </Link>
 
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
+            <p className="mt-4 max-w-md text-sm leading-7 text-muted">
               {f.brandText}
             </p>
 
-            <div className="mt-5 grid max-w-md grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mt-5 flex flex-wrap gap-2">
               {technologies.map((tech) => (
                 <span
                   key={tech.name}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-2/45 px-3 py-2 text-xs font-medium text-faint backdrop-blur transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary-light"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-xs font-medium text-faint transition-colors hover:border-primary/35 hover:text-primary-light"
                 >
-                  <span className="text-base text-primary-light">
+                  <span className="text-sm text-primary-light">
                     {tech.icon}
                   </span>
                   {tech.name}
@@ -105,18 +110,17 @@ export async function Footer() {
 
           {/* Navigation */}
           <div className="lg:col-span-3">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-faint">
+            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-faint">
               {f.navigate}
             </h3>
 
-            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
+            <ul className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2.5">
               {mainNav.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+                    className="text-sm font-medium text-muted transition-colors hover:text-white"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary/50 opacity-0 shadow-[0_0_12px_rgba(79,124,255,0.7)] transition-opacity group-hover:opacity-100" />
                     {dict.nav[link.key]}
                   </Link>
                 </li>
@@ -124,17 +128,18 @@ export async function Footer() {
             </ul>
           </div>
 
+          {/* Services */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-faint">
+            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-faint">
               {f.services}
             </h3>
 
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-4 space-y-2.5">
               {serviceLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted transition-colors hover:text-foreground"
+                    className="text-sm font-medium text-muted transition-colors hover:text-white"
                   >
                     {dict.nav[link.key]}
                   </Link>
@@ -145,40 +150,29 @@ export async function Footer() {
 
           {/* Connect */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-faint">
+            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-faint">
               {f.connect}
             </h3>
 
-            {profile.socialLinks?.length ? (
-              <ul className="mt-4 grid gap-2.5">
-                {profile.socialLinks.map((social) => (
+            {socialLinks.length ? (
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {socialLinks.map((social) => (
                   <li key={social.url}>
                     <a
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex min-h-12 items-center gap-3 rounded-2xl border border-border bg-surface-2/45 px-3 py-2.5 text-sm text-muted backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10 hover:text-foreground hover:shadow-[0_14px_45px_rgba(79,124,255,0.12)]"
+                      aria-label={social.label}
+                      title={social.label}
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] text-base text-muted transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10 hover:text-primary-light hover:shadow-[0_12px_34px_rgba(79,124,255,0.14)]"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-background/60 text-base text-primary-light transition-colors group-hover:border-primary/40 group-hover:bg-primary/10">
-                        {getSocialIcon(social.label)}
-                      </span>
-
-                      <span className="min-w-0 flex-1 truncate font-medium">
-                        {social.label}
-                      </span>
-
-                      <span
-                        aria-hidden
-                        className="shrink-0 text-primary-light opacity-50 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100"
-                      >
-                        ↗
-                      </span>
+                      {getSocialIcon(social.label)}
                     </a>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
+              <p className="mt-4 max-w-xs text-sm leading-7 text-muted">
                 {f.connectEmpty}
               </p>
             )}
@@ -186,13 +180,13 @@ export async function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-sm text-faint sm:flex-row">
-          <p>
-            © {year} {profile.ownerName}. {f.rights}
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-sm text-faint sm:flex-row">
+          <p className="text-center sm:text-start">
+            © {year} {brandName}. {f.rights}
           </p>
 
-          <p className="inline-flex items-center gap-2 text-center sm:text-right">
-            <span className="h-1.5 w-1.5 rounded-full bg-linear-to-r from-primary to-accent shadow-[0_0_14px_rgba(166,107,255,0.8)]" />
+          <p className="inline-flex items-center gap-2 text-center sm:text-end">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_14px_rgba(79,124,255,0.85)]" />
             {f.built}
           </p>
         </div>

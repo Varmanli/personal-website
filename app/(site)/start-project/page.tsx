@@ -8,6 +8,7 @@ import {
   getPlannerSettings,
 } from "@/lib/planner/data";
 import { validValues } from "@/lib/planner/options";
+import { getProfile } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -35,11 +36,13 @@ export default async function StartProjectPage({
 }) {
   const { locale, dict } = await getI18n();
   const { service } = await searchParams;
-  const [options, rules, settings] = await Promise.all([
+  const [options, rules, settings, profile] = await Promise.all([
     getPublicPlannerOptions(locale),
     getEstimateRules(),
     getPlannerSettings(),
+    getProfile(locale),
   ]);
+  const brandName = profile.ownerName?.trim() || "Varmanli";
 
   const hinted = service ? SERVICE_TO_TYPE[service] : undefined;
   const initialProjectType =
@@ -48,10 +51,14 @@ export default async function StartProjectPage({
   return (
     <div className="flex flex-col">
       <PageHero
-        eyebrow={dict.planner.ui.recommendation}
+        eyebrow={dict.planner.hero.badge}
         title={dict.planner.hero.title}
         subtitle={dict.planner.hero.subtitle}
-      />
+      >
+        <p className="max-w-2xl text-sm leading-7 text-faint">
+          {dict.planner.hero.supporting}
+        </p>
+      </PageHero>
       <main className="relative overflow-hidden">
         <div
           aria-hidden
@@ -63,6 +70,7 @@ export default async function StartProjectPage({
             rules={rules}
             settings={settings}
             initialProjectType={initialProjectType}
+            brandName={brandName}
           />
         </Container>
       </main>

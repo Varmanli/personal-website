@@ -56,7 +56,6 @@ export async function updateSettings(
     skillsEn,
     aboutIntroFa,
     aboutIntroEn,
-    email: str(form, "email") ?? null,
     avatarUrl: str(form, "avatarUrl") ?? null,
     resumeUrl: str(form, "resumeUrl") ?? null,
     logoUrl: str(form, "logoUrl") ?? null,

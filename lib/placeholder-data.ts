@@ -1,7 +1,7 @@
 import type {
+  ProjectChallenge,
   Project,
   Service,
-  PortfolioItem,
   ContactMessage,
   SiteSettings,
 } from "@/types";
@@ -37,14 +37,14 @@ const projectL10nNull = {
   solutionEn: null,
   outcomeFa: null,
   outcomeEn: null,
-  homeMetricsFa: [] as { label: string; value: string }[],
-  homeMetricsEn: [] as { label: string; value: string }[],
+  homeMetricsFa: [] as { label: string; value: string; description?: string }[],
+  homeMetricsEn: [] as { label: string; value: string; description?: string }[],
   technicalHighlightsFa: [] as string[],
   technicalHighlightsEn: [] as string[],
   tagsFa: [] as string[],
   tagsEn: [] as string[],
-  challengesFa: [] as string[],
-  challengesEn: [] as string[],
+  challengesFa: [] as ProjectChallenge[],
+  challengesEn: [] as ProjectChallenge[],
   coverImageUrl: null,
   galleryImages: [] as string[],
 };
@@ -54,7 +54,7 @@ const projectHomeDefaults = {
   previewImageUrl: null as string | null,
   isFeaturedOnHome: false,
   homeOrder: 0,
-  homeMetrics: [] as { label: string; value: string }[],
+  homeMetrics: [] as { label: string; value: string; description?: string }[],
   technicalHighlights: [] as string[],
 };
 
@@ -105,16 +105,6 @@ const serviceL10nNull = {
   ctaLabelEn: null,
 };
 
-const portfolioL10nNull = {
-  titleFa: null,
-  titleEn: null,
-  descriptionFa: null,
-  descriptionEn: null,
-  coverImageUrl: null,
-  galleryImages: [] as string[],
-  technologies: [] as string[],
-};
-
 const profileL10nNull = {
   ownerNameFa: null,
   ownerNameEn: null,
@@ -129,12 +119,19 @@ const profileL10nNull = {
   aboutIntro: null,
   aboutIntroFa: null,
   aboutIntroEn: null,
+  aboutPageContent: null,
+  aboutPageContentFa: null,
+  aboutPageContentEn: null,
+  contactPageContent: null,
+  contactPageContentFa: null,
+  contactPageContentEn: null,
+  contactSettings: null,
 };
 
 export const placeholderProfile: SiteSettings = {
   ...profileL10nNull,
   id: 1,
-  ownerName: "Your Name",
+  ownerName: "Varmanli",
   headline: "Full-stack developer building commercial web apps",
   bio: "I'm a full-stack developer who helps founders and small teams turn ideas into fast, reliable web products. From marketing sites to data-heavy dashboards, I handle design, development, and deployment — so you get a finished product, not just code.",
   avatarUrl: null,
@@ -142,8 +139,8 @@ export const placeholderProfile: SiteSettings = {
   logoUrl: null,
   faviconUrl: null,
   heroImageUrl: null,
-  email: "hello@example.com",
-  location: "Remote · Worldwide",
+  email: null,
+  location: "Remote / Worldwide",
   skills: [
     "TypeScript",
     "React",
@@ -153,11 +150,7 @@ export const placeholderProfile: SiteSettings = {
     "Tailwind CSS",
     "Drizzle ORM",
   ],
-  socialLinks: [
-    { label: "GitHub", url: "https://github.com/" },
-    { label: "LinkedIn", url: "https://linkedin.com/" },
-    { label: "X / Twitter", url: "https://x.com/" },
-  ],
+  socialLinks: [],
   createdAt: now,
   updatedAt: now,
 };
@@ -235,16 +228,16 @@ const baseProjects: BaseProject[] = [
   },
   {
     id: 2,
-    title: "Developer portfolio and brand site",
+    title: "Developer brand site and project showcase",
     slug: "developer-brand-website",
     shortDescription:
-      "A multilingual website for showcasing services, projects, portfolio samples, and inbound project requests.",
+      "A multilingual website for showcasing services, projects, case studies, and inbound project requests.",
     description:
       "A premium personal brand website that combines multilingual content, admin-managed projects and services, and a clear conversion path for collaboration requests.",
     thumbnailUrl: null,
     media: [],
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Drizzle ORM", "PostgreSQL"],
-    tags: ["Brand site", "Portfolio", "Full-stack"],
+    tags: ["Brand site", "Case studies", "Full-stack"],
     role: "Full-stack developer",
     client: "Personal brand",
     year: "2024",
@@ -565,6 +558,9 @@ export const placeholderMessages: ContactMessage[] = [
     name: "Sara Lindqvist",
     email: "sara@brightlabs.io",
     subject: "New SaaS dashboard project",
+    projectType: "Dashboard",
+    budgetRange: null,
+    timeline: "1 to 2 months",
     message:
       "Hi! We're a small SaaS team looking to build an analytics dashboard. Do you have availability next month?",
     status: "new",
@@ -576,6 +572,9 @@ export const placeholderMessages: ContactMessage[] = [
     name: "Marcus Bell",
     email: "marcus@foundry.co",
     subject: "Landing page for product launch",
+    projectType: "Website",
+    budgetRange: "Need estimate",
+    timeline: "Urgent",
     message:
       "We need a high-converting landing page for a launch in 3 weeks. What would that cost?",
     status: "read",
@@ -587,6 +586,9 @@ export const placeholderMessages: ContactMessage[] = [
     name: "Aisha Khan",
     email: "aisha@retailco.com",
     subject: "E-commerce admin panel",
+    projectType: "Admin panel",
+    budgetRange: null,
+    timeline: "Flexible",
     message:
       "Following up on our call — could you send over a rough proposal for the admin panel?",
     status: "new",
@@ -594,89 +596,3 @@ export const placeholderMessages: ContactMessage[] = [
     updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 50),
   },
 ];
-
-const basePortfolio: Omit<PortfolioItem, keyof typeof portfolioL10nNull>[] = [
-  {
-    id: 1,
-    title: "Brand Landing Page",
-    slug: "brand-landing-page",
-    description: "Marketing site for a product launch.",
-    imageUrl: null,
-    type: "commercial",
-    externalUrl: "https://example.com",
-    status: "published",
-    isFeatured: true,
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 2,
-    title: "SaaS Dashboard UI",
-    slug: "saas-dashboard-ui",
-    description: "Analytics dashboard interface and design system.",
-    imageUrl: null,
-    type: "commercial",
-    externalUrl: null,
-    status: "published",
-    isFeatured: true,
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 3,
-    title: "Open-Source CLI",
-    slug: "open-source-cli",
-    description: "A developer tool published to npm.",
-    imageUrl: null,
-    type: "personal",
-    externalUrl: "https://github.com/",
-    status: "published",
-    isFeatured: false,
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 4,
-    title: "Client Microsite",
-    slug: "client-microsite",
-    description: "Campaign microsite for a freelance client.",
-    imageUrl: null,
-    type: "freelance",
-    externalUrl: null,
-    status: "published",
-    isFeatured: false,
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 5,
-    title: "Booking Flow Redesign",
-    slug: "booking-flow-redesign",
-    description: "UX redesign of an appointment booking flow.",
-    imageUrl: null,
-    type: "freelance",
-    externalUrl: null,
-    status: "published",
-    isFeatured: false,
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 6,
-    title: "Portfolio Template",
-    slug: "portfolio-template",
-    description: "An open-source personal portfolio starter.",
-    imageUrl: null,
-    type: "personal",
-    externalUrl: "https://github.com/",
-    status: "published",
-    isFeatured: false,
-    createdAt: now,
-    updatedAt: now,
-  },
-];
-
-export const placeholderPortfolio: PortfolioItem[] = basePortfolio.map((p) => ({
-  ...portfolioL10nNull,
-  ...p,
-}));

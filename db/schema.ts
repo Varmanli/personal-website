@@ -26,6 +26,162 @@ export interface EstimateBreakdownItem {
 export interface ProjectMetric {
   label: string;
   value: string;
+  description?: string;
+}
+
+/** Structured project challenge shown in admin and case-study pages. */
+export interface ProjectChallenge {
+  title: string;
+  description: string;
+}
+
+/** Shared CTA link used in structured marketing content. */
+export interface CtaLink {
+  label: string;
+  href: string;
+}
+
+export interface AboutHeroContent {
+  badge: string;
+  name: string;
+  headline?: string;
+  subtitle: string;
+  description: string;
+  imageUrl?: string;
+  statusBadge?: string;
+  chips: string[];
+  primaryCta: CtaLink;
+  secondaryCta: CtaLink;
+}
+
+export interface AboutStatItem {
+  label: string;
+  value: string;
+  description?: string;
+  order: number;
+}
+
+export interface AboutExperienceItem {
+  dateRange: string;
+  title: string;
+  role?: string;
+  description: string;
+  tags: string[];
+  order: number;
+}
+
+export interface AboutTechnologyGroup {
+  title: string;
+  description: string;
+  technologies: string[];
+  order: number;
+}
+
+export interface AboutCardItem {
+  title: string;
+  description: string;
+  icon?: string;
+  order: number;
+}
+
+export interface AboutExperienceSection {
+  badge: string;
+  title: string;
+  subtitle: string;
+  items: AboutExperienceItem[];
+}
+
+export interface AboutTechnologiesSection {
+  badge: string;
+  title: string;
+  subtitle: string;
+  groups: AboutTechnologyGroup[];
+}
+
+export interface AboutCardSection {
+  badge: string;
+  title: string;
+  subtitle: string;
+  cards: AboutCardItem[];
+}
+
+export interface AboutCtaSection {
+  badge: string;
+  title: string;
+  subtitle: string;
+  primaryCta: CtaLink;
+  secondaryCta: CtaLink;
+}
+
+export interface AboutPageContent {
+  hero: AboutHeroContent;
+  stats: AboutStatItem[];
+  experienceSection: AboutExperienceSection;
+  technologiesSection: AboutTechnologiesSection;
+  philosophySection: AboutCardSection;
+  helpSection: AboutCardSection;
+  cta: AboutCtaSection;
+}
+
+export interface ContactHeroContent {
+  badge: string;
+  title: string;
+  subtitle: string;
+  supportingText: string;
+}
+
+export interface ContactInfoItem {
+  title: string;
+  description: string;
+  icon?: string;
+  order: number;
+}
+
+export interface ContactProcessStep {
+  title: string;
+  description: string;
+  icon?: string;
+  order: number;
+}
+
+export interface ContactInfoCardContent {
+  title: string;
+  items: ContactInfoItem[];
+  primaryCta: CtaLink;
+  secondaryCta: CtaLink;
+}
+
+export interface ContactProcessSection {
+  badge: string;
+  title: string;
+  subtitle: string;
+  steps: ContactProcessStep[];
+}
+
+export interface ContactCtaSection {
+  title: string;
+  subtitle: string;
+  primaryCta: CtaLink;
+  secondaryCta: CtaLink;
+}
+
+export interface ContactPageContent {
+  hero: ContactHeroContent;
+  infoCard: ContactInfoCardContent;
+  processSection: ContactProcessSection;
+  cta: ContactCtaSection;
+}
+
+export interface ContactSettings {
+  phone?: string;
+  telegram?: string;
+  whatsapp?: string;
+  github?: string;
+  linkedin?: string;
+  instagram?: string;
+  twitter?: string;
+  dribbble?: string;
+  behance?: string;
 }
 
 /**
@@ -42,12 +198,6 @@ export const messageStatusEnum = pgEnum("message_status", [
   "new",
   "read",
   "archived",
-]);
-
-export const portfolioTypeEnum = pgEnum("portfolio_type", [
-  "commercial",
-  "personal",
-  "freelance",
 ]);
 
 /**
@@ -114,10 +264,10 @@ export const projects = pgTable("projects", {
     .default([]),
   challengeFa: text("challenge_fa"),
   challengeEn: text("challenge_en"),
-  // Multiple challenges (localized). Nullable/defaulted; the legacy single
-  // challenge* columns are kept and mirrored for backward compatibility.
-  challengesFa: jsonb("challenges_fa").$type<string[]>().default([]),
-  challengesEn: jsonb("challenges_en").$type<string[]>().default([]),
+  // Multiple challenges (localized). Legacy single challenge* columns remain
+  // for backward compatibility with older rows.
+  challengesFa: jsonb("challenges_fa").$type<ProjectChallenge[]>().default([]),
+  challengesEn: jsonb("challenges_en").$type<ProjectChallenge[]>().default([]),
   solutionFa: text("solution_fa"),
   solutionEn: text("solution_en"),
   outcomeFa: text("outcome_fa"),
@@ -176,39 +326,6 @@ export const services = pgTable("services", {
 });
 
 /**
- * Portfolio items
- * Lighter-weight gallery/work-sample entries, filterable by type.
- */
-export const portfolioItems = pgTable("portfolio_items", {
-  id: serial("id").primaryKey(),
-  title: varchar("title", { length: 200 }).notNull(),
-  slug: varchar("slug", { length: 220 }).notNull().unique(),
-  description: text("description"),
-  imageUrl: text("image_url"),
-  // Cover image + ordered gallery (non-destructive; `imageUrl` is the fallback).
-  coverImageUrl: text("cover_image_url"),
-  galleryImages: jsonb("gallery_images").$type<string[]>().default([]),
-  // Tools/technologies used (shared, same format as projects.technologies).
-  technologies: jsonb("technologies").$type<string[]>().default([]),
-  type: portfolioTypeEnum("type").notNull().default("personal"),
-  // Localized content (Persian + English).
-  titleFa: varchar("title_fa", { length: 200 }),
-  titleEn: varchar("title_en", { length: 200 }),
-  descriptionFa: text("description_fa"),
-  descriptionEn: text("description_en"),
-  // Optional link back to a full project or external work.
-  externalUrl: text("external_url"),
-  status: contentStatusEnum("status").notNull().default("draft"),
-  isFeatured: boolean("is_featured").notNull().default(false),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
-
-/**
  * Contact messages
  * Submissions from the public contact form, managed in the admin inbox.
  */
@@ -217,6 +334,9 @@ export const contactMessages = pgTable("contact_messages", {
   name: varchar("name", { length: 200 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   subject: varchar("subject", { length: 200 }),
+  projectType: varchar("project_type", { length: 80 }),
+  budgetRange: varchar("budget_range", { length: 120 }),
+  timeline: varchar("timeline", { length: 80 }),
   message: text("message").notNull(),
   status: messageStatusEnum("status").notNull().default("new"),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -226,6 +346,31 @@ export const contactMessages = pgTable("contact_messages", {
     .notNull()
     .defaultNow(),
 });
+
+/**
+ * Page views / visitor analytics
+ *
+ * Privacy-friendly, lightweight tracking. One row per recorded visit. The
+ * `visitorId` is an opaque random id stored in an httpOnly cookie (no personal
+ * data). Unique visitors = COUNT(DISTINCT visitor_id). Indexed on visitor_id
+ * and created_at so the dashboard aggregates stay cheap.
+ */
+export const pageViews = pgTable(
+  "page_views",
+  {
+    id: serial("id").primaryKey(),
+    visitorId: varchar("visitor_id", { length: 64 }).notNull(),
+    path: varchar("path", { length: 512 }).notNull(),
+    referrer: varchar("referrer", { length: 512 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    visitorIdx: index("page_views_visitor_idx").on(t.visitorId),
+    createdAtIdx: index("page_views_created_at_idx").on(t.createdAt),
+  }),
+);
 
 /**
  * Site settings / profile
@@ -262,6 +407,16 @@ export const siteSettings = pgTable("site_settings", {
   aboutIntro: text("about_intro"),
   aboutIntroFa: text("about_intro_fa"),
   aboutIntroEn: text("about_intro_en"),
+  // Structured About-page content. Localized JSON follows the same fallback
+  // strategy as the rest of the profile fields: active locale → other locale
+  // → base shared content.
+  aboutPageContent: jsonb("about_page_content").$type<AboutPageContent | null>(),
+  aboutPageContentFa: jsonb("about_page_content_fa").$type<AboutPageContent | null>(),
+  aboutPageContentEn: jsonb("about_page_content_en").$type<AboutPageContent | null>(),
+  contactPageContent: jsonb("contact_page_content").$type<ContactPageContent | null>(),
+  contactPageContentFa: jsonb("contact_page_content_fa").$type<ContactPageContent | null>(),
+  contactPageContentEn: jsonb("contact_page_content_en").$type<ContactPageContent | null>(),
+  contactSettings: jsonb("contact_settings").$type<ContactSettings | null>(),
   // Social links as { label, url } pairs.
   socialLinks: jsonb("social_links")
     .$type<{ label: string; url: string }[]>()
@@ -471,14 +626,14 @@ export type NewPlannerSettings = typeof plannerSettings.$inferInsert;
 export type Service = typeof services.$inferSelect;
 export type NewService = typeof services.$inferInsert;
 
-export type PortfolioItem = typeof portfolioItems.$inferSelect;
-export type NewPortfolioItem = typeof portfolioItems.$inferInsert;
-
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type NewContactMessage = typeof contactMessages.$inferInsert;
 
 export type SiteSettings = typeof siteSettings.$inferSelect;
 export type NewSiteSettings = typeof siteSettings.$inferInsert;
+
+export type PageView = typeof pageViews.$inferSelect;
+export type NewPageView = typeof pageViews.$inferInsert;
 
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type NewAdminUser = typeof adminUsers.$inferInsert;

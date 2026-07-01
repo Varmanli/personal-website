@@ -17,10 +17,6 @@ export const initialActionState: ActionState = {};
 export const STATUS_OPTIONS = ["draft", "published", "archived"] as const;
 export type StatusOption = (typeof STATUS_OPTIONS)[number];
 
-/** Portfolio type/category options. */
-export const PORTFOLIO_TYPES = ["commercial", "personal", "freelance"] as const;
-export type PortfolioType = (typeof PORTFOLIO_TYPES)[number];
-
 /** Read a trimmed string field; returns undefined when empty. */
 export function str(form: FormData, key: string): string | undefined {
   const value = form.get(key);

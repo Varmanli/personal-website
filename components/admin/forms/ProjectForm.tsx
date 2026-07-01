@@ -17,6 +17,7 @@ import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { GalleryUploadField } from "@/components/admin/forms/GalleryUploadField";
 import { TechnologyPicker } from "@/components/admin/forms/TechnologyPicker";
 import { StringListField } from "@/components/admin/forms/StringListField";
+import { ChallengeListField } from "@/components/admin/forms/ChallengeListField";
 import { MetricListField } from "@/components/admin/forms/MetricListField";
 import { Tabs } from "@/components/admin/ui/Tabs";
 import { Collapsible } from "@/components/admin/ui/Collapsible";
@@ -57,9 +58,12 @@ const L = {
     addHighlight: "افزودن نکته",
     tags: "برچسب‌ها",
     challenges: "چالش‌های پروژه",
-    solution: "راه‌حل",
     outcome: "نتیجه",
-    challengePh: "مثلاً: ساخت پنل مدیریت قابل توسعه",
+    challengeTitle: "عنوان چالش",
+    challengeDescription: "توضیح چالش",
+    challengeTitlePh: "مثلاً: مهاجرت داده‌های قدیمی",
+    challengeDescriptionPh:
+      "مثلاً: انتقال کاربران، سفارش‌ها و فایل‌ها بدون اختلال در تجربه کاربری و سئو",
     addChallenge: "افزودن چالش",
   },
   en: {
@@ -78,9 +82,12 @@ const L = {
     addHighlight: "Add highlight",
     tags: "Tags",
     challenges: "Project challenges",
-    solution: "Solution",
     outcome: "Outcome",
-    challengePh: "Example: Building a scalable admin dashboard",
+    challengeTitle: "Challenge Title",
+    challengeDescription: "Challenge Description",
+    challengeTitlePh: "Example: Legacy data migration",
+    challengeDescriptionPh:
+      "Example: Migrating users, orders, and files without disrupting SEO or existing flows.",
     addChallenge: "Add challenge",
   },
 };
@@ -113,8 +120,18 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
         <TextInput name="roleFa" label={L.fa.role} dir="rtl" defaultValue={initial?.roleFa ?? ""} />
       </FormGrid>
       <TextArea name="tagsFa" label={L.fa.tags} dir="rtl" rows={2} hint={f.listHint} defaultValue={(initial?.tagsFa ?? []).join("\n")} />
-      <StringListField name="challengesFa" label={L.fa.challenges} dir="rtl" defaultValue={challengesFaDefault} placeholder={L.fa.challengePh} addLabel={L.fa.addChallenge} />
-      <TextArea name="solutionFa" label={L.fa.solution} dir="rtl" defaultValue={initial?.solutionFa ?? ""} />
+      <ChallengeListField
+        name="challengesFa"
+        label={L.fa.challenges}
+        dir="rtl"
+        defaultValue={challengesFaDefault}
+        titleLabel={L.fa.challengeTitle}
+        descriptionLabel={L.fa.challengeDescription}
+        titlePlaceholder={L.fa.challengeTitlePh}
+        descriptionPlaceholder={L.fa.challengeDescriptionPh}
+        addLabel={L.fa.addChallenge}
+        error={fieldError("challengesFa")}
+      />
       <TextArea name="outcomeFa" label={L.fa.outcome} dir="rtl" defaultValue={initial?.outcomeFa ?? ""} />
     </div>
   );
@@ -137,7 +154,7 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
         label={L.fa.highlights}
         dir="rtl"
         defaultValue={initial?.technicalHighlightsFa}
-        placeholder={L.fa.challengePh}
+        placeholder={L.fa.challengeTitlePh}
         addLabel={L.fa.addHighlight}
       />
     </div>
@@ -153,8 +170,18 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
         <TextInput name="roleEn" label={L.en.role} dir="ltr" defaultValue={initial?.roleEn ?? ""} />
       </FormGrid>
       <TextArea name="tagsEn" label={L.en.tags} dir="ltr" rows={2} hint={f.listHint} defaultValue={(initial?.tagsEn ?? []).join("\n")} />
-      <StringListField name="challengesEn" label={L.en.challenges} dir="ltr" defaultValue={challengesEnDefault} placeholder={L.en.challengePh} addLabel={L.en.addChallenge} />
-      <TextArea name="solutionEn" label={L.en.solution} dir="ltr" defaultValue={initial?.solutionEn ?? ""} />
+      <ChallengeListField
+        name="challengesEn"
+        label={L.en.challenges}
+        dir="ltr"
+        defaultValue={challengesEnDefault}
+        titleLabel={L.en.challengeTitle}
+        descriptionLabel={L.en.challengeDescription}
+        titlePlaceholder={L.en.challengeTitlePh}
+        descriptionPlaceholder={L.en.challengeDescriptionPh}
+        addLabel={L.en.addChallenge}
+        error={fieldError("challengesEn")}
+      />
       <TextArea name="outcomeEn" label={L.en.outcome} dir="ltr" defaultValue={initial?.outcomeEn ?? ""} />
     </div>
   );
@@ -177,7 +204,7 @@ export function ProjectForm({ action, initial, mode }: ProjectFormProps) {
         label={L.en.highlights}
         dir="ltr"
         defaultValue={initial?.technicalHighlightsEn}
-        placeholder={L.en.challengePh}
+        placeholder={L.en.challengeTitlePh}
         addLabel={L.en.addHighlight}
       />
     </div>

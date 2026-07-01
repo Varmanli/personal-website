@@ -3,21 +3,18 @@ import { db } from "@/db";
 import {
   projects,
   services,
-  portfolioItems,
   contactMessages,
   siteSettings,
 } from "@/db/schema";
 import type {
   Project,
   Service,
-  PortfolioItem,
   ContactMessage,
   SiteSettings,
 } from "@/types";
 import {
   placeholderProjects,
   placeholderServices,
-  placeholderPortfolio,
   placeholderMessages,
   placeholderProfile,
 } from "@/lib/placeholder-data";
@@ -25,10 +22,18 @@ import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import {
   localizeProject,
   localizeService,
-  localizePortfolioItem,
   localizeProfile,
   type LocalizedProject,
 } from "@/lib/i18n/localize";
+import {
+  getFallbackAboutPageContent,
+  normalizeAboutPageContent,
+} from "@/lib/about-page";
+import {
+  getFallbackContactPageContent,
+  normalizeContactPageContent,
+} from "@/lib/contact-page";
+import type { AboutPageContent, ContactPageContent } from "@/types";
 
 /**
  * Data-access layer.
@@ -208,54 +213,6 @@ export function getServiceById(id: number): Promise<Service | null> {
   );
 }
 
-/* --------------------------------- Portfolio ----------------------------------- */
-
-/** All published portfolio items, featured first — localized. */
-export async function getPublishedPortfolio(
-  locale: Locale = defaultLocale,
-): Promise<PortfolioItem[]> {
-  const rows = await query(
-    "portfolio",
-    () =>
-      db
-        .select()
-        .from(portfolioItems)
-        .where(eq(portfolioItems.status, "published"))
-        .orderBy(desc(portfolioItems.isFeatured), desc(portfolioItems.createdAt)),
-    placeholderPortfolio,
-  );
-  return rows.map((p) => localizePortfolioItem(p, locale));
-}
-
-/** All portfolio items regardless of status (admin). */
-export function getAllPortfolio(): Promise<PortfolioItem[]> {
-  return query(
-    "portfolio",
-    () =>
-      db
-        .select()
-        .from(portfolioItems)
-        .orderBy(desc(portfolioItems.createdAt)),
-    placeholderPortfolio,
-  );
-}
-
-/** A single portfolio item by id, or null when not found (admin edit). */
-export function getPortfolioItemById(id: number): Promise<PortfolioItem | null> {
-  return query(
-    "portfolio",
-    async () => {
-      const [row] = await db
-        .select()
-        .from(portfolioItems)
-        .where(eq(portfolioItems.id, id))
-        .limit(1);
-      return row ?? null;
-    },
-    placeholderPortfolio.find((p) => p.id === id) ?? null,
-  );
-}
-
 /* ---------------------------------- Messages ----------------------------------- */
 
 /** All contact messages, newest first (admin). */
@@ -288,6 +245,27 @@ export async function getProfile(
   return localizeProfile(row, locale);
 }
 
+/** Localized About-page content with DB-backed overrides and code fallback. */
+export async function getAboutPageContent(
+  locale: Locale = defaultLocale,
+): Promise<AboutPageContent> {
+  const profile = await getProfile(locale);
+  return (
+    profile.aboutPageContent && normalizeAboutPageContent(profile.aboutPageContent)
+  ) ?? getFallbackAboutPageContent(locale, profile);
+}
+
+/** Localized Contact-page content with DB-backed overrides and code fallback. */
+export async function getContactPageContent(
+  locale: Locale = defaultLocale,
+): Promise<ContactPageContent> {
+  const profile = await getProfile(locale);
+  return (
+    profile.contactPageContent &&
+    normalizeContactPageContent(profile.contactPageContent)
+  ) ?? getFallbackContactPageContent(locale, profile);
+}
+
 /** Raw profile/site settings for the admin settings form (no localization). */
 export function getRawProfile(): Promise<SiteSettings | null> {
   return query(
@@ -298,4 +276,49 @@ export function getRawProfile(): Promise<SiteSettings | null> {
     },
     null,
   );
+}
+
+/** Raw localized About content for the admin form, falling back to defaults. */
+export async function getRawAboutPageContent(
+  locale: Locale = defaultLocale,
+): Promise<AboutPageContent> {
+  const settings = await getRawProfile();
+  const localized =
+    locale === "fa"
+      ? settings?.aboutPageContentFa ??
+        settings?.aboutPageContentEn ??
+        settings?.aboutPageContent ??
+        null
+      : settings?.aboutPageContentEn ??
+        settings?.aboutPageContentFa ??
+        settings?.aboutPageContent ??
+        null;
+
+  return localized
+    ? normalizeAboutPageContent(localized)
+    : getFallbackAboutPageContent(locale, settings ? localizeProfile(settings, locale) : null);
+}
+
+/** Raw localized Contact content for the admin form, falling back to defaults. */
+export async function getRawContactPageContent(
+  locale: Locale = defaultLocale,
+): Promise<ContactPageContent> {
+  const settings = await getRawProfile();
+  const localized =
+    locale === "fa"
+      ? settings?.contactPageContentFa ??
+        settings?.contactPageContentEn ??
+        settings?.contactPageContent ??
+        null
+      : settings?.contactPageContentEn ??
+        settings?.contactPageContentFa ??
+        settings?.contactPageContent ??
+        null;
+
+  return localized
+    ? normalizeContactPageContent(localized)
+    : getFallbackContactPageContent(
+        locale,
+        settings ? localizeProfile(settings, locale) : null,
+      );
 }

@@ -64,48 +64,54 @@ export function getTestimonials(locale: Locale): Testimonial[] {
 const experienceByLocale: Record<Locale, TimelineEntry[]> = {
   fa: [
     {
-      period: "۱۴۰۱ — اکنون",
-      role: "توسعه‌دهنده‌ی فول‌استک فریلنسر",
+      period: "۱۴۰۳ تا اکنون",
+      role: "توسعه‌دهنده فول‌استک",
       organization: "مستقل",
       description:
-        "طراحی و ساخت اپلیکیشن‌های وب تجاری برای استارتاپ‌ها و کسب‌وکارهای کوچک، به‌صورت سرتاسری.",
+        "طراحی و توسعه وب‌سایت‌ها، وب‌اپلیکیشن‌ها و پنل‌های مدیریتی برای پروژه‌های واقعی با تمرکز روی کیفیت، سرعت و توسعه‌پذیری.",
+      tags: ["Next.js", "NestJS", "PostgreSQL", "Docker"],
     },
     {
-      period: "۱۳۹۹ — ۱۴۰۱",
-      role: "مهندس ارشد فرانت‌اند",
-      organization: "شرکت فناوری",
+      period: "۱۴۰۳ تا اکنون",
+      role: "توسعه پروژه نگاره",
+      organization: "مارکت‌پلیس فایل هنری",
       description:
-        "هدایت فرانت‌اند یک پلتفرم SaaS سازمانی با تمرکز بر کارایی، سیستم طراحی و تجربه‌ی توسعه‌دهنده.",
+        "پیاده‌سازی و بهبود بخش‌های اصلی یک مارکت‌پلیس فایل هنری شامل پنل مدیریت، پنل هنرمندان، پرداخت، اشتراک، دانلود محدود و ساختار مالی.",
+      tags: ["Marketplace", "Admin Panel", "Payments", "SEO"],
     },
     {
-      period: "۱۳۹۷ — ۱۳۹۹",
-      role: "توسعه‌دهنده‌ی فول‌استک",
-      organization: "آژانس دیجیتال",
+      period: "۱۴۰۲ تا ۱۴۰۳",
+      role: "طراحی و توسعه محصولات دیجیتال",
+      organization: "پروژه‌های وب و تعاملی",
       description:
-        "ساخت وب‌سایت‌ها و وب‌اپ‌های مشتریان در صنایع گوناگون با استک‌های مدرن جاوااسکریپت.",
+        "ساخت رابط‌های کاربری، داشبوردها و تجربه‌های تعاملی برای وب‌سایت‌ها و محصولات دیجیتال.",
+      tags: ["React", "UI", "Dashboard"],
     },
   ],
   en: [
     {
-      period: "2022 — Present",
-      role: "Freelance Full-Stack Developer",
-      organization: "Self-employed",
-      description:
-        "Designing and building commercial web applications for startups and small businesses, end to end.",
-    },
-    {
-      period: "2020 — 2022",
-      role: "Senior Frontend Engineer",
-      organization: "Tech Company",
-      description:
-        "Led the front-end for a B2B SaaS platform, focusing on performance, design systems, and developer experience.",
-    },
-    {
-      period: "2018 — 2020",
+      period: "2024 — Present",
       role: "Full-Stack Developer",
-      organization: "Digital Agency",
+      organization: "Independent",
       description:
-        "Shipped client websites and web apps across a range of industries using modern JavaScript stacks.",
+        "Designing and developing websites, web applications, and admin panels for real projects with a focus on quality, speed, and maintainability.",
+      tags: ["Next.js", "NestJS", "PostgreSQL", "Docker"],
+    },
+    {
+      period: "2024 — Present",
+      role: "Negareh product development",
+      organization: "Art file marketplace",
+      description:
+        "Built and improved core parts of an art-file marketplace including the admin panel, artist panel, payments, subscriptions, limited downloads, and financial flows.",
+      tags: ["Marketplace", "Admin Panel", "Payments", "SEO"],
+    },
+    {
+      period: "2023 — 2024",
+      role: "Digital product design and development",
+      organization: "Web and interactive products",
+      description:
+        "Created interfaces, dashboards, and interactive web experiences for websites and digital products.",
+      tags: ["React", "UI", "Dashboard"],
     },
   ],
 };

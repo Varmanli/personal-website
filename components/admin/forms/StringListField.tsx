@@ -9,6 +9,8 @@ interface StringListFieldProps {
   name: string;
   label: string;
   defaultValue?: string[] | string | null;
+  value?: string[];
+  onChange?: (items: string[]) => void;
   placeholder?: string;
   hint?: string;
   error?: string;
@@ -35,16 +37,25 @@ export function StringListField({
   name,
   label,
   defaultValue,
+  value,
+  onChange,
   placeholder,
   hint,
   error,
   dir,
   addLabel = "+",
 }: StringListFieldProps) {
-  const [items, setItems] = useState<string[]>(toArray(defaultValue));
+  const [internalItems, setInternalItems] = useState<string[]>(toArray(defaultValue));
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const items = value ?? internalItems;
 
   const serialized = items.map((s) => s.trim()).filter(Boolean).join("\n");
+
+  function setItems(next: string[] | ((prev: string[]) => string[])) {
+    const resolved = typeof next === "function" ? next(items) : next;
+    if (value === undefined) setInternalItems(resolved);
+    onChange?.(resolved);
+  }
 
   function update(i: number, value: string) {
     setItems((prev) => prev.map((item, idx) => (idx === i ? value : item)));

@@ -1,8 +1,8 @@
 import type { Locale } from "@/lib/i18n/config";
 import type {
+  ProjectChallenge,
   Project,
   Service,
-  PortfolioItem,
   SiteSettings,
 } from "@/types";
 
@@ -38,17 +38,29 @@ function pickRequired(
 }
 
 /** Pick an array field: first non-empty among active → other → base. */
-function pickArr(
+function pickArr<T>(
   locale: Locale,
-  fa: string[] | null | undefined,
-  en: string[] | null | undefined,
-  base: string[] | null | undefined,
-): string[] {
+  fa: T[] | null | undefined,
+  en: T[] | null | undefined,
+  base: T[] | null | undefined,
+): T[] {
   const primary = locale === "fa" ? fa : en;
   const secondary = locale === "fa" ? en : fa;
   if (primary && primary.length) return primary;
   if (secondary && secondary.length) return secondary;
   return base ?? [];
+}
+
+/** Pick any object field: active locale → other locale → base. */
+function pickObj<T>(
+  locale: Locale,
+  fa: T | null | undefined,
+  en: T | null | undefined,
+  base: T | null | undefined,
+): T | null {
+  const primary = locale === "fa" ? fa : en;
+  const secondary = locale === "fa" ? en : fa;
+  return primary ?? secondary ?? base ?? null;
 }
 
 /** Like pickArr but for arrays of objects. */
@@ -65,8 +77,69 @@ function pickObjArr<T>(
   return base ?? [];
 }
 
+function normalizeChallengeItems(
+  locale: Locale,
+  value: unknown,
+): ProjectChallenge[] {
+  if (!Array.isArray(value)) return [];
+
+  const normalized: ProjectChallenge[] = [];
+  for (const [index, item] of value.entries()) {
+    if (typeof item === "string") {
+      const description = item.trim();
+      if (!description) continue;
+      normalized.push({
+        title: locale === "fa" ? `چالش ${index + 1}` : `Challenge ${index + 1}`,
+        description,
+      });
+      continue;
+    }
+
+    if (!item || typeof item !== "object") continue;
+    const title =
+      typeof (item as { title?: unknown }).title === "string"
+        ? (item as { title: string }).title.trim()
+        : "";
+    const description =
+      typeof (item as { description?: unknown }).description === "string"
+        ? (item as { description: string }).description.trim()
+        : "";
+
+    if (!title && !description) continue;
+    normalized.push({
+      title: title || (locale === "fa" ? `چالش ${index + 1}` : `Challenge ${index + 1}`),
+      description,
+    });
+  }
+
+  return normalized.filter((item) => item.description);
+}
+
+function parseLegacyChallenges(
+  locale: Locale,
+  value: string | null | undefined,
+): ProjectChallenge[] {
+  if (!value?.trim()) return [];
+
+  return value
+    .split(/\n{2,}/)
+    .map((chunk) => chunk.trim())
+    .filter(Boolean)
+    .map((chunk, index) => {
+      const [firstLine, ...rest] = chunk.split("\n").map((line) => line.trim());
+      const description = rest.join(" ").trim();
+      return {
+        title:
+          firstLine ||
+          (locale === "fa" ? `چالش ${index + 1}` : `Challenge ${index + 1}`),
+        description: description || firstLine,
+      };
+    })
+    .filter((item) => item.description);
+}
+
 /** A project with the localized, normalized `challenges` array attached. */
-export type LocalizedProject = Project & { challenges: string[] };
+export type LocalizedProject = Project & { challenges: ProjectChallenge[] };
 
 export function localizeProject(
   project: Project,
@@ -86,11 +159,10 @@ export function localizeProject(
     project.challengeEn,
     project.challenge,
   );
-  const challenges = challengeArr.length
-    ? challengeArr
-    : legacyChallenge
-      ? [legacyChallenge]
-      : [];
+  const normalizedChallenges = normalizeChallengeItems(locale, challengeArr);
+  const challenges = normalizedChallenges.length
+    ? normalizedChallenges
+    : parseLegacyChallenges(locale, legacyChallenge);
 
   return {
     ...project,
@@ -116,12 +188,7 @@ export function localizeProject(
       project.challengeEn,
       project.challenge,
     ),
-    solution: pick(
-      locale,
-      project.solutionFa,
-      project.solutionEn,
-      project.solution,
-    ),
+    solution: null,
     outcome: pick(locale, project.outcomeFa, project.outcomeEn, project.outcome),
     tags: pickArr(locale, project.tagsFa, project.tagsEn, project.tags),
     projectType: pick(
@@ -171,22 +238,6 @@ export function localizeService(service: Service, locale: Locale): Service {
   };
 }
 
-export function localizePortfolioItem(
-  item: PortfolioItem,
-  locale: Locale,
-): PortfolioItem {
-  return {
-    ...item,
-    title: pickRequired(locale, item.titleFa, item.titleEn, item.title),
-    description: pick(
-      locale,
-      item.descriptionFa,
-      item.descriptionEn,
-      item.description,
-    ),
-  };
-}
-
 export function localizeProfile(
   settings: SiteSettings,
   locale: Locale,
@@ -218,6 +269,18 @@ export function localizeProfile(
       settings.aboutIntroFa,
       settings.aboutIntroEn,
       settings.aboutIntro,
+    ),
+    aboutPageContent: pickObj(
+      locale,
+      settings.aboutPageContentFa,
+      settings.aboutPageContentEn,
+      settings.aboutPageContent,
+    ),
+    contactPageContent: pickObj(
+      locale,
+      settings.contactPageContentFa,
+      settings.contactPageContentEn,
+      settings.contactPageContent,
     ),
   };
 }

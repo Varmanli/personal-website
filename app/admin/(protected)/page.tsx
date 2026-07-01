@@ -1,4 +1,12 @@
-import { FiFolder, FiLayers, FiImage, FiMail, FiInbox } from "react-icons/fi";
+import {
+  FiFolder,
+  FiLayers,
+  FiMail,
+  FiInbox,
+  FiUsers,
+  FiEye,
+} from "react-icons/fi";
+import type { ReactNode } from "react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { StatCard } from "@/components/admin/StatCard";
 import { Badge } from "@/components/ui/Badge";
@@ -7,9 +15,9 @@ import Link from "next/link";
 import {
   getAllProjects,
   getAllServices,
-  getAllPortfolio,
   getMessages,
 } from "@/lib/data";
+import { getVisitorStats } from "@/lib/analytics";
 import { getProjectRequestStats } from "@/lib/planner/data";
 import { formatDate } from "@/lib/utils";
 import { getI18n } from "@/lib/i18n/server";
@@ -17,13 +25,13 @@ import { getI18n } from "@/lib/i18n/server";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const [projects, services, portfolio, messages, requestStats, { dict }] =
+  const [projects, services, messages, requestStats, visitors, { dict }] =
     await Promise.all([
       getAllProjects(),
       getAllServices(),
-      getAllPortfolio(),
       getMessages(),
       getProjectRequestStats(),
+      getVisitorStats(),
       getI18n(),
     ]);
   const t = dict.admin.dashboard;
@@ -31,7 +39,32 @@ export default async function AdminDashboardPage() {
   const newMessages = messages.filter((m) => m.status === "new");
   const recentMessages = messages.slice(0, 5);
 
-  const stats = [
+  const numberFmt = new Intl.NumberFormat("en-US");
+  const formatCount = (n: number) => numberFmt.format(n);
+
+  const stats: Array<{
+    label: string;
+    value: string | number;
+    icon: ReactNode;
+    href?: string;
+    trend?: string;
+    trendUp?: boolean;
+  }> = [
+    {
+      label: t.statUniqueVisitors,
+      value: formatCount(visitors.uniqueVisitors),
+      icon: <FiUsers />,
+      trend:
+        visitors.uniqueToday > 0
+          ? `${formatCount(visitors.uniqueToday)} ${t.statToday}`
+          : undefined,
+      trendUp: visitors.uniqueToday > 0,
+    },
+    {
+      label: t.statPageViews,
+      value: formatCount(visitors.pageViews),
+      icon: <FiEye />,
+    },
     {
       label: t.statProjects,
       value: projects.length,
@@ -43,12 +76,6 @@ export default async function AdminDashboardPage() {
       value: services.length,
       href: "/admin/services",
       icon: <FiLayers />,
-    },
-    {
-      label: t.statPortfolio,
-      value: portfolio.length,
-      href: "/admin/portfolio",
-      icon: <FiImage />,
     },
     {
       label: t.statNewMessages,
@@ -67,7 +94,6 @@ export default async function AdminDashboardPage() {
   const quickActions = [
     { label: dict.admin.quick.newProject, href: "/admin/projects/new" },
     { label: dict.admin.quick.newService, href: "/admin/services/new" },
-    { label: dict.admin.quick.newPortfolio, href: "/admin/portfolio/new" },
     { label: dict.admin.quick.viewMessages, href: "/admin/messages" },
   ];
 
@@ -84,6 +110,8 @@ export default async function AdminDashboardPage() {
             value={stat.value}
             href={stat.href}
             icon={stat.icon}
+            trend={stat.trend}
+            trendUp={stat.trendUp}
           />
         ))}
       </div>

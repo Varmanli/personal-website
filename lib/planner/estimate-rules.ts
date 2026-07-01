@@ -109,7 +109,7 @@ export const DEFAULT_ESTIMATE_RULES: EstimateRuleDef[] = [
   r("multilingual", "common_features", 3, "چندزبانه", "Multilingual"),
   r("cms_editing", "common_features", 3, "پنل ویرایش محتوا", "CMS editing"),
   r("section_resume", "common_features", 1, "بخش رزومه", "Resume section"),
-  r("section_portfolio", "common_features", 2, "بخش نمونه‌کار", "Portfolio section"),
+  r("section_projects", "common_features", 2, "بخش پروژه‌ها", "Projects section"),
   r("realtime", "custom_web_app", 5, "قابلیت لحظه‌ای", "Real-time"),
   r("scale_medium", "custom_web_app", 3, "مقیاس متوسط", "Medium scale"),
   r("scale_large", "custom_web_app", 8, "مقیاس بزرگ", "Large scale"),

@@ -17,7 +17,6 @@ const UPLOAD_FOLDERS = {
   profile: "uploads/profile",
   resume: "uploads/resume",
   project: "uploads/projects",
-  portfolio: "uploads/portfolio",
   service: "uploads/services",
   general: "uploads/general",
 } as const;

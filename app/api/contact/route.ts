@@ -24,6 +24,9 @@ export async function POST(request: Request) {
   const email = body.email?.trim();
   const message = body.message?.trim();
   const subject = body.subject?.trim() || null;
+  const projectType = body.projectType?.trim() || null;
+  const budgetRange = body.budgetRange?.trim() || null;
+  const timeline = body.timeline?.trim() || null;
 
   if (!name || !email || !message) {
     return apiError("Name, email, and message are required.");
@@ -35,7 +38,15 @@ export async function POST(request: Request) {
   try {
     const [row] = await db
       .insert(contactMessages)
-      .values({ name, email, message, subject })
+      .values({
+        name,
+        email,
+        subject,
+        message,
+        projectType,
+        budgetRange,
+        timeline,
+      })
       .returning();
     return apiSuccess(row, 201);
   } catch (error) {

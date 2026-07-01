@@ -11,8 +11,7 @@ import {
 } from "@/components/admin/forms/fields";
 import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { Tabs } from "@/components/admin/ui/Tabs";
-import { Collapsible } from "@/components/admin/ui/Collapsible";
-import { FiUser, FiLink, FiImage } from "react-icons/fi";
+import { FiUser, FiImage } from "react-icons/fi";
 import { type ActionState, initialActionState, linesValue } from "@/lib/form";
 import { updateSettings } from "@/lib/actions/settings";
 import { useI18n } from "@/lib/i18n/context";
@@ -88,15 +87,6 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
         </FormGrid>
         <FileUploadField name="resumeUrl" label={f.resume} type="resume" shape="wide" preview="document" accept="application/pdf" defaultValue={initial?.resumeUrl} />
       </FormSection>
-
-      <Collapsible
-        title={f.sharedFields}
-        description={f.sharedFieldsHint}
-        icon={<FiLink />}
-        defaultOpen
-      >
-        <TextInput name="email" label={f.email} dir="ltr" type="email" defaultValue={initial?.email ?? ""} />
-      </Collapsible>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">
         <SubmitButton>{s.save}</SubmitButton>

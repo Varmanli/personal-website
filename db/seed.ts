@@ -12,13 +12,11 @@ import { db } from "./index";
 import {
   projects,
   services,
-  portfolioItems,
   siteSettings,
 } from "./schema";
 import {
   placeholderProjects,
   placeholderServices,
-  placeholderPortfolio,
   placeholderProfile,
 } from "../lib/placeholder-data";
 
@@ -38,7 +36,6 @@ async function seed() {
 
   await db.insert(projects).values(stripMeta(placeholderProjects));
   await db.insert(services).values(stripMeta(placeholderServices));
-  await db.insert(portfolioItems).values(stripMeta(placeholderPortfolio));
 
   const { id: _pid, createdAt: _pc, updatedAt: _pu, ...profile } =
     placeholderProfile;

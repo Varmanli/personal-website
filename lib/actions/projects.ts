@@ -8,6 +8,7 @@ import {
   projects,
   type NewProject,
   type ProjectMetric,
+  type ProjectChallenge,
 } from "@/db/schema";
 import { getCurrentAdmin } from "@/lib/auth";
 import {
@@ -50,6 +51,40 @@ function parseMetrics(
       }
 
       items.push({ label, value });
+    }
+
+    return { items };
+  } catch {
+    return { items: [] };
+  }
+}
+
+function parseChallenges(
+  form: FormData,
+  key: string,
+): { items: ProjectChallenge[]; error?: string } {
+  const raw = form.get(key);
+  if (typeof raw !== "string" || !raw.trim()) return { items: [] };
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return { items: [] };
+
+    const items: ProjectChallenge[] = [];
+    for (const item of parsed as Array<{
+      title?: unknown;
+      description?: unknown;
+    }>) {
+      const title = typeof item?.title === "string" ? item.title.trim() : "";
+      const description =
+        typeof item?.description === "string" ? item.description.trim() : "";
+
+      if (!title && !description) continue;
+      if (!title || !description) {
+        return { items: [], error: key };
+      }
+
+      items.push({ title, description });
     }
 
     return { items };
@@ -103,14 +138,18 @@ function readForm(
   const roleEn = str(form, "roleEn") ?? null;
   const clientFa = str(form, "clientFa") ?? null;
   const clientEn = str(form, "clientEn") ?? null;
-  // Challenges are now multi-item arrays; mirror into the legacy single
-  // challenge* columns (newline-joined) so older consumers keep working.
-  const challengesFa = list(form, "challengesFa");
-  const challengesEn = list(form, "challengesEn");
-  const challengeFa = challengesFa.length ? challengesFa.join("\n\n") : null;
-  const challengeEn = challengesEn.length ? challengesEn.join("\n\n") : null;
-  const solutionFa = str(form, "solutionFa") ?? null;
-  const solutionEn = str(form, "solutionEn") ?? null;
+  const challengesFa = parseChallenges(form, "challengesFa");
+  const challengesEn = parseChallenges(form, "challengesEn");
+  const challengeFa = challengesFa.items.length
+    ? challengesFa.items
+        .map((item) => `${item.title}\n${item.description}`)
+        .join("\n\n")
+    : null;
+  const challengeEn = challengesEn.items.length
+    ? challengesEn.items
+        .map((item) => `${item.title}\n${item.description}`)
+        .join("\n\n")
+    : null;
   const outcomeFa = str(form, "outcomeFa") ?? null;
   const outcomeEn = str(form, "outcomeEn") ?? null;
   const tagsFa = list(form, "tagsFa");
@@ -128,6 +167,8 @@ function readForm(
   if (homeOrder.error) fieldErrors.homeOrder = errs.invalidHomeOrder;
   if (homeMetricsFa.error) fieldErrors.homeMetricsFa = errs.invalidMetric;
   if (homeMetricsEn.error) fieldErrors.homeMetricsEn = errs.invalidMetric;
+  if (challengesFa.error) fieldErrors.challengesFa = errs.invalidMetric;
+  if (challengesEn.error) fieldErrors.challengesEn = errs.invalidMetric;
   if (Object.keys(fieldErrors).length > 0) {
     return {
       values: {} as ProjectValues,
@@ -147,7 +188,7 @@ function readForm(
     client: clientFa ?? clientEn,
     projectType: projectTypeFa ?? projectTypeEn,
     challenge: challengeFa ?? challengeEn,
-    solution: solutionFa ?? solutionEn,
+    solution: null,
     outcome: outcomeFa ?? outcomeEn,
     tags: tagsFa.length ? tagsFa : tagsEn,
     homeMetrics: homeMetricsFa.items.length
@@ -175,10 +216,10 @@ function readForm(
     technicalHighlightsEn,
     challengeFa,
     challengeEn,
-    challengesFa,
-    challengesEn,
-    solutionFa,
-    solutionEn,
+    challengesFa: challengesFa.items,
+    challengesEn: challengesEn.items,
+    solutionFa: null,
+    solutionEn: null,
     outcomeFa,
     outcomeEn,
     tagsFa,

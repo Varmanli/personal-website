@@ -6,12 +6,31 @@
  * without reaching into the db layer.
  */
 export type {
+  AboutPageContent,
+  AboutHeroContent,
+  AboutStatItem,
+  AboutExperienceItem,
+  AboutTechnologyGroup,
+  AboutCardItem,
+  AboutExperienceSection,
+  AboutTechnologiesSection,
+  AboutCardSection,
+  AboutCtaSection,
+  ContactHeroContent,
+  ContactInfoItem,
+  ContactProcessStep,
+  ContactInfoCardContent,
+  ContactProcessSection,
+  ContactCtaSection,
+  ContactPageContent,
+  ContactSettings,
+  CtaLink,
+  ProjectChallenge,
+  ProjectMetric,
   Project,
   NewProject,
   Service,
   NewService,
-  PortfolioItem,
-  NewPortfolioItem,
   ContactMessage,
   NewContactMessage,
   SiteSettings,
@@ -38,6 +57,9 @@ export interface ContactFormPayload {
   email: string;
   subject?: string;
   message: string;
+  projectType?: string;
+  budgetRange?: string;
+  timeline?: string;
 }
 
 /** A single navigation link. */
@@ -66,6 +88,7 @@ export interface TimelineEntry {
   role: string;
   organization: string;
   description: string;
+  tags?: string[];
 }
 
 /** A grouped set of tools/technologies for the tech-stack section. */

@@ -18,6 +18,12 @@ import * as schema from "./schema";
 
 const connectionString = process.env.DATABASE_URL;
 
+if (!connectionString && process.env.NODE_ENV === "production") {
+  throw new Error(
+    "DATABASE_URL is not set. Add DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE to the production environment before starting the app.",
+  );
+}
+
 // Reuse a single client across HMR reloads in dev to avoid exhausting the pool.
 const globalForDb = globalThis as unknown as {
   client?: ReturnType<typeof postgres>;

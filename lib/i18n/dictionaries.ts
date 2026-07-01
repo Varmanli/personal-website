@@ -15,7 +15,6 @@ const en = {
     about: "About",
     projects: "Projects",
     services: "Services",
-    portfolio: "Portfolio",
     contact: "Contact",
   },
   common: {
@@ -25,7 +24,7 @@ const en = {
     menu: "Toggle navigation menu",
   },
   meta: {
-    titleSuffix: "Portfolio & Services",
+    titleSuffix: "Projects & Services",
     description:
       "Full-stack developer building modern, scalable web products, dashboards, and digital experiences.",
     // Per-page <title> values (resolved through generateMetadata so they
@@ -35,7 +34,6 @@ const en = {
       projects: "Projects",
       project: "Project",
       services: "Services & Pricing",
-      portfolio: "Portfolio",
       contact: "Contact",
       notFound: "Page not found",
     },
@@ -135,66 +133,156 @@ const en = {
     },
   },
   about: {
-    eyebrow: "About",
-    bio2:
-      "I work with founders, agencies, and small teams who need a dependable developer to take a project from idea to launch. I care about clean architecture, clear communication, and shipping work that actually moves the needle for your business.",
-    getInTouch: "Get in touch",
-    downloadResume: "Download résumé",
-    expertise: "Expertise",
-    details: "Details",
-    location: "Location:",
-    email: "Email:",
-    experience: {
-      eyebrow: "Experience",
-      title: "Where I've worked",
+    hero: {
+      eyebrow: "About me",
+      title: "Amirhossein Varmezyani",
       subtitle:
-        "A short history of the roles and projects that shaped how I build.",
+        "Full-stack designer and developer focused on building fast, scalable, maintainable websites, admin panels, and web applications.",
+      supporting:
+        "I help ideas move from design and architecture through implementation, deployment, and optimization into a real product, with technical quality, user experience, and business outcomes in mind.",
+      available: "Available for projects",
+      primary: "Request project estimate",
+      secondary: "View projects",
+      chips: ["Full-stack", "Next.js", "NestJS"],
     },
-    tools: {
-      eyebrow: "Toolbox",
-      title: "Tools & technologies",
-      subtitle: "The stack I use day to day, grouped by where it fits.",
-    },
-    values: {
-      eyebrow: "Working style",
-      title: "How I approach every project",
-      subtitle: "The principles behind the way I work with clients.",
+    stats: {
       items: [
         {
-          title: "Clear communication",
-          description:
-            "No jargon, no surprises. You always know what I'm working on and why.",
+          value: "8+ months",
+          label: "Real project delivery and launches",
         },
+        {
+          value: "60k+",
+          label: "Users in the Negareh project",
+        },
+        {
+          value: "30k+",
+          label: "Managed products",
+        },
+        {
+          value: "120+",
+          label: "Implemented pages and flows",
+        },
+      ],
+    },
+    experience: {
+      eyebrow: "Experience",
+      title: "Experiences that shaped | how I build",
+      subtitle:
+        "From personal work to real client collaboration, my focus has stayed on building products that are usable, scalable, and ready to grow.",
+    },
+    tools: {
+      eyebrow: "Stack",
+      title: "Tools & technologies | I work with",
+      subtitle:
+        "Technology is never just a list of tools for me; each choice should improve speed, stability, and long-term maintainability.",
+    },
+    values: {
+      eyebrow: "Approach",
+      title: "How I approach | every project",
+      subtitle:
+        "A project is never just a few pages of code. It should be understandable, useful, and ready to evolve.",
+      items: [
         {
           title: "Maintainable code",
           description:
-            "I build with the next developer in mind — typed, modular, and documented.",
+            "Project structure should make future development, change, and maintenance straightforward.",
         },
         {
-          title: "Business-focused",
+          title: "Clear communication",
           description:
-            "Technology is a means to an end. I care about the outcomes it drives for you.",
+            "At every stage, project status, technical decisions, and the path forward should stay easy to follow.",
+        },
+        {
+          title: "Product thinking",
+          description:
+            "Before writing code, I think through user experience, business goals, and the product's growth path.",
         },
         {
           title: "Reliable delivery",
           description:
-            "Realistic estimates and steady progress, with previews you can check at every step.",
+            "The final delivery should be tested, deployable, usable, and ready for the next phase of growth.",
+        },
+      ],
+    },
+    help: {
+      eyebrow: "Services",
+      title: "How can I help | your project?",
+      subtitle:
+        "If you have an idea, website, or product, these are the areas where I can support you.",
+      items: [
+        {
+          title: "Website design and development",
+          description:
+            "Fast, responsive, SEO-aware websites that are easy to manage and ready to represent your business well.",
+        },
+        {
+          title: "Admin panel development",
+          description:
+            "Custom dashboards for managing content, users, orders, data, and reporting in a clean workflow.",
+        },
+        {
+          title: "Web application development",
+          description:
+            "Interactive products built with backend services, database design, authentication, and production-ready APIs.",
+        },
+        {
+          title: "Improving existing products",
+          description:
+            "Performance, structure, UI/UX, SEO, database, and code-quality improvements for products that already exist.",
         },
       ],
     },
   },
   projects: {
-    eyebrow: "Portfolio",
+    eyebrow: "Projects",
     title: "Projects & case studies",
     subtitle:
-      "A selection of products I've designed and built — each with the problem, approach, and outcome.",
+      "A collection of products I have designed and developed, focused on performance, user experience, maintainability, and business value.",
+    supporting:
+      "From personal and brand websites to admin panels, marketplaces, and custom web applications.",
+    filterAll: "All",
+    details: "View details",
+    caseStudy: "Case study",
+    detailLabel: "More project details",
+    totalLabel: "published projects",
+    featuredLabel: "case studies",
+    categoriesLabel: "categories",
+    technologiesLabel: "technologies",
     more: "More projects",
     emptyTitle: "No projects published yet",
-    emptyDesc: "Projects added in the admin panel will appear here.",
-    emptyCta: "Get in touch",
+    emptyDesc:
+      "Projects published from the admin dashboard will appear here as case studies.",
+    emptySupport:
+      "If you want to see more relevant work or talk through similar experience, you can start a project estimate request.",
+    emptyCta: "Contact me",
+    emptyPrimary: "Start a project estimate",
+    emptySecondary: "Contact me",
+    cta: {
+      title: "Your next project could be here",
+      description:
+        "Explain the idea and I’ll clarify the technical path, timing, and a realistic rough estimate.",
+      primary: "Start a project estimate",
+      secondary: "Contact me",
+    },
   },
   projectDetail: {
     back: "← Back to projects",
+    eyebrow: "Case study",
+    screenshots: "Product screenshots",
+    screenshotsText:
+      "A closer look at the interface, flows, and visual execution across the product.",
+    meta: "Project details",
+    metrics: "Project metrics",
+    metricsText:
+      "A quick snapshot of scale, complexity, and the product capabilities delivered.",
+    highlights: "Technical highlights",
+    highlightsText:
+      "Core engineering decisions and implementation details that shaped the build.",
+    tags: "Tags",
+    tagsTitle: "Project tags",
+    category: "Category",
+    badges: "Badges",
     techStack: "Tech stack",
     overview: "Overview",
     challenge: "The challenge",
@@ -203,6 +291,7 @@ const en = {
     role: "Role",
     client: "Client",
     year: "Year",
+    links: "Links",
     viewLive: "View live ↗",
     sourceCode: "Source code",
     cover: "Project media",
@@ -211,90 +300,202 @@ const en = {
     cta: "Start a conversation",
   },
   services: {
-    eyebrow: "Pricing",
+    eyebrow: "Services & collaboration",
     title: "Services & plans",
     subtitle:
-      "Transparent starting prices for common engagements. Need something different? The custom option has you covered.",
+      "Web project pricing depends on needs, scale, features, and customization level. This page helps make the collaboration path and estimate clearer.",
+    supporting:
+      "From fast, SEO-aware websites to admin dashboards, marketplaces, and custom web applications.",
+    totalLabel: "published plans",
+    plansEyebrow: "Plans",
+    plansTitle: "Suggested collaboration plans",
+    plansSubtitle:
+      "These plans are starting points. Final pricing is defined after reviewing your requirements, features, and customization level.",
     priceNote:
       "All prices are placeholders shown in USD. Final quotes are tailored to your project scope.",
-    emptyTitle: "No plans available yet",
-    emptyDesc: "Service plans added in the admin panel will appear here.",
+    emptyTitle: "No plans published yet",
+    emptyDesc:
+      "Plans published from the admin panel will appear here. Until then, you can send a short brief and get a tailored estimate.",
+    emptySupport:
+      "If your scope is still evolving, the project estimator is the fastest way to turn it into a realistic technical direction.",
     emptyCta: "Contact me",
+    emptyPrimary: "Request project estimate",
+    emptySecondary: "Contact me",
     faqEyebrow: "FAQ",
     faqTitle: "Common questions",
     faqs: [
       {
         q: "How does pricing work?",
-        a: "Each plan is a starting point. After a short discovery call I send a fixed quote tailored to your scope, so there are no surprises.",
+        a: "Each project is estimated based on type, features, design level, timeline, and technical complexity.",
       },
       {
-        q: "What's your typical timeline?",
-        a: "A landing page takes about 1–2 weeks; larger websites and apps run 4–10 weeks depending on scope. I'll give you a clear schedule up front.",
+        q: "What's the usual timeline?",
+        a: "Smaller websites usually take around 2–4 weeks, while dashboards and more complex web applications need more time.",
       },
       {
-        q: "Do you offer ongoing support?",
-        a: "Yes. Most projects include a post-launch support window, and I offer optional monthly retainers for ongoing improvements.",
+        q: "Do you handle support too?",
+        a: "Yes. After delivery we can agree on support, bug fixing, performance improvements, or next-phase development.",
       },
       {
-        q: "What if my project doesn't fit a plan?",
-        a: "That's what the Custom Web Application option is for. Get in touch and we'll scope something that fits your exact needs.",
+        q: "What if my project doesn't fit any plan?",
+        a: "That is normal. Many projects are custom, and after reviewing the requirements I can suggest a structure that actually fits.",
       },
     ],
     ctaTitle: "Not sure which plan fits?",
-    ctaText: "Tell me about your project and I'll recommend the right approach.",
+    ctaText:
+      "Tell me about the project so you can get a clearer path and a better recommendation.",
     cta: "Get a recommendation",
-  },
-  portfolio: {
-    eyebrow: "Work samples",
-    title: "Portfolio",
-    subtitle: "A gallery of commercial, personal, and freelance work.",
-    emptyTitle: "No work samples yet",
-    emptyDesc: "Portfolio items added in the admin panel will appear here.",
-    filters: {
-      all: "All",
-      commercial: "Commercial",
-      personal: "Personal",
-      freelance: "Freelance",
-    },
-    emptyCat: "No items in this category yet.",
+    ctaSecondary: "Request project estimate",
   },
   contact: {
     eyebrow: "Contact",
-    title: "Let's work together",
+    title: "Let’s talk about your project",
     subtitle:
-      "Send a message and I'll get back to you as soon as I can — usually within a day.",
+      "If you have an idea for a website, admin panel, or web application, send a message and we’ll review the technical path, timeline, and initial estimate together.",
+    supporting:
+      "You do not need every detail figured out yet. A short outline is enough to start the conversation.",
     email: "Email",
     location: "Location",
     elsewhere: "Elsewhere",
+    methodsTitle: "Contact methods",
+    methodsSubtitle:
+      "Right now, the best way to reach out is the form on this page. Any active links from your site settings appear here too.",
+    infoCardIntro:
+      "Anything you share here is only used to review the project and get back to you.",
+    infoCard: {
+      title: "Contact path",
+      items: [
+        {
+          title: "Response time",
+          description:
+            "I usually reply at the first opportunity or within one business day.",
+          icon: "clock",
+        },
+        {
+          title: "Best for",
+          description:
+            "Websites, admin panels, web applications, optimization, or growing an existing product.",
+          icon: "briefcase",
+        },
+        {
+          title: "Starting the project",
+          description:
+            "If you are not fully sure what you need yet, a short description is enough for me to suggest the right path.",
+          icon: "message",
+        },
+        {
+          title: "Project estimate",
+          description:
+            "For more serious scopes, the project estimate form is the best way to get a more precise recommendation.",
+          icon: "send",
+        },
+      ],
+      primaryCta: {
+        label: "Request project estimate",
+        href: "/start-project",
+      },
+      secondaryCta: {
+        label: "View projects",
+        href: "/projects",
+      },
+    },
+    process: {
+      badge: "After you send the message",
+      title: "What happens after you send a message?",
+      subtitle:
+        "The next step stays simple and clear. First I review your message, then I suggest the best next move.",
+      steps: [
+        {
+          title: "Message review",
+          description:
+            "I review the need, goal, and the details you shared.",
+          icon: "search",
+        },
+        {
+          title: "A few follow-up questions",
+          description:
+            "If needed, I ask a few short questions to make the project path clearer.",
+          icon: "help",
+        },
+        {
+          title: "Suggested direction",
+          description:
+            "I suggest the timeline, technical direction, and an initial estimate range as clearly as possible.",
+          icon: "zap",
+        },
+      ],
+    },
+    cta: {
+      title: "Not sure where to start?",
+      subtitle: "A short explanation is enough for us to find the right path for your project.",
+      primary: "Start project estimate",
+      secondary: "View services",
+    },
     form: {
       name: "Name",
       email: "Email",
       subject: "Subject",
       message: "Message",
+      projectType: "Project type",
+      budgetRange: "Estimated budget",
+      timeline: "Timeline",
+      placeholders: {
+        name: "Your name",
+        email: "you@example.com",
+        subject: "For example: website design, admin panel, or technical consulting",
+        message:
+          "Share a bit about the idea, goal, needed features, or your question...",
+      },
+      options: {
+        empty: "Choose one",
+        projectType: {
+          website: "Website",
+          dashboard: "Admin dashboard",
+          webapp: "Web application",
+          optimization: "Improve an existing project",
+          other: "Other",
+        },
+        budgetRange: {
+          estimate: "I need an estimate",
+          under30: "Under 30M toman",
+          between30And70: "30M to 70M toman",
+          between70And150: "70M to 150M toman",
+          above150: "Above 150M toman",
+        },
+        timeline: {
+          urgent: "Urgent",
+          oneToTwoMonths: "1 to 2 months",
+          threePlusMonths: "3+ months",
+          flexible: "Flexible",
+        },
+      },
       send: "Send message",
       sending: "Sending…",
-      success:
-        "Thanks for reaching out — your message has been sent. I'll get back to you soon.",
+      success: "Your message was sent successfully. I’ll reply as soon as I can.",
       errorRequired: "Name, email, and message are required.",
-      errorGeneric:
-        "We couldn't send your message right now. Please try again later or email me directly.",
+      errorEmail: "Please enter a valid email address.",
+      errorGeneric: "Your message could not be sent. Please try again.",
     },
   },
   planner: {
     hero: {
-      title: "Start your project with clarity",
+      badge: "Project Estimate",
+      title: "Start your project smarter",
       subtitle:
-        "Answer a few quick questions and get a tailored recommendation for your website or digital product.",
+        "Answer a few short questions so I can better understand the technical direction, complexity, timeline, and rough budget range.",
+      supporting:
+        "This is an initial estimate and can become more accurate once we review the project details.",
     },
     cmsNote:
       "For simpler projects or faster launch, CMS-based solutions can be a practical and economical choice. For scalable custom systems, custom development is recommended.",
     ui: {
-      next: "Next",
+      next: "Continue",
       back: "Back",
-      submit: "Submit project request",
-      submitting: "Submitting request…",
+      submit: "Send estimate request",
+      submitting: "Sending request…",
       selectOne: "Choose one",
       selectMany: "Choose any that apply",
+      typeHelper: "Pick one option to shape your initial estimate.",
       optional: "Optional",
       summary: "Your answers",
       recommendation: "Recommended approach",
@@ -304,7 +505,7 @@ const en = {
       none: "—",
     },
     steps: {
-      projectType: "What are you building?",
+      projectType: "What do you want to build?",
       cmsSolutionType: "Which WordPress approach fits best?",
       goals: "What are your main goals?",
       features: "Which features do you need?",
@@ -324,18 +525,96 @@ const en = {
       descriptionPlaceholder: "Tell me a bit more about your project…",
     },
     result: {
-      title: "Here's my recommendation",
+      title: "Estimate summary",
+      previewBadge: "Preview",
+      basis: "Initial estimate based on your current choices",
+      empty:
+        "Once you choose a few options, a summary of the suggested approach, complexity, timeline, and rough budget will appear here.",
+      projectType: "Project type",
+      notSelected: "Not selected",
       plan: "Suggested approach",
       complexity: "Estimated complexity",
       timeline: "Estimated timeline",
       score: "Project score",
-      duration: "Estimated duration",
+      duration: "Estimated timeline",
       weeksUnit: "weeks",
       daysUnit: "days",
-      price: "Estimated price",
-      breakdown: "View breakdown",
+      price: "Estimated budget",
+      priceFrom: "from",
+      to: "to",
+      needsReview: "Needs detailed review",
+      featuresLabel: "Selected features",
+      designLabel: "Design level",
+      supportLabel: "Support",
+      supportDetailPrefix: "Post-launch support",
+      supportOngoingNote:
+        "Ongoing support is agreed separately on a monthly basis.",
+      pagesLabel: "Pages",
+      pagesUnit: "pages",
+      noFeatures: "No extra features",
+      calcTitle: "Estimate details",
+      urgencyWarning:
+        "Your chosen timeline is tighter than the current estimate and may require trimming features or a phased rollout.",
+      breakdown: "Estimate details",
+      priceNote:
+        "This figure isn't final and becomes more accurate after we review the project details.",
       disclaimer:
         "This is an initial estimate and may change after reviewing the project details.",
+    },
+    pages: {
+      helper:
+        "Pages like home, about, services, contact, product listing, product detail, or a dashboard each add part of the design and build time.",
+      maxNote:
+        "For projects larger than 20 pages, a more precise estimate is best done after reviewing the structure.",
+      presets: ["1–3", "4–7", "8–12", "13–20", "20+"],
+    },
+    success: {
+      title: "Your project request was submitted",
+      subtitle:
+        "Your initial estimate summary is ready. After reviewing the details, I'll contact you to finalize the approach, timeline, and cost.",
+      note: "This estimate isn't final and may change after a detailed review of your needs.",
+      downloadPdf: "Download PDF estimate",
+      downloading: "Preparing…",
+      downloadError: "Preparing the estimate failed. Please try again.",
+      viewProjects: "View projects",
+      backHome: "Back to home",
+    },
+    pdf: {
+      title: "Preliminary project estimate",
+      subtitle: "Initial estimate based on the details submitted in the project form",
+      date: "Date",
+      client: "Client information",
+      name: "Name",
+      email: "Email",
+      phone: "Phone / Telegram",
+      company: "Brand or company",
+      contactMethod: "Preferred contact method",
+      projectSummary: "Project summary",
+      projectType: "Project type",
+      designLevel: "Design level",
+      pages: "Pages",
+      features: "Selected features",
+      timelinePref: "Preferred timeline",
+      description: "Project notes",
+      estimateSummary: "Initial estimate",
+      complexity: "Estimated complexity",
+      timeline: "Estimated timeline",
+      price: "Estimated budget",
+      support: "Post-launch support",
+      supportType: "Support type",
+      supportDesc: "Summary",
+      supportEffect: "Effect on estimate",
+      supportEffects: {
+        none: "No change to cost or time",
+        basic_1_month: "Small cost increase",
+        pro_3_months: "Moderate cost increase and 1–3 extra days",
+        ongoing: "Requires a separate monthly agreement",
+      },
+      notesTitle: "Notes & terms",
+      disclaimer:
+        "This is a preliminary estimate based on the information provided and is not a final price or a contractual commitment. The final amount and timeline will be determined after a full review of the project scope, features, design, content, infrastructure, and terms of collaboration.",
+      contactNote: "To finalize the proposal, I'll contact you after reviewing the details.",
+      none: "—",
     },
     plans: {
       landing: "Landing page",
@@ -350,6 +629,7 @@ const en = {
       medium: "Medium",
       high: "High",
       very_high: "Very high",
+      needs_review: "Needs review",
     },
     timelines: {
       "1-2-weeks": "1–2 weeks",
@@ -375,8 +655,8 @@ const en = {
       start: "Start a project",
       servicesTitle: "Not sure what your project needs?",
       servicesText:
-        "Answer a few guided questions and get a tailored recommendation, estimated timeline, and rough budget based on your project type and requirements.",
-      servicesButton: "Start Project Estimate",
+        "A few short questions about project type, features, page count, design level, and technologies help me prepare a practical first recommendation.",
+      servicesButton: "Start project estimate",
     },
   },
   card: {
@@ -424,9 +704,10 @@ const en = {
     },
     nav: {
       dashboard: "Dashboard",
+      about: "About page",
+      contactPage: "Contact page",
       projects: "Projects",
       services: "Services",
-      portfolio: "Portfolio",
       messages: "Messages",
       projectRequests: "Project requests",
       plannerOptions: "Planner options",
@@ -548,8 +829,10 @@ const en = {
       description: "Overview of your site content.",
       statProjects: "Projects",
       statServices: "Services",
-      statPortfolio: "Portfolio items",
       statNewMessages: "New messages",
+      statUniqueVisitors: "Unique visitors",
+      statPageViews: "Page views",
+      statToday: "today",
       recentMessages: "Recent messages",
       viewAll: "View all",
       quickActions: "Quick actions",
@@ -568,12 +851,6 @@ const en = {
       newItem: "New plan",
       empty: "No plans yet. Create your first one.",
     },
-    portfolio: {
-      title: "Portfolio",
-      description: "Manage your work samples and gallery.",
-      newItem: "New item",
-      empty: "No portfolio items yet. Create your first one.",
-    },
     messages: {
       title: "Messages",
       description: "Contact requests submitted through your site.",
@@ -587,6 +864,27 @@ const en = {
       save: "Save settings",
       noticeFirst:
         "No settings row exists yet — saving will create one.",
+    },
+    about: {
+      title: "About page management",
+      description: "Manage the content shown on the public About page.",
+      save: "Save About page",
+      noticeFirst:
+        "No settings row exists yet — saving will create one with this About content.",
+    },
+    contact: {
+      title: "Contact page management",
+      description:
+        "Manage the public Contact page content and shared contact methods.",
+      save: "Save Contact page",
+      noticeFirst:
+        "No settings row exists yet — saving will create one with this Contact content.",
+      sharedTitle: "Shared contact settings",
+      sharedDescription:
+        "These values power the public contact methods and fallback footer social links.",
+      contentTitle: "Page content",
+      contentDescription:
+        "Each language can have its own Contact page content and falls back automatically when one side is empty.",
     },
     table: {
       title: "Title",
@@ -629,13 +927,11 @@ const en = {
     quick: {
       newProject: "New project",
       newService: "New service / plan",
-      newPortfolio: "New portfolio item",
       viewMessages: "View messages",
     },
     confirm: {
       project: "Delete this project? This can't be undone.",
       plan: "Delete this plan? This can't be undone.",
-      portfolio: "Delete this portfolio item? This can't be undone.",
       message: "Delete this message? This can't be undone.",
     },
     forms: {
@@ -673,14 +969,10 @@ const en = {
       saveProject: "Save changes",
       createService: "Create plan",
       saveService: "Save changes",
-      createPortfolio: "Create item",
-      savePortfolio: "Save changes",
       pageProjectNew: "New project",
       pageProjectEdit: "Edit project",
       pageServiceNew: "New service / plan",
       pageServiceEdit: "Edit service / plan",
-      pagePortfolioNew: "New portfolio item",
-      pagePortfolioEdit: "Edit portfolio item",
       // Field labels
       title: "Title",
       name: "Name",
@@ -748,6 +1040,12 @@ const en = {
       invalidHomeOrder: "Homepage order must be a valid non-negative number.",
       invalidMetric:
         "Each metric row must include both a label and a value.",
+      invalidAboutContent:
+        "About page content is incomplete or invalid. Review the required fields and try again.",
+      invalidContactContent:
+        "Contact page content is incomplete or invalid. Review the required fields and try again.",
+      invalidUrl:
+        "CTA links must be valid internal paths or full URLs.",
     },
     auth: {
       title: "Admin sign in",
@@ -779,7 +1077,6 @@ const fa: DeepPartial<Dictionary> = {
     about: "درباره",
     projects: "پروژه‌ها",
     services: "خدمات",
-    portfolio: "نمونه‌کارها",
     contact: "تماس",
   },
   common: {
@@ -789,7 +1086,7 @@ const fa: DeepPartial<Dictionary> = {
     menu: "باز/بستن منوی پیمایش",
   },
   meta: {
-    titleSuffix: "نمونه‌کار و خدمات",
+    titleSuffix: "پروژه‌ها و خدمات",
     description:
       "توسعه‌دهنده‌ی فول‌استک؛ ساخت محصولات وب مدرن و مقیاس‌پذیر، داشبوردها و تجربه‌های دیجیتال.",
     pages: {
@@ -797,7 +1094,6 @@ const fa: DeepPartial<Dictionary> = {
       projects: "پروژه‌ها",
       project: "پروژه",
       services: "خدمات و قیمت‌گذاری",
-      portfolio: "نمونه‌کارها",
       contact: "تماس",
       notFound: "صفحه پیدا نشد",
     },
@@ -816,7 +1112,7 @@ const fa: DeepPartial<Dictionary> = {
     subtitle:
       "از طراحی رابط کاربری تا پیاده‌سازی بک‌اند، داشبورد، احراز هویت، پرداخت، سئو و دیپلوی، یک مسیر کامل برای ساخت محصول وب حرفه‌ای.",
     primaryCta: "درخواست برآورد پروژه",
-    secondaryCta: "مشاهده نمونه‌کارها",
+    secondaryCta: "مشاهده پروژه‌ها",
     available: "آماده‌ی همکاری",
     supportingText:
       "برای محصولاتی که هم ظاهر حرفه‌ای می‌خواهند و هم ساختار فنی قابل اتکا و آماده توسعه.",
@@ -893,69 +1189,160 @@ const fa: DeepPartial<Dictionary> = {
       description:
         "ایده‌ات را توضیح بده؛ مسیر فنی، زمان‌بندی و هزینه تقریبی را شفاف بهت می‌گم.",
       cta: "درخواست برآورد پروژه",
-      secondary: "مشاهده نمونه‌کارها",
+      secondary: "مشاهده پروژه‌ها",
     },
   },
   about: {
-    eyebrow: "درباره",
-    bio2:
-      "با بنیان‌گذاران، آژانس‌ها و تیم‌های کوچکی کار می‌کنم که به توسعه‌دهنده‌ای قابل‌اعتماد برای رساندن پروژه از ایده تا انتشار نیاز دارند. به معماری تمیز، ارتباط شفاف و تحویل کاری که واقعاً برای کسب‌وکار شما تفاوت ایجاد کند اهمیت می‌دهم.",
-    getInTouch: "تماس بگیرید",
-    downloadResume: "دانلود رزومه",
-    expertise: "تخصص‌ها",
-    details: "جزئیات",
-    location: "موقعیت:",
-    email: "ایمیل:",
+    hero: {
+      eyebrow: "درباره من",
+      title: "امیرحسین ورمزیانی",
+      subtitle:
+        "طراح و توسعه‌دهنده فول‌استک با تمرکز روی ساخت وب‌سایت‌ها، پنل‌های مدیریتی و وب‌اپلیکیشن‌های سریع، مقیاس‌پذیر و قابل توسعه.",
+      supporting:
+        "من کمک می‌کنم ایده‌ها از مرحله طراحی و معماری تا پیاده‌سازی، دیپلوی و بهینه‌سازی به محصولی واقعی و قابل استفاده تبدیل شوند؛ با تمرکز روی کیفیت فنی، تجربه کاربری و نتیجه تجاری.",
+      available: "آماده همکاری",
+      primary: "درخواست برآورد پروژه",
+      secondary: "مشاهده پروژه‌ها",
+      chips: ["Full-stack", "Next.js", "NestJS"],
+    },
+    stats: {
+      items: [
+        {
+          value: "۸+ ماه",
+          label: "توسعه و لانچ پروژه واقعی",
+        },
+        {
+          value: "۶۰k+",
+          label: "کاربر در پروژه نگاره",
+        },
+        {
+          value: "۳۰k+",
+          label: "محصول مدیریت‌شده",
+        },
+        {
+          value: "۱۲۰+",
+          label: "صفحه و مسیر پیاده‌سازی‌شده",
+        },
+      ],
+    },
     experience: {
       eyebrow: "تجربه",
-      title: "جاهایی که کار کرده‌ام",
-      subtitle: "تاریخچه‌ای کوتاه از نقش‌ها و پروژه‌هایی که نحوه‌ی کارم را شکل دادند.",
+      title: "تجربه‌هایی که مسیر | کاری من را ساختند",
+      subtitle:
+        "از پروژه‌های شخصی تا همکاری‌های واقعی، تمرکزم همیشه روی ساخت محصول قابل استفاده و قابل توسعه بوده است.",
     },
     tools: {
-      eyebrow: "ابزارها",
-      title: "ابزارها و تکنولوژی‌ها",
-      subtitle: "تکنولوژی‌هایی که روزانه استفاده می‌کنم، بر اساس کاربردشان دسته‌بندی شده‌اند.",
+      eyebrow: "تکنولوژی",
+      title: "ابزارها و تکنولوژی‌هایی | که با آن‌ها کار می‌کنم",
+      subtitle:
+        "انتخاب تکنولوژی برای من فقط لیست ابزار نیست؛ هر ابزار باید به سرعت، پایداری و توسعه‌پذیری محصول کمک کند.",
     },
     values: {
-      eyebrow: "سبک کاری",
-      title: "نگاه من به هر پروژه",
-      subtitle: "اصولی که پشت شیوه‌ی کار من با مشتری‌ها قرار دارد.",
+      eyebrow: "رویکرد",
+      title: "نگاه من | به هر پروژه",
+      subtitle:
+        "برای من پروژه فقط چند صفحه کد نیست؛ محصولی است که باید قابل فهم، قابل استفاده و قابل توسعه باشد.",
       items: [
+        {
+          title: "کد تمیز و نگهدارپذیر",
+          description:
+            "ساختار پروژه باید طوری باشد که توسعه، تغییر و نگهداری آن در آینده ساده بماند.",
+        },
         {
           title: "ارتباط شفاف",
           description:
-            "بدون اصطلاحات پیچیده، بدون غافلگیری. همیشه می‌دانید روی چه چیزی و چرا کار می‌کنم.",
+            "در هر مرحله، وضعیت پروژه، تصمیم‌های فنی و مسیر پیشرفت باید قابل پیگیری باشد.",
         },
         {
-          title: "کد قابل‌نگهداری",
+          title: "تفکر محصولی",
           description:
-            "با فکر به توسعه‌دهنده‌ی بعدی می‌نویسم — تایپ‌شده، ماژولار و مستند.",
-        },
-        {
-          title: "تمرکز بر کسب‌وکار",
-          description:
-            "تکنولوژی وسیله است نه هدف. به نتیجه‌ای که برای شما می‌آورد اهمیت می‌دهم.",
+            "قبل از کدنویسی، به تجربه کاربر، هدف تجاری و مسیر رشد محصول فکر می‌کنم.",
         },
         {
           title: "تحویل مطمئن",
           description:
-            "برآورد واقع‌بینانه و پیشرفت پیوسته، با پیش‌نمایش‌هایی که در هر مرحله می‌توانید ببینید.",
+            "پروژه باید تست‌شده، قابل دیپلوی، قابل استفاده و آماده توسعه‌های بعدی تحویل داده شود.",
+        },
+      ],
+    },
+    help: {
+      eyebrow: "همکاری",
+      title: "چطور می‌توانم به | پروژه‌ات کمک کنم؟",
+      subtitle:
+        "اگر ایده، سایت یا محصولی داری، می‌توانم در این بخش‌ها کنارت باشم.",
+      items: [
+        {
+          title: "طراحی و توسعه وب‌سایت",
+          description:
+            "وب‌سایت‌های سریع، ریسپانسیو، سئو محور و قابل مدیریت.",
+        },
+        {
+          title: "ساخت پنل مدیریت",
+          description:
+            "داشبوردهای اختصاصی برای مدیریت محتوا، کاربران، سفارش‌ها، داده‌ها و گزارش‌ها.",
+        },
+        {
+          title: "توسعه وب‌اپلیکیشن",
+          description:
+            "پیاده‌سازی محصول‌های تعاملی با بک‌اند، دیتابیس، احراز هویت و API.",
+        },
+        {
+          title: "بهینه‌سازی و توسعه پروژه موجود",
+          description:
+            "بهبود سرعت، ساختار، UI/UX، سئو، دیتابیس و کیفیت کد پروژه‌های فعلی.",
         },
       ],
     },
   },
   projects: {
-    eyebrow: "نمونه‌کارها",
+    eyebrow: "پروژه‌ها",
     title: "پروژه‌ها و مطالعات موردی",
     subtitle:
-      "مجموعه‌ای از محصولاتی که طراحی و ساخته‌ام — هرکدام با مسئله، رویکرد و نتیجه.",
+      "مجموعه‌ای از محصولاتی که طراحی و توسعه داده‌ام؛ با تمرکز روی عملکرد، تجربه کاربری، توسعه‌پذیری و نتیجه تجاری.",
+    supporting:
+      "از وب‌سایت‌های شخصی و برندینگ تا پنل‌های مدیریتی، مارکت‌پلیس‌ها و وب‌اپلیکیشن‌های اختصاصی.",
+    filterAll: "همه",
+    details: "مشاهده جزئیات",
+    caseStudy: "مطالعه موردی",
+    detailLabel: "جزئیات بیشتر پروژه",
+    totalLabel: "پروژه منتشرشده",
+    featuredLabel: "مطالعه موردی",
+    categoriesLabel: "دسته‌بندی",
+    technologiesLabel: "تکنولوژی",
     more: "پروژه‌های بیشتر",
     emptyTitle: "هنوز پروژه‌ای منتشر نشده",
-    emptyDesc: "پروژه‌هایی که در پنل مدیریت اضافه شوند اینجا نمایش داده می‌شوند.",
+    emptyDesc:
+      "پروژه‌هایی که از پنل مدیریت منتشر شوند، اینجا به‌صورت مطالعه موردی نمایش داده می‌شوند.",
+    emptySupport:
+      "اگر می‌خواهی نمونه‌های کاری بیشتری ببینی یا درباره تجربه‌های مشابه صحبت کنیم، می‌توانی درخواست برآورد پروژه ثبت کنی.",
     emptyCta: "تماس بگیرید",
+    emptyPrimary: "درخواست برآورد پروژه",
+    emptySecondary: "تماس بگیرید",
+    cta: {
+      title: "پروژه بعدی می‌تواند برای تو باشد",
+      description:
+        "ایده‌ات را توضیح بده؛ مسیر فنی، زمان‌بندی و هزینه تقریبی را شفاف بهت می‌گم.",
+      primary: "درخواست برآورد پروژه",
+      secondary: "تماس بگیرید",
+    },
   },
   projectDetail: {
     back: "← بازگشت به پروژه‌ها",
+    eyebrow: "کیس استادی",
+    screenshots: "اسکرین‌شات‌های پروژه",
+    screenshotsText:
+      "نگاهی نزدیک‌تر به رابط، فلوها و اجرای بصری محصول در بخش‌های مختلف.",
+    meta: "جزئیات پروژه",
+    metrics: "متریک‌های پروژه",
+    metricsText:
+      "نمایی سریع از مقیاس، پیچیدگی و قابلیت‌هایی که در این محصول پیاده‌سازی شده‌اند.",
+    highlights: "نکات فنی",
+    highlightsText:
+      "تصمیم‌های فنی کلیدی و جزئیات پیاده‌سازی که ساخت این پروژه را شکل داده‌اند.",
+    tags: "برچسب‌ها",
+    tagsTitle: "برچسب‌های پروژه",
+    category: "دسته‌بندی",
+    badges: "نشان‌ها",
     techStack: "تکنولوژی‌ها",
     overview: "نمای کلی",
     challenge: "چالش",
@@ -964,6 +1351,7 @@ const fa: DeepPartial<Dictionary> = {
     role: "نقش",
     client: "کارفرما",
     year: "سال",
+    links: "لینک‌ها",
     viewLive: "مشاهده زنده ↗",
     sourceCode: "کد منبع",
     cover: "رسانه‌ی پروژه",
@@ -972,100 +1360,211 @@ const fa: DeepPartial<Dictionary> = {
     cta: "شروع گفتگو",
   },
   services: {
-    eyebrow: "قیمت‌گذاری",
+    eyebrow: "خدمات و همکاری",
     title: "خدمات و پلن‌ها",
     subtitle:
-      "قیمت‌های شروع شفاف برای همکاری‌های رایج. چیز متفاوتی می‌خواهید؟ گزینه‌ی سفارشی پوششتان می‌دهد.",
+      "قیمت‌گذاری پروژه‌های وب به نیاز، مقیاس، امکانات و سطح سفارشی‌سازی بستگی دارد؛ این صفحه کمک می‌کند مسیر همکاری و برآورد هزینه شفاف‌تر شود.",
+    supporting:
+      "از وب‌سایت‌های سریع و سئو محور تا پنل‌های مدیریتی، مارکت‌پلیس‌ها و وب‌اپلیکیشن‌های اختصاصی.",
+    totalLabel: "پلن منتشرشده",
+    plansEyebrow: "پلن‌ها",
+    plansTitle: "پلن‌های پیشنهادی همکاری",
+    plansSubtitle:
+      "این پلن‌ها نقطه شروع هستند؛ هزینه نهایی بعد از بررسی نیازها، امکانات و سطح سفارشی‌سازی مشخص می‌شود.",
     priceNote:
       "همه‌ی قیمت‌ها نمونه و به دلار آمریکا هستند. قیمت نهایی متناسب با محدوده‌ی پروژه‌ی شما تعیین می‌شود.",
-    emptyTitle: "هنوز پلنی موجود نیست",
-    emptyDesc: "پلن‌های خدماتی که در پنل مدیریت اضافه شوند اینجا نمایش داده می‌شوند.",
+    emptyTitle: "هنوز پلنی منتشر نشده",
+    emptyDesc:
+      "پلن‌هایی که از پنل مدیریت منتشر شوند، اینجا نمایش داده می‌شوند. تا آن زمان می‌توانی با ارسال توضیح کوتاه، برآورد اختصاصی دریافت کنی.",
+    emptySupport:
+      "اگر محدوده پروژه‌ات هنوز دقیق نیست، مشاور پروژه سریع‌ترین راه برای رسیدن به یک مسیر فنی منطقی است.",
     emptyCta: "تماس با من",
+    emptyPrimary: "درخواست برآورد پروژه",
+    emptySecondary: "تماس با من",
     faqEyebrow: "پرسش‌های متداول",
-    faqTitle: "سوالات رایج",
+    faqTitle: "سؤالات رایج",
     faqs: [
       {
         q: "قیمت‌گذاری چطور کار می‌کند؟",
-        a: "هر پلن یک نقطه‌ی شروع است. بعد از یک تماس کوتاه، قیمتی ثابت و متناسب با محدوده‌ی شما ارائه می‌دهم تا غافلگیری‌ای نباشد.",
+        a: "هر پروژه بر اساس نوع، امکانات، سطح طراحی، زمان‌بندی و پیچیدگی فنی برآورد می‌شود.",
       },
       {
-        q: "زمان‌بندی معمول شما چقدر است؟",
-        a: "یک صفحه‌ی فرود حدود ۱ تا ۲ هفته و وب‌سایت‌ها و اپ‌های بزرگ‌تر بسته به محدوده ۴ تا ۱۰ هفته زمان می‌برد. زمان‌بندی روشن را از ابتدا می‌دهم.",
+        q: "زمان‌بندی معمولاً چقدر است؟",
+        a: "برای وب‌سایت‌های کوچک معمولاً ۲ تا ۴ هفته، و برای پنل‌ها یا وب‌اپلیکیشن‌های پیچیده زمان بیشتری لازم است.",
       },
       {
-        q: "آیا پشتیبانی مستمر ارائه می‌دهید؟",
-        a: "بله. بیشتر پروژه‌ها بازه‌ی پشتیبانی پس از انتشار دارند و قرارداد ماهانه‌ی اختیاری برای بهبود مستمر هم ارائه می‌دهم.",
+        q: "آیا پشتیبانی هم انجام می‌دهی؟",
+        a: "بله، بعد از تحویل می‌توانیم برای پشتیبانی، رفع باگ، بهبود عملکرد یا توسعه‌های بعدی توافق کنیم.",
       },
       {
         q: "اگر پروژه‌ام با هیچ پلنی جور نباشد چه؟",
-        a: "گزینه‌ی اپلیکیشن وب سفارشی دقیقاً برای همین است. تماس بگیرید تا چیزی متناسب با نیاز دقیق شما تعریف کنیم.",
+        a: "مشکلی نیست. بسیاری از پروژه‌ها اختصاصی هستند و بعد از بررسی نیازها، پیشنهاد متناسب ارائه می‌شود.",
       },
     ],
     ctaTitle: "مطمئن نیستید کدام پلن مناسب است؟",
-    ctaText: "درباره‌ی پروژه‌تان بگویید تا رویکرد درست را پیشنهاد دهم.",
+    ctaText:
+      "درباره پروژه‌ات بگو تا مسیر درست و پیشنهاد مناسب‌تری دریافت کنی.",
     cta: "دریافت پیشنهاد",
-  },
-  portfolio: {
-    eyebrow: "نمونه کارها",
-    title: "نمونه‌کارها",
-    subtitle: "گالری‌ای از کارهای تجاری، شخصی و فریلنسری.",
-    emptyTitle: "هنوز نمونه‌کاری نیست",
-    emptyDesc: "نمونه‌کارهایی که در پنل مدیریت اضافه شوند اینجا نمایش داده می‌شوند.",
-    filters: {
-      all: "همه",
-      commercial: "تجاری",
-      personal: "شخصی",
-      freelance: "فریلنسری",
-    },
-    emptyCat: "هنوز موردی در این دسته نیست.",
+    ctaSecondary: "درخواست برآورد پروژه",
   },
   contact: {
     eyebrow: "تماس",
-    title: "بیایید با هم کار کنیم",
+    title: "درباره پروژه‌ات صحبت کنیم",
     subtitle:
-      "پیامی بفرستید تا در اولین فرصت — معمولاً ظرف یک روز — پاسخ دهم.",
+      "اگر ایده‌ای برای یک وب‌سایت، پنل مدیریتی یا وب‌اپلیکیشن داری، پیام بفرست تا با هم مسیر فنی، زمان‌بندی و برآورد اولیه را بررسی کنیم.",
+    supporting:
+      "لازم نیست همه جزئیات از قبل آماده باشد؛ یک توضیح کوتاه کافی است تا گفت‌وگو را شروع کنیم.",
     email: "ایمیل",
     location: "موقعیت",
-    elsewhere: "جاهای دیگر",
+    elsewhere: "شبکه‌ها و راه‌های دیگر",
+    methodsTitle: "راه‌های ارتباط",
+    methodsSubtitle:
+      "بهترین مسیر ارتباط، فرم همین صفحه است. اطلاعات تماس و لینک‌های فعال از تنظیمات سایت نمایش داده می‌شوند.",
+    infoCardIntro:
+      "اطلاعاتی که اینجا وارد می‌کنی فقط برای بررسی پروژه و پاسخ‌گویی استفاده می‌شود.",
+    infoCard: {
+      title: "مسیر ارتباط",
+      items: [
+        {
+          title: "زمان پاسخ‌گویی",
+          description:
+            "معمولاً در اولین فرصت یا حداکثر طی یک روز کاری پاسخ می‌دهم.",
+          icon: "clock",
+        },
+        {
+          title: "مناسب برای",
+          description:
+            "وب‌سایت، پنل مدیریتی، وب‌اپلیکیشن و توسعه پروژه موجود.",
+          icon: "briefcase",
+        },
+        {
+          title: "شروع همکاری",
+          description:
+            "اگر هنوز دقیق نمی‌دانی چه چیزی لازم داری، یک توضیح کوتاه کافی است.",
+          icon: "message",
+        },
+        {
+          title: "برآورد پروژه",
+          description:
+            "برای بررسی دقیق‌تر، می‌توانی فرم برآورد پروژه را تکمیل کنی.",
+          icon: "send",
+        },
+      ],
+      primaryCta: {
+        label: "درخواست برآورد پروژه",
+        href: "/start-project",
+      },
+      secondaryCta: {
+        label: "مشاهده پروژه‌ها",
+        href: "/projects",
+      },
+    },
+    process: {
+      badge: "بعد از ارسال پیام",
+      title: "بعد از ارسال پیام چه اتفاقی می‌افتد؟",
+      subtitle:
+        "اول پیام را بررسی می‌کنم، اگر لازم باشد چند سؤال کوتاه می‌پرسم، و بعد بهترین مسیر بعدی را پیشنهاد می‌دهم.",
+      steps: [
+        {
+          title: "بررسی پیام",
+          description: "نیاز و توضیحات اولیه پروژه را بررسی می‌کنم.",
+          icon: "search",
+        },
+        {
+          title: "چند سؤال تکمیلی",
+          description:
+            "اگر لازم باشد، برای روشن‌تر شدن مسیر پروژه چند سؤال کوتاه می‌پرسم.",
+          icon: "help",
+        },
+        {
+          title: "پیشنهاد مسیر",
+          description:
+            "زمان‌بندی، مسیر فنی و حدود برآورد اولیه را شفاف پیشنهاد می‌دهم.",
+          icon: "zap",
+        },
+      ],
+    },
+    cta: {
+      title: "نمی‌دونی از کجا شروع کنی؟",
+      subtitle: "با یک توضیح کوتاه، مسیر مناسب پروژه‌ات را پیدا می‌کنیم.",
+      primary: "شروع برآورد پروژه",
+      secondary: "مشاهده خدمات",
+    },
     form: {
       name: "نام",
       email: "ایمیل",
       subject: "موضوع",
       message: "پیام",
+      projectType: "نوع پروژه",
+      budgetRange: "بودجه حدودی",
+      timeline: "زمان‌بندی",
+      placeholders: {
+        name: "نام شما",
+        email: "you@example.com",
+        subject: "مثلاً طراحی سایت، پنل مدیریت یا مشاوره فنی",
+        message:
+          "کمی درباره ایده، هدف یا نیاز پروژه‌ات توضیح بده...",
+      },
+      options: {
+        empty: "انتخاب کنید",
+        projectType: {
+          website: "وب‌سایت",
+          dashboard: "پنل مدیریت",
+          webapp: "وب‌اپلیکیشن",
+          optimization: "بهینه‌سازی پروژه موجود",
+          other: "سایر",
+        },
+        budgetRange: {
+          estimate: "نیاز به برآورد دارم",
+          under30: "کمتر از ۳۰ میلیون",
+          between30And70: "۳۰ تا ۷۰ میلیون",
+          between70And150: "۷۰ تا ۱۵۰ میلیون",
+          above150: "بیشتر از ۱۵۰ میلیون",
+        },
+        timeline: {
+          urgent: "فوری",
+          oneToTwoMonths: "۱ تا ۲ ماه",
+          threePlusMonths: "۳ ماه به بالا",
+          flexible: "انعطاف‌پذیر",
+        },
+      },
       send: "ارسال پیام",
       sending: "در حال ارسال…",
-      success:
-        "ممنون که پیام دادید — پیام شما ارسال شد. به‌زودی پاسخ می‌دهم.",
+      success: "پیامت با موفقیت ارسال شد. در اولین فرصت پاسخ می‌دهم.",
       errorRequired: "نام، ایمیل و پیام الزامی هستند.",
-      errorGeneric:
-        "در حال حاضر ارسال پیام شما ممکن نشد. لطفاً بعداً دوباره تلاش کنید یا مستقیم ایمیل بزنید.",
+      errorEmail: "لطفاً یک ایمیل معتبر وارد کنید.",
+      errorGeneric: "ارسال پیام با مشکل روبه‌رو شد. لطفاً دوباره تلاش کن.",
     },
   },
   planner: {
     hero: {
-      title: "پروژه‌ات را هوشمند شروع کن",
+      badge: "برآورد پروژه",
+      title: "پروژه‌ات را هوشمندانه شروع کن",
       subtitle:
-        "چند سوال کوتاه پاسخ بده و یک پلن پیشنهادی برای سایت یا سیستم دیجیتال خودت دریافت کن.",
+        "به چند سؤال کوتاه پاسخ بده تا مسیر پیشنهادی، پیچیدگی تقریبی، زمان‌بندی و حدود هزینه پروژه بهتر مشخص شود.",
+      supporting:
+        "این برآورد اولیه است و بعد از بررسی جزئیات پروژه می‌تواند دقیق‌تر شود.",
     },
     cmsNote:
       "برای پروژه‌های ساده‌تر یا شروع سریع، راهکارهای مبتنی بر CMS می‌توانند انتخاب اقتصادی و مناسبی باشند. برای سیستم‌های اختصاصی و مقیاس‌پذیر، توسعه اختصاصی پیشنهاد می‌شود.",
     ui: {
-      next: "بعدی",
-      back: "قبلی",
-      submit: "ثبت درخواست پروژه",
-      submitting: "در حال ثبت درخواست...",
-      selectOne: "یک گزینه انتخاب کنید",
-      selectMany: "هر تعداد که لازم است انتخاب کنید",
+      next: "ادامه",
+      back: "بازگشت",
+      submit: "ارسال درخواست برآورد",
+      submitting: "در حال ارسال درخواست...",
+      selectOne: "یک گزینه انتخاب کن",
+      selectMany: "هر تعداد که لازم است انتخاب کن",
+      typeHelper: "یک گزینه را انتخاب کن تا مسیر برآورد اولیه مشخص شود.",
       optional: "اختیاری",
       summary: "پاسخ‌های شما",
       recommendation: "رویکرد پیشنهادی",
-      step: "گام",
+      step: "مرحله",
       of: "از",
       restart: "شروع دوباره",
       none: "—",
     },
     steps: {
-      projectType: "چه چیزی می‌سازید؟",
+      projectType: "چه چیزی می‌خواهی بسازی؟",
       cmsSolutionType: "کدام رویکرد وردپرس مناسب‌تر است؟",
       goals: "هدف‌های اصلی شما چیست؟",
       features: "به چه قابلیت‌هایی نیاز دارید؟",
@@ -1085,32 +1584,114 @@ const fa: DeepPartial<Dictionary> = {
       descriptionPlaceholder: "کمی بیشتر درباره‌ی پروژه‌تان بگویید…",
     },
     result: {
-      title: "پیشنهاد من این است",
+      title: "خلاصه برآورد",
+      previewBadge: "پیش‌نمایش",
+      basis: "برآورد اولیه بر اساس انتخاب‌های فعلی",
+      empty:
+        "بعد از انتخاب گزینه‌ها، خلاصه‌ای از مسیر پیشنهادی، پیچیدگی، زمان‌بندی و حدود هزینه اینجا نمایش داده می‌شود.",
+      projectType: "نوع پروژه",
+      notSelected: "انتخاب نشده",
       plan: "رویکرد پیشنهادی",
-      complexity: "پیچیدگی تخمینی",
-      timeline: "زمان‌بندی تخمینی",
+      complexity: "پیچیدگی تقریبی",
+      timeline: "زمان تقریبی",
       score: "امتیاز پروژه",
-      duration: "مدت زمان تقریبی",
+      duration: "زمان تقریبی",
       weeksUnit: "هفته",
       daysUnit: "روز",
-      price: "هزینه تقریبی",
-      breakdown: "مشاهده جزئیات برآورد",
+      price: "حدود هزینه",
+      priceFrom: "از",
+      to: "تا",
+      needsReview: "نیاز به بررسی دقیق",
+      featuresLabel: "امکانات انتخاب‌شده",
+      designLabel: "سطح طراحی",
+      supportLabel: "پشتیبانی",
+      supportDetailPrefix: "پشتیبانی پس از تحویل",
+      supportOngoingNote:
+        "پشتیبانی بلندمدت به‌صورت جداگانه و ماهانه توافق می‌شود.",
+      pagesLabel: "تعداد صفحات",
+      pagesUnit: "صفحه",
+      noFeatures: "بدون امکانات اضافه",
+      calcTitle: "جزئیات برآورد",
+      urgencyWarning:
+        "زمان انتخاب‌شده فشرده‌تر از برآورد فعلی است و ممکن است نیاز به کاهش امکانات یا اجرای مرحله‌ای داشته باشد.",
+      breakdown: "جزئیات برآورد",
+      priceNote:
+        "این عدد قطعی نیست و بعد از بررسی جزئیات پروژه دقیق‌تر می‌شود.",
       disclaimer:
         "این برآورد اولیه است و بعد از بررسی جزئیات پروژه نهایی می‌شود.",
     },
+    pages: {
+      helper:
+        "صفحه‌هایی مثل خانه، درباره، خدمات، تماس، لیست محصولات، جزئیات محصول یا داشبورد هرکدام بخشی از زمان طراحی و پیاده‌سازی را تشکیل می‌دهند.",
+      maxNote:
+        "برای پروژه‌های بزرگ‌تر از ۲۰ صفحه، بهتر است برآورد دقیق‌تر بعد از بررسی ساختار انجام شود.",
+      presets: ["۱ تا ۳", "۴ تا ۷", "۸ تا ۱۲", "۱۳ تا ۲۰", "بیشتر از ۲۰"],
+    },
+    success: {
+      title: "درخواستت با موفقیت ثبت شد",
+      subtitle:
+        "خلاصه برآورد اولیه آماده شد. بعد از بررسی جزئیات، برای نهایی‌سازی مسیر، زمان‌بندی و هزینه با تو تماس می‌گیرم.",
+      note: "این برآورد قطعی نیست و بعد از بررسی دقیق نیازها می‌تواند تغییر کند.",
+      downloadPdf: "دانلود پیش‌فاکتور PDF",
+      downloading: "در حال آماده‌سازی...",
+      downloadError:
+        "دانلود پیش‌فاکتور با مشکل روبه‌رو شد. لطفاً دوباره تلاش کن.",
+      viewProjects: "مشاهده پروژه‌ها",
+      backHome: "بازگشت به خانه",
+    },
+    pdf: {
+      title: "پیش‌فاکتور اولیه پروژه",
+      subtitle:
+        "برآورد اولیه بر اساس اطلاعات ثبت‌شده در فرم برآورد پروژه",
+      date: "تاریخ",
+      client: "اطلاعات کارفرما",
+      name: "نام",
+      email: "ایمیل",
+      phone: "شماره تماس / تلگرام",
+      company: "برند یا شرکت",
+      contactMethod: "روش تماس ترجیحی",
+      projectSummary: "خلاصه پروژه",
+      projectType: "نوع پروژه",
+      designLevel: "سطح طراحی",
+      pages: "تعداد صفحات",
+      features: "امکانات انتخاب‌شده",
+      timelinePref: "زمان‌بندی موردنظر",
+      description: "توضیحات پروژه",
+      estimateSummary: "برآورد اولیه",
+      complexity: "پیچیدگی تقریبی",
+      timeline: "زمان تقریبی",
+      price: "حدود هزینه",
+      support: "پشتیبانی پس از تحویل",
+      supportType: "نوع پشتیبانی",
+      supportDesc: "توضیح کوتاه",
+      supportEffect: "اثر روی برآورد",
+      supportEffects: {
+        none: "بدون تغییر در هزینه و زمان",
+        basic_1_month: "افزایش جزئی هزینه",
+        pro_3_months: "افزایش متوسط هزینه و ۱ تا ۳ روز زمان",
+        ongoing: "نیازمند توافق جداگانه و ماهانه",
+      },
+      notesTitle: "توضیحات و شرایط",
+      disclaimer:
+        "این پیش‌فاکتور صرفاً یک برآورد اولیه بر اساس اطلاعات واردشده است و به‌عنوان قیمت نهایی یا تعهد قراردادی محسوب نمی‌شود. مبلغ و زمان نهایی پس از بررسی کامل جزئیات پروژه، محدوده امکانات، طراحی، محتوا، زیرساخت و شرایط همکاری مشخص خواهد شد.",
+      contactNote:
+        "برای نهایی‌سازی پیشنهاد، پس از بررسی جزئیات با شما تماس گرفته می‌شود.",
+      none: "—",
+    },
     plans: {
-      landing: "صفحه فرود",
-      cms: "ساخت سایت وردپرسی (CMS)",
-      website: "وب‌سایت فول‌استک",
+      landing: "صفحه فرود (Landing Page)",
+      cms: "ساخت سایت وردپرسی (WordPress / CMS)",
+      website: "وب‌سایت فول‌استک (Full-stack)",
       ecommerce: "ساخت فروشگاه اینترنتی",
-      dashboard: "داشبورد و پنل مدیریت",
-      custom: "توسعه اختصاصی",
+      dashboard: "داشبورد و پنل مدیریت (Admin Panel)",
+      custom: "توسعه اختصاصی (Custom)",
     },
     complexity: {
       low: "کم",
       medium: "متوسط",
       high: "زیاد",
       very_high: "خیلی زیاد",
+      needs_review: "نیازمند بررسی",
     },
     timelines: {
       "1-2-weeks": "۱ تا ۲ هفته",
@@ -1135,7 +1716,7 @@ const fa: DeepPartial<Dictionary> = {
       start: "شروع پروژه",
       servicesTitle: "نمی‌دونی دقیقاً چه چیزی برای پروژه‌ات لازمه؟",
       servicesText:
-        "چند سوال کوتاه جواب بده تا بر اساس نوع پروژه، امکانات، تعداد صفحات، سطح طراحی و تکنولوژی‌ها یک پیشنهاد اولیه، زمان تقریبی و برآورد هزینه دریافت کنی.",
+        "چند سؤال کوتاه درباره نوع پروژه، امکانات، تعداد صفحات، سطح طراحی و تکنولوژی‌ها کمک می‌کند یک پیشنهاد اولیه، منطقی و قابل اجرا برایت آماده کنم.",
       servicesButton: "شروع برآورد پروژه",
     },
   },
@@ -1184,9 +1765,10 @@ const fa: DeepPartial<Dictionary> = {
     },
     nav: {
       dashboard: "داشبورد",
+      about: "صفحه درباره",
+      contactPage: "صفحه تماس",
       projects: "پروژه‌ها",
       services: "خدمات",
-      portfolio: "نمونه‌کارها",
       messages: "پیام‌ها",
       projectRequests: "درخواست‌های پروژه",
       plannerOptions: "تنظیمات مشاور پروژه",
@@ -1307,8 +1889,10 @@ const fa: DeepPartial<Dictionary> = {
       description: "نمای کلی محتوای سایت شما.",
       statProjects: "پروژه‌ها",
       statServices: "خدمات",
-      statPortfolio: "نمونه‌کارها",
       statNewMessages: "پیام‌های جدید",
+      statUniqueVisitors: "بازدیدکنندگان یکتا",
+      statPageViews: "بازدید صفحه‌ها",
+      statToday: "امروز",
       recentMessages: "پیام‌های اخیر",
       viewAll: "مشاهده همه",
       quickActions: "اقدامات سریع",
@@ -1327,12 +1911,6 @@ const fa: DeepPartial<Dictionary> = {
       newItem: "پلن جدید",
       empty: "هنوز پلنی نیست. اولین پلن را بسازید.",
     },
-    portfolio: {
-      title: "نمونه‌کارها",
-      description: "مدیریت نمونه‌کارها و گالری.",
-      newItem: "مورد جدید",
-      empty: "هنوز نمونه‌کاری نیست. اولین مورد را بسازید.",
-    },
     messages: {
       title: "پیام‌ها",
       description: "درخواست‌های تماس ارسال‌شده از طریق سایت شما.",
@@ -1344,6 +1922,27 @@ const fa: DeepPartial<Dictionary> = {
       newTitle: "ساخت تنظیمات سایت",
       save: "ذخیره تنظیمات",
       noticeFirst: "هنوز ردیف تنظیماتی وجود ندارد — با ذخیره ساخته می‌شود.",
+    },
+    about: {
+      title: "مدیریت صفحه درباره",
+      description: "محتوای نمایش‌داده‌شده در صفحه عمومی درباره را مدیریت کنید.",
+      save: "ذخیره صفحه درباره",
+      noticeFirst:
+        "هنوز ردیف تنظیماتی وجود ندارد — با ذخیره این محتوای About ساخته می‌شود.",
+    },
+    contact: {
+      title: "مدیریت صفحه تماس",
+      description:
+        "محتوای صفحه عمومی تماس و راه‌های ارتباطی مشترک را مدیریت کنید.",
+      save: "ذخیره صفحه تماس",
+      noticeFirst:
+        "هنوز ردیف تنظیماتی وجود ندارد — با ذخیره این محتوای Contact ساخته می‌شود.",
+      sharedTitle: "تنظیمات مشترک تماس",
+      sharedDescription:
+        "این مقادیر در راه‌های ارتباطی صفحه تماس و لینک‌های اجتماعی فوتر استفاده می‌شوند.",
+      contentTitle: "محتوای صفحه",
+      contentDescription:
+        "هر زبان می‌تواند نسخه مستقل صفحه تماس خودش را داشته باشد و در صورت خالی بودن، fallback انجام می‌شود.",
     },
     table: {
       title: "عنوان",
@@ -1386,13 +1985,11 @@ const fa: DeepPartial<Dictionary> = {
     quick: {
       newProject: "پروژه جدید",
       newService: "خدمت / پلن جدید",
-      newPortfolio: "نمونه‌کار جدید",
       viewMessages: "مشاهده پیام‌ها",
     },
     confirm: {
       project: "این پروژه حذف شود؟ این کار قابل بازگشت نیست.",
       plan: "این پلن حذف شود؟ این کار قابل بازگشت نیست.",
-      portfolio: "این نمونه‌کار حذف شود؟ این کار قابل بازگشت نیست.",
       message: "این پیام حذف شود؟ این کار قابل بازگشت نیست.",
     },
     forms: {
@@ -1429,14 +2026,10 @@ const fa: DeepPartial<Dictionary> = {
       saveProject: "ذخیره تغییرات",
       createService: "ساخت پلن",
       saveService: "ذخیره تغییرات",
-      createPortfolio: "ساخت مورد",
-      savePortfolio: "ذخیره تغییرات",
       pageProjectNew: "پروژه جدید",
       pageProjectEdit: "ویرایش پروژه",
       pageServiceNew: "خدمت / پلن جدید",
       pageServiceEdit: "ویرایش خدمت / پلن",
-      pagePortfolioNew: "نمونه‌کار جدید",
-      pagePortfolioEdit: "ویرایش نمونه‌کار",
       title: "عنوان",
       name: "نام",
       slug: "اسلاگ",
@@ -1502,6 +2095,12 @@ const fa: DeepPartial<Dictionary> = {
         "ترتیب نمایش در صفحه اصلی باید یک عدد معتبر و صفر یا بیشتر باشد.",
       invalidMetric:
         "هر متریک باید هم برچسب و هم مقدار داشته باشد.",
+      invalidAboutContent:
+        "محتوای صفحه درباره ناقص یا نامعتبر است. فیلدهای ضروری را بررسی و دوباره تلاش کنید.",
+      invalidContactContent:
+        "محتوای صفحه تماس ناقص یا نامعتبر است. فیلدهای ضروری را بررسی و دوباره تلاش کنید.",
+      invalidUrl:
+        "لینک‌های CTA باید مسیر داخلی یا URL کامل معتبر باشند.",
     },
     auth: {
       title: "ورود مدیر",

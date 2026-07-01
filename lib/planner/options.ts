@@ -39,14 +39,14 @@ export interface LocalizedOption {
 
 export const DEFAULT_PLANNER_OPTIONS: PlannerOptionDef[] = [
   // projectType
-  { group: "projectType", value: "landing_page", icon: "layout", weight: 1, labelFa: "صفحه فرود (لندینگ)", labelEn: "Landing page" },
+  { group: "projectType", value: "landing_page", icon: "layout", weight: 1, labelFa: "صفحه فرود (Landing Page)", labelEn: "Landing page" },
   { group: "projectType", value: "corporate_website", icon: "globe", weight: 2, labelFa: "وب‌سایت شرکتی", labelEn: "Corporate website" },
   { group: "projectType", value: "personal_branding", icon: "star", weight: 2, labelFa: "سایت شخصی / برندینگ", labelEn: "Personal / branding site" },
-  { group: "projectType", value: "cms_wordpress", icon: "file", weight: 2, labelFa: "سایت وردپرسی (CMS)", labelEn: "CMS / WordPress website" },
+  { group: "projectType", value: "cms_wordpress", icon: "file", weight: 2, labelFa: "سایت وردپرسی (WordPress / CMS)", labelEn: "CMS / WordPress website" },
   { group: "projectType", value: "ecommerce", icon: "cart", weight: 6, labelFa: "فروشگاه اینترنتی", labelEn: "E-commerce" },
-  { group: "projectType", value: "marketplace", icon: "layers", weight: 9, labelFa: "مارکت‌پلیس (چندفروشنده)", labelEn: "Marketplace" },
-  { group: "projectType", value: "admin_dashboard", icon: "grid", weight: 5, labelFa: "داشبورد و پنل مدیریت", labelEn: "Admin dashboard" },
-  { group: "projectType", value: "custom_web_app", icon: "cpu", weight: 7, labelFa: "اپلیکیشن وب اختصاصی", labelEn: "Custom web application" },
+  { group: "projectType", value: "marketplace", icon: "layers", weight: 9, labelFa: "مارکت‌پلیس (Marketplace)", labelEn: "Marketplace" },
+  { group: "projectType", value: "admin_dashboard", icon: "grid", weight: 5, labelFa: "داشبورد و پنل مدیریت (Admin Panel)", labelEn: "Admin dashboard" },
+  { group: "projectType", value: "custom_web_app", icon: "cpu", weight: 7, labelFa: "اپلیکیشن وب اختصاصی (Web App)", labelEn: "Custom web application" },
 
   // cmsSolutionType (only when projectType === cms_wordpress)
   { group: "cmsSolutionType", value: "ready_theme", icon: "layout", weight: 1, labelFa: "قالب آماده", labelEn: "Ready-made theme", descriptionFa: "اقتصادی و سریع برای شروع.", descriptionEn: "Economical and fast to launch." },
@@ -64,22 +64,28 @@ export const DEFAULT_PLANNER_OPTIONS: PlannerOptionDef[] = [
   { group: "goal", value: "content_publishing", icon: "book", weight: 1, labelFa: "انتشار محتوا", labelEn: "Content publishing" },
   { group: "goal", value: "scalability", icon: "layers", weight: 4, labelFa: "مقیاس‌پذیری", labelEn: "Scalability" },
 
-  // feature (multi)
-  { group: "feature", value: "auth", icon: "lock", weight: 3, labelFa: "حساب کاربری و ورود", labelEn: "User accounts & login" },
+  // feature (multi) — must mirror the FEATURES question in question-flow.ts
+  { group: "feature", value: "contact_form", icon: "mail", weight: 1, labelFa: "فرم تماس / ثبت درخواست", labelEn: "Contact / request form" },
+  { group: "feature", value: "cms_blog", icon: "book", weight: 2, labelFa: "وبلاگ یا مدیریت محتوا (CMS)", labelEn: "Blog / content management (CMS)" },
+  { group: "feature", value: "auth", icon: "lock", weight: 3, labelFa: "ورود و ثبت‌نام کاربران", labelEn: "User login & signup" },
+  { group: "feature", value: "admin_panel", icon: "grid", weight: 4, labelFa: "پنل مدیریت (Admin Panel)", labelEn: "Admin panel" },
+  { group: "feature", value: "roles", icon: "sliders", weight: 3, labelFa: "نقش‌ها و سطح دسترسی", labelEn: "Roles & permissions" },
   { group: "feature", value: "payments", icon: "card", weight: 4, labelFa: "پرداخت آنلاین", labelEn: "Online payments" },
-  { group: "feature", value: "admin_dashboard", icon: "grid", weight: 4, labelFa: "پنل مدیریت", labelEn: "Admin dashboard" },
-  { group: "feature", value: "blog", icon: "book", weight: 1, labelFa: "بلاگ / مقالات", labelEn: "Blog / articles" },
-  { group: "feature", value: "multilang", icon: "globe2", weight: 2, labelFa: "چندزبانه", labelEn: "Multi-language" },
-  { group: "feature", value: "api_integration", icon: "link", weight: 3, labelFa: "یکپارچه‌سازی با سرویس‌ها (API)", labelEn: "API integrations" },
-  { group: "feature", value: "realtime", icon: "activity", weight: 5, labelFa: "قابلیت‌های لحظه‌ای (Realtime)", labelEn: "Realtime features" },
-  { group: "feature", value: "file_uploads", icon: "upload", weight: 2, labelFa: "آپلود فایل", labelEn: "File uploads" },
-  { group: "feature", value: "search", icon: "search", weight: 2, labelFa: "جستجوی پیشرفته", labelEn: "Advanced search" },
+  { group: "feature", value: "wallet", icon: "dollar", weight: 5, labelFa: "کیف پول", labelEn: "Wallet" },
+  { group: "feature", value: "subscription", icon: "star", weight: 4, labelFa: "اشتراک یا پلن عضویت", labelEn: "Subscription / membership plans" },
+  { group: "feature", value: "upload", icon: "upload", weight: 2, labelFa: "آپلود فایل", labelEn: "File upload" },
+  { group: "feature", value: "search", icon: "search", weight: 3, labelFa: "جستجو و فیلتر پیشرفته", labelEn: "Advanced search & filtering" },
+  { group: "feature", value: "reporting", icon: "activity", weight: 4, labelFa: "داشبورد و گزارش‌گیری", labelEn: "Dashboard & reporting" },
+  { group: "feature", value: "notifications", icon: "message", weight: 3, labelFa: "اعلان، ایمیل یا پیامک", labelEn: "Notifications, email or SMS" },
+  { group: "feature", value: "multilingual", icon: "globe2", weight: 2, labelFa: "چندزبانه", labelEn: "Multilingual" },
+  { group: "feature", value: "external_api", icon: "link", weight: 3, labelFa: "اتصال به سرویس خارجی (API)", labelEn: "External service (API) integration" },
+  { group: "feature", value: "advanced_seo", icon: "trending", weight: 2, labelFa: "سئو پیشرفته (SEO)", labelEn: "Advanced SEO" },
+  { group: "feature", value: "performance", icon: "zap", weight: 2, labelFa: "کش، بهینه‌سازی و عملکرد", labelEn: "Caching, optimization & performance" },
 
-  // designLevel
-  { group: "designLevel", value: "template", icon: "layout", weight: 1, labelFa: "مبتنی بر قالب", labelEn: "Template-based" },
-  { group: "designLevel", value: "standard", icon: "pen", weight: 2, labelFa: "استاندارد", labelEn: "Standard" },
-  { group: "designLevel", value: "premium", icon: "star", weight: 4, labelFa: "ویژه (Premium)", labelEn: "Premium" },
-  { group: "designLevel", value: "custom", icon: "award", weight: 6, labelFa: "کاملاً اختصاصی", labelEn: "Fully custom" },
+  // designLevel — must mirror the DESIGN_LEVEL question in question-flow.ts
+  { group: "designLevel", value: "simple", icon: "layout", weight: 1, labelFa: "ساده و تمیز", labelEn: "Simple & clean" },
+  { group: "designLevel", value: "professional", icon: "pen", weight: 3, labelFa: "حرفه‌ای و اختصاصی", labelEn: "Professional & tailored" },
+  { group: "designLevel", value: "custom", icon: "award", weight: 6, labelFa: "کاملاً سفارشی و برندمحور", labelEn: "Fully custom & brand-driven" },
 
   // currentStage
   { group: "currentStage", value: "idea", icon: "zap", weight: 0, labelFa: "فقط یک ایده", labelEn: "Just an idea" },
@@ -87,10 +93,12 @@ export const DEFAULT_PLANNER_OPTIONS: PlannerOptionDef[] = [
   { group: "currentStage", value: "has_design", icon: "pen", weight: 2, labelFa: "طراحی آماده است", labelEn: "Design is ready" },
   { group: "currentStage", value: "redesign", icon: "layers", weight: 2, labelFa: "بازطراحی پروژه‌ی موجود", labelEn: "Redesign an existing project" },
 
-  // timeline
-  { group: "timeline", value: "urgent", icon: "clock", weight: 3, labelFa: "فوری (کمتر از ۱ ماه)", labelEn: "Urgent (under 1 month)" },
-  { group: "timeline", value: "normal", icon: "calendar", weight: 1, labelFa: "معمولی (۱ تا ۳ ماه)", labelEn: "Normal (1–3 months)" },
-  { group: "timeline", value: "flexible", icon: "calendar", weight: 0, labelFa: "منعطف (۳ ماه به بالا)", labelEn: "Flexible (3+ months)" },
+  // timeline — must mirror the TIMELINE question in question-flow.ts
+  { group: "timeline", value: "flexible", icon: "calendar", weight: 0, labelFa: "عجله ندارم", labelEn: "No rush" },
+  { group: "timeline", value: "1-2-months", icon: "calendar", weight: 1, labelFa: "۱ تا ۲ ماه", labelEn: "1–2 months" },
+  { group: "timeline", value: "3-4-weeks", icon: "clock", weight: 2, labelFa: "۳ تا ۴ هفته", labelEn: "3–4 weeks" },
+  { group: "timeline", value: "under-3-weeks", icon: "clock", weight: 3, labelFa: "کمتر از ۳ هفته", labelEn: "Under 3 weeks" },
+  { group: "timeline", value: "urgent", icon: "zap", weight: 4, labelFa: "فوری", labelEn: "Urgent" },
 
   // budgetLevel
   { group: "budgetLevel", value: "economic", icon: "dollar", weight: 0, labelFa: "اقتصادی", labelEn: "Economic" },

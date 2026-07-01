@@ -16,6 +16,8 @@ interface TechnologyPickerProps {
   name: string;
   label: string;
   defaultValue?: string[] | null;
+  value?: string[];
+  onChange?: (items: string[]) => void;
   options?: TechnologyOption[];
   hint?: string;
   error?: string;
@@ -33,6 +35,8 @@ export function TechnologyPicker({
   name,
   label,
   defaultValue,
+  value,
+  onChange,
   options = TECHNOLOGIES,
   hint,
   error,
@@ -42,12 +46,13 @@ export function TechnologyPicker({
   const { dict } = useI18n();
   const t = dict.admin.tech;
 
-  const [selected, setSelected] = useState<string[]>(
+  const [internalSelected, setInternalSelected] = useState<string[]>(
     (defaultValue ?? []).filter(Boolean),
   );
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const selected = value ?? internalSelected;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -55,14 +60,21 @@ export function TechnologyPicker({
     return options.filter((o) => o.label.toLowerCase().includes(q));
   }, [options, query]);
 
-  function toggle(value: string) {
-    setSelected((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+  function setSelected(next: string[]) {
+    if (value === undefined) setInternalSelected(next);
+    onChange?.(next);
+  }
+
+  function toggle(itemValue: string) {
+    setSelected(
+      selected.includes(itemValue)
+        ? selected.filter((v) => v !== itemValue)
+        : [...selected, itemValue],
     );
   }
 
-  function remove(value: string) {
-    setSelected((prev) => prev.filter((v) => v !== value));
+  function remove(itemValue: string) {
+    setSelected(selected.filter((v) => v !== itemValue));
   }
 
   const ph = placeholder ?? t.placeholder;

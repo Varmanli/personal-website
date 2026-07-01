@@ -11,7 +11,7 @@ import { getI18n } from "@/lib/i18n/server";
 import { validValues } from "@/lib/planner/options";
 import { recommend } from "@/lib/planner/recommend";
 import { calculateProjectEstimate } from "@/lib/planner/estimate";
-import { getEstimateRules, getPlannerSettings } from "@/lib/planner/data";
+import { getPlannerSettings } from "@/lib/planner/data";
 import type { PlannerAnswerMap } from "@/lib/planner/question-flow";
 import { toLocale } from "@/lib/i18n/config";
 import {
@@ -83,7 +83,7 @@ export async function createProjectRequest(
   }
   const features = [...featureSet];
 
-  const designLevel = sanitizeSingle(asStr("design"), "designLevel");
+  const designLevel = sanitizeSingle(asStr("designLevel"), "designLevel");
   const currentStage = sanitizeSingle(asStr("currentStage"), "currentStage");
   const timeline = sanitizeSingle(asStr("timeline"), "timeline");
   const budgetLevel = sanitizeSingle(asStr("budgetLevel"), "budgetLevel");
@@ -103,12 +103,10 @@ export async function createProjectRequest(
     budgetLevel,
   });
 
-  // Estimate (admin-configurable rules + settings, code fallback).
-  const [rules, settings] = await Promise.all([
-    getEstimateRules(),
-    getPlannerSettings(),
-  ]);
-  const est = calculateProjectEstimate({ projectType, answers }, rules, settings);
+  // Estimate (settings-driven, code fallback). The model derives a price range,
+  // complexity, and a human-readable breakdown from the brief answers.
+  const settings = await getPlannerSettings();
+  const est = calculateProjectEstimate({ projectType, answers }, settings);
 
   const values: NewProjectRequest = {
     name,
@@ -127,8 +125,8 @@ export async function createProjectRequest(
     budgetLevel,
     description: str(form, "description") ?? null,
     suggestedPlan: rec.plan,
-    estimatedComplexity: rec.complexity,
-    estimatedTimeline: rec.timelineKey,
+    estimatedComplexity: est.complexityKey,
+    estimatedTimeline: est.timelineKey,
     score: rec.score,
     estimatedDays: est.estimatedDays,
     estimatedWeeks: est.estimatedWeeks,

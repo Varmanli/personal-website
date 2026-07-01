@@ -29,7 +29,7 @@ import {
 import { FiServer, FiPackage } from "react-icons/fi";
 
 /**
- * Fixed registry of technologies used across the portfolio. Values are the
+ * Fixed registry of technologies used across the site content. Values are the
  * canonical display strings stored in `projects.technologies` (so the picker
  * and public badges stay in sync). Icons come from react-icons; any tech not
  * found here still renders as a plain chip (custom values are preserved).

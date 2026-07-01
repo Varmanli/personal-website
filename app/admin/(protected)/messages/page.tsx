@@ -39,6 +39,25 @@ export default async function AdminMessagesPage() {
               {m.subject}
             </span>
           )}
+          {(m.projectType || m.budgetRange || m.timeline) && (
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {m.projectType && (
+                <span className="rounded-full border border-border bg-surface-2/50 px-2 py-1 text-[11px] text-faint">
+                  {m.projectType}
+                </span>
+              )}
+              {m.budgetRange && (
+                <span className="rounded-full border border-border bg-surface-2/50 px-2 py-1 text-[11px] text-faint">
+                  {m.budgetRange}
+                </span>
+              )}
+              {m.timeline && (
+                <span className="rounded-full border border-border bg-surface-2/50 px-2 py-1 text-[11px] text-faint">
+                  {m.timeline}
+                </span>
+              )}
+            </div>
+          )}
           <span className="block truncate text-muted">{m.message}</span>
         </div>
       ),

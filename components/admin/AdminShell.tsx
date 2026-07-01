@@ -5,9 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FiGrid,
+  FiUser,
   FiFolder,
   FiLayers,
-  FiImage,
   FiMail,
   FiInbox,
   FiSliders,
@@ -30,9 +30,10 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 const icons: Record<keyof Dictionary["admin"]["nav"], React.ReactNode> = {
   dashboard: <FiGrid />,
+  about: <FiUser />,
+  contactPage: <FiMail />,
   projects: <FiFolder />,
   services: <FiLayers />,
-  portfolio: <FiImage />,
   messages: <FiMail />,
   projectRequests: <FiInbox />,
   plannerOptions: <FiSliders />,

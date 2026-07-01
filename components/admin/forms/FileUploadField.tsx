@@ -21,7 +21,6 @@ export type UploadType =
   | "profile"
   | "resume"
   | "project"
-  | "portfolio"
   | "service"
   | "general";
 
@@ -29,6 +28,8 @@ interface FileUploadFieldProps {
   name: string;
   label: string;
   defaultValue?: string | null;
+  value?: string;
+  onChange?: (value: string) => void;
   type: UploadType;
   accept?: string;
   hint?: string;
@@ -90,6 +91,8 @@ export function FileUploadField({
   name,
   label,
   defaultValue,
+  value,
+  onChange,
   type,
   accept,
   hint,
@@ -102,7 +105,7 @@ export function FileUploadField({
   const { dict } = useI18n();
   const u = dict.admin.upload;
 
-  const [url, setUrl] = useState(defaultValue ?? "");
+  const [internalUrl, setInternalUrl] = useState(defaultValue ?? "");
   const [status, setStatus] = useState<Status>("idle");
   const [localError, setLocalError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -113,6 +116,12 @@ export function FileUploadField({
   const isRound = shape === "avatar";
   const displayError = error ?? localError ?? undefined;
   const busy = status === "uploading";
+  const url = value ?? internalUrl;
+
+  function setUrl(next: string) {
+    if (value === undefined) setInternalUrl(next);
+    onChange?.(next);
+  }
 
   async function uploadFile(file: File) {
     setStatus("uploading");
