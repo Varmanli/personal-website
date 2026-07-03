@@ -113,10 +113,6 @@ function log(message) {
   console.log(`[site-settings-bootstrap] ${message}`);
 }
 
-function warn(message, error) {
-  console.warn(`[site-settings-bootstrap] ${message}`, error ?? "");
-}
-
 async function tableExists(tx) {
   const [{ exists }] = await tx`
     select exists (
@@ -136,7 +132,6 @@ async function getExistingColumns(tx) {
 }
 
 function buildDefaultRow() {
-  const now = new Date();
   return {
     owner_name: "Varmanli",
     headline: "Full-stack developer building commercial web apps",
@@ -178,13 +173,20 @@ function buildDefaultRow() {
     contact_page_content_en: null,
     contact_settings: null,
     social_links: JSON.stringify([]),
-    created_at: now,
-    updated_at: now,
   };
 }
 
 async function insertDefaultRow(tx) {
   const d = buildDefaultRow();
+  // created_at/updated_at are deliberately NOT bound as query parameters.
+  // Passing a JS `Date` through postgres.js's tagged-template parameter
+  // binding here triggered `ERR_INVALID_ARG_TYPE: Received an instance of
+  // Date` on this connection (its parameter-type cache had already been
+  // primed by unrelated queries elsewhere in the app/bootstrap run, which
+  // caused the Date to be serialized as if it were a different type).
+  // `now()` below is literal SQL text (outside any `${}` interpolation), not
+  // a parameter, so there is no value to misserialize — and it matches the
+  // column defaults already declared in CREATE_TABLE_SQL/EXPECTED_COLUMNS.
   await tx`
     insert into site_settings (
       owner_name, headline, bio, avatar_url, resume_url, logo_url, favicon_url,
@@ -203,7 +205,7 @@ async function insertDefaultRow(tx) {
       ${d.about_intro_en}, ${d.about_page_content}::jsonb, ${d.about_page_content_fa}::jsonb,
       ${d.about_page_content_en}::jsonb, ${d.contact_page_content}::jsonb,
       ${d.contact_page_content_fa}::jsonb, ${d.contact_page_content_en}::jsonb,
-      ${d.contact_settings}::jsonb, ${d.social_links}::jsonb, ${d.created_at}, ${d.updated_at}
+      ${d.contact_settings}::jsonb, ${d.social_links}::jsonb, now(), now()
     )
   `;
 }
@@ -212,6 +214,11 @@ async function insertDefaultRow(tx) {
  * Make `site_settings` match the current app schema and have at least one
  * row, regardless of what migrations or the migration tracker say. Safe to
  * call on every startup and as an on-demand repair before a read/save retry.
+ *
+ * Runs as two separate transactions rather than one: schema repair (create
+ * table / add columns) commits on its own first, so if row creation fails
+ * for any reason afterward, that failure only rolls back the row insert —
+ * it can never undo columns that were already successfully added.
  *
  * @param {import("postgres").Sql} sql a postgres.js tagged-template client
  */
@@ -240,13 +247,30 @@ export async function ensureSiteSettingsTableAndRow(sql) {
         log(`added column: ${column.name}`);
       }
     }
+  });
+
+  // Verify the repair actually landed before trusting it. This runs outside
+  // the transaction above (which already committed), so it reflects the real
+  // persisted state, not just what we expect happened.
+  const columnsAfterRepair = await getExistingColumns(sql);
+  const stillMissing = EXPECTED_COLUMNS.filter((c) => !columnsAfterRepair.has(c.name)).map(
+    (c) => c.name,
+  );
+  if (stillMissing.length > 0) {
+    throw new Error(
+      `[site-settings-bootstrap] column repair verification failed, still missing: ${stillMissing.join(", ")}`,
+    );
+  }
+
+  await sql.begin(async (tx) => {
+    await tx`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`;
 
     const [{ count }] = await tx`select count(*)::int as count from site_settings`;
     if (count === 0) {
       log("row missing, creating initial row");
       await insertDefaultRow(tx);
     }
-
-    log("complete");
   });
+
+  log("complete");
 }
