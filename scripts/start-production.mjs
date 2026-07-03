@@ -1,12 +1,43 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { runProductionBootstrap } from "./production-bootstrap.mjs";
+
+function isBootstrapEnabled() {
+  return process.env.RUN_DB_BOOTSTRAP_ON_START === "true";
+}
+
+function isFailHardEnabled() {
+  return process.env.DB_BOOTSTRAP_FAIL_HARD === "true";
+}
+
+async function maybeRunBootstrap() {
+  if (!isBootstrapEnabled()) {
+    console.log("[start] RUN_DB_BOOTSTRAP_ON_START is not 'true'. Skipping startup bootstrap.");
+    return;
+  }
+
+  try {
+    const mod = await import("./production-bootstrap.mjs");
+    await mod.runProductionBootstrap();
+  } catch (error) {
+    console.error("[start] Startup bootstrap failed.", error);
+    if (isFailHardEnabled()) {
+      throw error;
+    }
+    console.warn("[start] Continuing startup because DB_BOOTSTRAP_FAIL_HARD is not 'true'.");
+  }
+}
 
 async function main() {
-  await runProductionBootstrap();
+  await maybeRunBootstrap();
 
   const serverEntry = path.resolve(process.cwd(), "server.js");
+  const standaloneServerEntry = path.resolve(
+    process.cwd(),
+    ".next",
+    "standalone",
+    "server.js",
+  );
   const nextCli = path.resolve(
     process.cwd(),
     "node_modules",
@@ -15,12 +46,14 @@ async function main() {
     "bin",
     "next",
   );
-  const child = fs.existsSync(serverEntry)
-    ? spawn(process.execPath, [serverEntry], {
-        stdio: "inherit",
-        env: process.env,
-      })
-    : spawn(process.execPath, [nextCli, "start"], {
+  const entry =
+    fs.existsSync(serverEntry)
+      ? [process.execPath, [serverEntry]]
+      : fs.existsSync(standaloneServerEntry)
+        ? [process.execPath, [standaloneServerEntry]]
+        : [process.execPath, [nextCli, "start"]];
+
+  const child = spawn(entry[0], entry[1], {
         stdio: "inherit",
         env: process.env,
       });

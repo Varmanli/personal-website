@@ -28,7 +28,7 @@ ENV RUN_DB_BOOTSTRAP_AT_BUILD=$RUN_DB_BOOTSTRAP_AT_BUILD
 ENV NODE_ENV=production
 
 RUN npx tsc --noEmit
-RUN if [ "$RUN_DB_BOOTSTRAP_AT_BUILD" = "true" ]; then node scripts/production-bootstrap.mjs; fi
+RUN if [ "$RUN_DB_BOOTSTRAP_AT_BUILD" = "true" ]; then RUN_DB_BOOTSTRAP_ON_START=true node scripts/production-bootstrap.mjs; fi
 RUN npm run build
 
 # ---- runner: minimal production image --------------------------------------
@@ -39,7 +39,8 @@ ENV PORT=3003
 ENV HOSTNAME=0.0.0.0
 ENV UPLOAD_DIR=/app/uploads
 ENV NEXT_PUBLIC_UPLOAD_BASE_URL=/uploads
-ENV RUN_DB_BOOTSTRAP_ON_START=true
+ENV RUN_DB_BOOTSTRAP_ON_START=false
+ENV DB_BOOTSTRAP_FAIL_HARD=false
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
@@ -56,7 +57,6 @@ EXPOSE 3003
 # Mount a persistent volume to /app/uploads in production so admin-uploaded
 # assets survive restarts and redeploys. Real secrets (DATABASE_URL,
 # AUTH_SECRET, etc.) must be provided as runtime environment variables in
-# Coolify — never baked into this image. By default the container runs a
-# startup-time database bootstrap (migrations + ensure site_settings row)
-# before launching Next.js.
+# Coolify — never baked into this image. Startup bootstrap is opt-in at
+# runtime via RUN_DB_BOOTSTRAP_ON_START=true and is non-fatal by default.
 CMD ["node", "scripts/start-production.mjs"]

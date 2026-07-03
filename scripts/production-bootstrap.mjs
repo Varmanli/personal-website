@@ -1,21 +1,19 @@
+import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { drizzle } from "drizzle-orm/postgres-js";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const MIGRATIONS_FOLDER = path.join(__dirname, "..", "db", "migrations");
 const BOOTSTRAP_LOCK_KEY = 214748103;
+const MIGRATIONS_TABLE = "__app_bootstrap_migrations";
 
-function asBool(value, fallback) {
-  if (value == null || value === "") return fallback;
-  return value !== "false" && value !== "0";
+function isBootstrapEnabled() {
+  return process.env.RUN_DB_BOOTSTRAP_ON_START === "true";
 }
 
-function shouldBootstrap() {
-  return asBool(process.env.RUN_DB_BOOTSTRAP_ON_START, process.env.NODE_ENV === "production");
+function isFailHardEnabled() {
+  return process.env.DB_BOOTSTRAP_FAIL_HARD === "true";
 }
 
 function ensureDatabaseUrl() {
@@ -26,6 +24,11 @@ function ensureDatabaseUrl() {
     );
   }
   return url;
+}
+
+async function loadPostgres() {
+  const mod = await import("postgres");
+  return mod.default;
 }
 
 function buildDefaultSiteSettings() {
@@ -81,6 +84,45 @@ function isSchemaDriftError(error) {
   if (code === "42P01" || code === "42703") return true;
   const message = error instanceof Error ? error.message : String(error);
   return /does not exist|column .* does not exist|relation .* does not exist/i.test(message);
+}
+
+async function ensureMigrationsTable(sqlClient) {
+  await sqlClient.unsafe(`
+    create table if not exists ${MIGRATIONS_TABLE} (
+      name text primary key,
+      applied_at timestamptz not null default now()
+    )
+  `);
+}
+
+async function listMigrationFiles() {
+  const entries = await fs.readdir(MIGRATIONS_FOLDER, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
+    .map((entry) => entry.name)
+    .sort();
+}
+
+async function applyMigrations(sqlClient) {
+  await ensureMigrationsTable(sqlClient);
+  const appliedRows = await sqlClient`
+    select name from ${sqlClient(MIGRATIONS_TABLE)}
+  `;
+  const applied = new Set(appliedRows.map((row) => row.name));
+  const files = await listMigrationFiles();
+
+  for (const file of files) {
+    if (applied.has(file)) continue;
+    const fullPath = path.join(MIGRATIONS_FOLDER, file);
+    const sqlText = await fs.readFile(fullPath, "utf8");
+    console.log(`[bootstrap] Applying migration ${file}.`);
+    await sqlClient.unsafe(sqlText);
+    await sqlClient`
+      insert into ${sqlClient(MIGRATIONS_TABLE)} (name)
+      values (${file})
+      on conflict (name) do nothing
+    `;
+  }
 }
 
 async function ensureInitialSiteSettings(sqlClient) {
@@ -168,23 +210,22 @@ async function ensureInitialSiteSettings(sqlClient) {
 }
 
 export async function runProductionBootstrap() {
-  if (!shouldBootstrap()) {
-    console.log("[bootstrap] RUN_DB_BOOTSTRAP_ON_START disabled. Skipping database bootstrap.");
+  if (!isBootstrapEnabled()) {
+    console.log("[bootstrap] RUN_DB_BOOTSTRAP_ON_START is not 'true'. Skipping database bootstrap.");
     return;
   }
 
   const connectionString = ensureDatabaseUrl();
+  const postgres = await loadPostgres();
   const client = postgres(connectionString, {
     max: 1,
     connect_timeout: 10,
   });
-  const drizzleDb = drizzle(client);
 
   try {
     console.log("[bootstrap] Starting database bootstrap.");
     await client`select pg_advisory_lock(${BOOTSTRAP_LOCK_KEY})`;
-    console.log("[bootstrap] Applying schema migrations from db/migrations.");
-    await migrate(drizzleDb, { migrationsFolder: MIGRATIONS_FOLDER });
+    await applyMigrations(client);
     console.log("[bootstrap] Schema migrations complete.");
     await ensureInitialSiteSettings(client);
     console.log("[bootstrap] Database bootstrap finished successfully.");
@@ -215,6 +256,6 @@ const invokedDirectly =
 if (invokedDirectly) {
   runProductionBootstrap().catch((error) => {
     console.error("[bootstrap] Production bootstrap failed.", error);
-    process.exitCode = 1;
+    process.exitCode = isFailHardEnabled() ? 1 : 0;
   });
 }

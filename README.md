@@ -34,12 +34,13 @@ manual shell command inside the container.
 
 - `npm run db:bootstrap` runs the production-safe bootstrap directly.
 - `npm run start` runs bootstrap first, then starts Next.js.
-- `RUN_DB_BOOTSTRAP_ON_START=true` enables startup bootstrap. This is the default in the Docker image.
+- `RUN_DB_BOOTSTRAP_ON_START=true` enables startup bootstrap. Any other value skips it entirely.
+- `DB_BOOTSTRAP_FAIL_HARD=true` makes bootstrap failure stop the container. Default is `false`, so the app still starts.
 - `RUN_DB_BOOTSTRAP_AT_BUILD=true` is optional and should only be used when the build environment can safely reach the target database.
 
 Bootstrap behavior:
 
-- Applies Drizzle SQL migrations from `db/migrations`
+- Applies SQL migrations from `db/migrations`
 - Ensures the initial `site_settings` row exists
 - Does not run demo/dev seed data
 - Does not overwrite existing settings, users, projects, services, or content
@@ -55,9 +56,14 @@ npm run start
 
 If you deploy with the included [Dockerfile](/C:/Users/amirhosein/Desktop/Project/multi-project-deploy/varmanli.ir/Dockerfile), also:
 
-1. Set runtime env vars such as `DATABASE_URL`, `AUTH_SECRET`, `NEXT_PUBLIC_SITE_URL`, `RUN_DB_BOOTSTRAP_ON_START`, `UPLOAD_DIR`, and `NEXT_PUBLIC_UPLOAD_BASE_URL`.
+1. Set runtime env vars such as `DATABASE_URL`, `AUTH_SECRET`, `NEXT_PUBLIC_SITE_URL`, `RUN_DB_BOOTSTRAP_ON_START`, `DB_BOOTSTRAP_FAIL_HARD`, `UPLOAD_DIR`, and `NEXT_PUBLIC_UPLOAD_BASE_URL`.
 2. Mount a persistent volume to `/app/uploads`.
 3. Leave `RUN_DB_BOOTSTRAP_AT_BUILD=false` unless your build worker can reach the production database.
+
+Emergency recovery:
+
+- Set `RUN_DB_BOOTSTRAP_ON_START=false` to skip bootstrap completely and start the app normally.
+- Set `RUN_DB_BOOTSTRAP_ON_START=true` to enable startup migrations when the runtime image supports it.
 
 ## Notes
 
