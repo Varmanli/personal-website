@@ -1,15 +1,16 @@
 "use server";
 
-import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/db";
-import { siteSettings, type NewSiteSettings } from "@/db/schema";
+import { type NewSiteSettings } from "@/db/schema";
 import { getCurrentAdmin } from "@/lib/auth";
 import { type ActionState, list, str } from "@/lib/form";
 import { getAdminErrors, toActionError } from "@/lib/actions/shared";
 import {
+  readSiteSettingsRow,
+  saveSiteSettings,
+} from "@/lib/site-settings";
+import {
   deleteStoredUploadFile,
-  normalizeSiteSettingsAssets,
   normalizeStoredAssetUrl,
 } from "@/lib/uploads";
 
@@ -86,17 +87,7 @@ export async function updateSettings(
 
   let existingAssets: PersistedSettingsAssets | null = null;
   try {
-    const [existing] = await db
-      .select({
-        id: siteSettings.id,
-        avatarUrl: siteSettings.avatarUrl,
-        resumeUrl: siteSettings.resumeUrl,
-        logoUrl: siteSettings.logoUrl,
-        faviconUrl: siteSettings.faviconUrl,
-        heroImageUrl: siteSettings.heroImageUrl,
-      })
-      .from(siteSettings)
-      .limit(1);
+    const existing = await readSiteSettingsRow();
     if (existing) {
       existingAssets = {
         avatarUrl: existing.avatarUrl,
@@ -105,13 +96,37 @@ export async function updateSettings(
         faviconUrl: existing.faviconUrl,
         heroImageUrl: existing.heroImageUrl,
       };
-      await db
-        .update(siteSettings)
-        .set({ ...values, updatedAt: new Date() })
-        .where(eq(siteSettings.id, existing.id));
-    } else {
-      await db.insert(siteSettings).values(values);
     }
+
+    const saved = await saveSiteSettings(values);
+
+    if (existingAssets) {
+      const replacements: Array<[string | null | undefined, string | null | undefined]> = [
+        [existingAssets.avatarUrl, saved.avatarUrl],
+        [existingAssets.resumeUrl, saved.resumeUrl],
+        [existingAssets.logoUrl, saved.logoUrl],
+        [existingAssets.faviconUrl, saved.faviconUrl],
+        [existingAssets.heroImageUrl, saved.heroImageUrl],
+      ];
+      await Promise.all(
+        replacements
+          .filter(([prev, next]) => Boolean(prev) && prev !== next)
+          .map(([prev]) => deleteStoredUploadFile(prev).catch(() => undefined)),
+      );
+    }
+
+    revalidatePath("/admin/settings");
+    revalidatePath("/", "layout");
+    return {
+      success: "saved",
+      persisted: {
+        avatarUrl: saved.avatarUrl,
+        resumeUrl: saved.resumeUrl,
+        logoUrl: saved.logoUrl,
+        faviconUrl: saved.faviconUrl,
+        heroImageUrl: saved.heroImageUrl,
+      },
+    };
   } catch (e) {
     const maybeNewUploads =
       existingAssets == null
@@ -132,48 +147,8 @@ export async function updateSettings(
     return {
       ...toActionError(e, errs),
       ...(existingAssets
-        ? { persisted: normalizeSiteSettingsAssets(existingAssets) }
+        ? { persisted: existingAssets }
         : null),
     };
   }
-
-  let saved: PersistedSettingsAssets | undefined;
-  try {
-    [saved] = await db
-      .select({
-        avatarUrl: siteSettings.avatarUrl,
-        resumeUrl: siteSettings.resumeUrl,
-        logoUrl: siteSettings.logoUrl,
-        faviconUrl: siteSettings.faviconUrl,
-        heroImageUrl: siteSettings.heroImageUrl,
-      })
-      .from(siteSettings)
-      .limit(1);
-  } catch (e) {
-    return toActionError(e, errs);
-  }
-
-  const persisted = normalizeSiteSettingsAssets(saved ?? values);
-
-  if (existingAssets) {
-    const replacements: Array<[string | null | undefined, string | null | undefined]> = [
-      [existingAssets.avatarUrl, persisted.avatarUrl],
-      [existingAssets.resumeUrl, persisted.resumeUrl],
-      [existingAssets.logoUrl, persisted.logoUrl],
-      [existingAssets.faviconUrl, persisted.faviconUrl],
-      [existingAssets.heroImageUrl, persisted.heroImageUrl],
-    ];
-    await Promise.all(
-      replacements
-        .filter(([prev, next]) => Boolean(prev) && prev !== next)
-        .map(([prev]) => deleteStoredUploadFile(prev).catch(() => undefined)),
-    );
-  }
-
-  revalidatePath("/admin/settings");
-  revalidatePath("/", "layout");
-  return {
-    success: "saved",
-    persisted,
-  };
 }

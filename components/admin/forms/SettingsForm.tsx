@@ -28,7 +28,15 @@ const L = {
 
 const initialSettingsActionState: SettingsActionState = {};
 
-export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
+export function SettingsForm({
+  initial,
+  missingRow,
+  loadError,
+}: {
+  initial: SiteSettings | null;
+  missingRow: boolean;
+  loadError?: string;
+}) {
   const router = useRouter();
   const { dict } = useI18n();
   const f = dict.admin.forms;
@@ -101,13 +109,13 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
 
   return (
     <form action={formAction} className="space-y-5">
-      <FormError message={state.error} />
+      <FormError message={state.error ?? loadError} />
       {state.success && !state.error ? (
         <div className="fixed end-4 top-4 z-50 max-w-sm rounded-2xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success shadow-[0_12px_40px_-18px_rgba(52,211,153,0.75)] backdrop-blur">
           {dict.admin.settings.saved}
         </div>
       ) : null}
-      {!initial && (
+      {missingRow && !state.success && !loadError && (
         <p className="flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-3.5 text-sm text-primary-light">
           <span aria-hidden className="mt-0.5">ℹ</span>
           <span className="leading-relaxed">{s.noticeFirst}</span>

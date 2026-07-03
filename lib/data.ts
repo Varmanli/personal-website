@@ -34,6 +34,7 @@ import {
   normalizeContactPageContent,
 } from "@/lib/contact-page";
 import { normalizeSiteSettingsAssets } from "@/lib/uploads";
+import { getSiteSettingsQueryResult } from "@/lib/site-settings";
 import type { AboutPageContent, ContactPageContent } from "@/types";
 
 /**
@@ -235,14 +236,8 @@ export function getMessages(): Promise<ContactMessage[]> {
 export async function getProfile(
   locale: Locale = defaultLocale,
 ): Promise<SiteSettings> {
-  const row = await query(
-    "site_settings",
-    async () => {
-      const [r] = await db.select().from(siteSettings).limit(1);
-      return r ?? placeholderProfile;
-    },
-    placeholderProfile,
-  );
+  const result = await getSiteSettingsQueryResult();
+  const row = result.settings ?? placeholderProfile;
   return localizeProfile(normalizeSiteSettingsAssets(row), locale);
 }
 
@@ -269,14 +264,7 @@ export async function getContactPageContent(
 
 /** Raw profile/site settings for the admin settings form (no localization). */
 export function getRawProfile(): Promise<SiteSettings | null> {
-  return query(
-    "site_settings",
-    async () => {
-      const [r] = await db.select().from(siteSettings).limit(1);
-      return r ? normalizeSiteSettingsAssets(r) : null;
-    },
-    null,
-  );
+  return getSiteSettingsQueryResult().then((result) => result.settings);
 }
 
 /** Raw localized About content for the admin form, falling back to defaults. */

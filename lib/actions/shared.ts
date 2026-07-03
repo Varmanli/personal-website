@@ -1,6 +1,10 @@
 import type { ActionState } from "@/lib/form";
 import { getI18n } from "@/lib/i18n/server";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
+import {
+  isSiteSettingsConnectionError,
+  isSiteSettingsSchemaError,
+} from "@/lib/site-settings";
 
 /** Resolve the locale-appropriate admin error messages. */
 export async function getAdminErrors(): Promise<Dictionary["admin"]["errors"]> {
@@ -25,6 +29,14 @@ export function toActionError(
       (error as { code?: string }).code === "23505")
   ) {
     return { error: errs.slugTaken };
+  }
+
+  if (isSiteSettingsSchemaError(error)) {
+    return { error: errs.schema };
+  }
+
+  if (isSiteSettingsConnectionError(error)) {
+    return { error: errs.db };
   }
 
   // Connection failures — surface clearly rather than faking success.

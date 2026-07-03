@@ -1036,6 +1036,7 @@ const en = {
       coverRequired: "A cover image is required.",
       notSignedIn: "You must be signed in to do that.",
       db: "Couldn't reach the database, so nothing was saved. Check your connection and try again.",
+      schema: "Database schema is not initialized. Run migrations or db push before using site settings.",
       slugTaken: "That slug is already in use. Choose a different one.",
       invalidId: "Invalid id.",
       invalidHomeOrder: "Homepage order must be a valid non-negative number.",
@@ -2091,6 +2092,7 @@ const fa: DeepPartial<Dictionary> = {
       coverRequired: "تصویر کاور الزامی است.",
       notSignedIn: "برای انجام این کار باید وارد شوید.",
       db: "ارتباط با پایگاه‌داده برقرار نشد، چیزی ذخیره نشد. اتصال را بررسی و دوباره تلاش کنید.",
+      schema: "اسکیما یا جدول‌های پایگاه‌داده آماده نیستند. قبل از استفاده از تنظیمات سایت، migration یا db push را اجرا کنید.",
       slugTaken: "این اسلاگ قبلاً استفاده شده است. مورد دیگری انتخاب کنید.",
       invalidId: "شناسه نامعتبر است.",
       invalidHomeOrder:

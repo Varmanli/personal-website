@@ -17,8 +17,8 @@ import {
 import {
   placeholderProjects,
   placeholderServices,
-  placeholderProfile,
 } from "../lib/placeholder-data";
+import { buildDefaultSiteSettings } from "../lib/site-settings";
 
 async function seed() {
   console.log("Seeding database…");
@@ -37,12 +37,7 @@ async function seed() {
   await db.insert(projects).values(stripMeta(placeholderProjects));
   await db.insert(services).values(stripMeta(placeholderServices));
 
-  const { id: _pid, createdAt: _pc, updatedAt: _pu, ...profile } =
-    placeholderProfile;
-  void _pid;
-  void _pc;
-  void _pu;
-  await db.insert(siteSettings).values(profile);
+  await db.insert(siteSettings).values(buildDefaultSiteSettings());
 
   console.log("Seed complete.");
 }
