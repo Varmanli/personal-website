@@ -43,4 +43,9 @@ if (process.env.NODE_ENV !== "production") {
 
 export const db = drizzle(client, { schema });
 
+// The raw postgres.js client backing `db`, exposed for server-only helpers
+// that need to run plain SQL outside Drizzle (e.g. schema self-heal in
+// lib/site-settings.ts). Never import this into client components.
+export const rawSql = client;
+
 export { schema };

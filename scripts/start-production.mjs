@@ -19,9 +19,14 @@ async function maybeRunBootstrap() {
   }
 
   console.log("[start] Startup bootstrap is ENABLED. Running scripts/production-bootstrap.mjs.");
+  console.log(
+    "[start] This includes the site_settings table/column self-heal step " +
+      "(db/site-settings-bootstrap.mjs), which runs independent of migration tracker state.",
+  );
   try {
     const mod = await import("./production-bootstrap.mjs");
     await mod.runProductionBootstrap();
+    console.log("[start] Bootstrap finished, including site_settings self-heal.");
   } catch (error) {
     console.error("[start] Startup bootstrap failed.", error);
     if (isFailHardEnabled()) {

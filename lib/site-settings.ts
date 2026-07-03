@@ -1,8 +1,9 @@
 import { sql } from "drizzle-orm";
-import { db } from "@/db";
+import { db, rawSql } from "@/db";
 import { siteSettings, type NewSiteSettings, type SiteSettings } from "@/db/schema";
 import { placeholderProfile } from "@/lib/placeholder-data";
 import { normalizeSiteSettingsAssets } from "@/lib/uploads";
+import { ensureSiteSettingsTableAndRow } from "@/db/site-settings-bootstrap.mjs";
 
 type SiteSettingsErrorKind =
   | "connection"
@@ -103,19 +104,32 @@ export function buildDefaultSiteSettings(
   };
 }
 
+/**
+ * Drizzle wraps the raw `postgres` driver error in a `DrizzleQueryError`
+ * whose own `.code` is undefined and whose `.message` is just "Failed
+ * query: ...". The real Postgres error code/message live on `.cause`. Every
+ * classifier below must inspect both, or every drizzle-thrown schema error
+ * silently falls through to "unknown" and self-heal never triggers.
+ */
+function getPostgresErrorInfo(error: unknown): { code?: string; message: string } {
+  const cause = (error as { cause?: unknown })?.cause;
+  const source = cause && (cause as { code?: string }).code ? cause : error;
+  const code = (source as { code?: string })?.code;
+  const message = source instanceof Error ? source.message : String(source);
+  return { code, message };
+}
+
 /** Postgres 42P01: relation does not exist — table/schema was never created. */
 export function isSiteSettingsTableMissingError(error: unknown): boolean {
-  const code = (error as { code?: string })?.code;
+  const { code, message } = getPostgresErrorInfo(error);
   if (code === "42P01") return true;
-  const message = error instanceof Error ? error.message : String(error);
   return /relation .*site_settings.* does not exist/i.test(message);
 }
 
 /** Postgres 42703: column does not exist — table exists but migrations are behind. */
 export function isSiteSettingsColumnDriftError(error: unknown): boolean {
-  const code = (error as { code?: string })?.code;
+  const { code, message } = getPostgresErrorInfo(error);
   if (code === "42703") return true;
-  const message = error instanceof Error ? error.message : String(error);
   return /column .* does not exist/i.test(message);
 }
 
@@ -126,14 +140,13 @@ export function isSiteSettingsSchemaError(error: unknown): boolean {
 
 /** Postgres 42501: insufficient_privilege — DB user lacks grants on the table. */
 export function isSiteSettingsPermissionError(error: unknown): boolean {
-  const code = (error as { code?: string })?.code;
+  const { code, message } = getPostgresErrorInfo(error);
   if (code === "42501") return true;
-  const message = error instanceof Error ? error.message : String(error);
   return /permission denied/i.test(message);
 }
 
 export function isSiteSettingsConnectionError(error: unknown): boolean {
-  const code = (error as { code?: string })?.code;
+  const { code, message } = getPostgresErrorInfo(error);
   if (
     typeof code === "string" &&
     ["08000", "08003", "08006", "28P01", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(code)
@@ -141,7 +154,6 @@ export function isSiteSettingsConnectionError(error: unknown): boolean {
     return true;
   }
 
-  const message = error instanceof Error ? error.message : String(error);
   return /connect|connection|timeout|authentication failed|database .* does not exist|econnrefused|enotfound/i.test(
     message,
   );
@@ -157,9 +169,45 @@ export function classifySiteSettingsError(error: unknown): SiteSettingsErrorKind
   return "unknown";
 }
 
+/**
+ * Defensive last resort: if a site_settings operation fails because the
+ * table or a column is missing, repair the schema in place via
+ * ensureSiteSettingsTableAndRow and retry the operation exactly once. This
+ * makes read/save self-healing even if startup bootstrap never ran (e.g. it
+ * was disabled, or the deploy predates this fix). Only ever runs server-side
+ * with a real DATABASE_URL — never in Edge runtime, never exposing secrets.
+ */
+async function withSiteSettingsSelfHeal<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (!process.env.DATABASE_URL) throw error;
+    if (!isSiteSettingsTableMissingError(error) && !isSiteSettingsColumnDriftError(error)) {
+      throw error;
+    }
+
+    logSiteSettings(
+      "warn",
+      "Schema error detected. Attempting one-time self-heal via ensureSiteSettingsTableAndRow.",
+      error,
+    );
+    try {
+      await ensureSiteSettingsTableAndRow(rawSql);
+    } catch (repairError) {
+      logSiteSettings("error", "Self-heal attempt failed. Surfacing original error.", repairError);
+      throw error;
+    }
+
+    logSiteSettings("warn", "Self-heal complete. Retrying the operation once.");
+    return await operation();
+  }
+}
+
 export async function readSiteSettingsRow(): Promise<SiteSettings | null> {
-  const [row] = await db.select().from(siteSettings).limit(1);
-  return row ? normalizeSiteSettingsAssets(row) : null;
+  return withSiteSettingsSelfHeal(async () => {
+    const [row] = await db.select().from(siteSettings).limit(1);
+    return row ? normalizeSiteSettingsAssets(row) : null;
+  });
 }
 
 export async function getSiteSettingsQueryResult(): Promise<SiteSettingsQueryResult> {
@@ -218,49 +266,53 @@ export async function getSiteSettingsQueryResult(): Promise<SiteSettingsQueryRes
 export async function ensureSiteSettings(
   overrides: Partial<NewSiteSettings> = {},
 ): Promise<SiteSettings> {
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`);
+  return withSiteSettingsSelfHeal(() =>
+    db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`);
 
-    const [existing] = await tx.select().from(siteSettings).limit(1);
-    if (existing) return normalizeSiteSettingsAssets(existing);
+      const [existing] = await tx.select().from(siteSettings).limit(1);
+      if (existing) return normalizeSiteSettingsAssets(existing);
 
-    logSiteSettings("warn", "Initializing missing site_settings row.");
-    const [created] = await tx
-      .insert(siteSettings)
-      .values(buildDefaultSiteSettings(overrides))
-      .returning();
+      logSiteSettings("warn", "Initializing missing site_settings row.");
+      const [created] = await tx
+        .insert(siteSettings)
+        .values(buildDefaultSiteSettings(overrides))
+        .returning();
 
-    return normalizeSiteSettingsAssets(created);
-  });
+      return normalizeSiteSettingsAssets(created);
+    }),
+  );
 }
 
 export async function saveSiteSettings(
   values: Omit<NewSiteSettings, "socialLinks">,
 ): Promise<SiteSettings> {
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`);
+  return withSiteSettingsSelfHeal(() =>
+    db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`);
 
-    const [existing] = await tx
-      .select({ id: siteSettings.id })
-      .from(siteSettings)
-      .limit(1);
+      const [existing] = await tx
+        .select({ id: siteSettings.id })
+        .from(siteSettings)
+        .limit(1);
 
-    if (existing) {
-      const [updated] = await tx
-        .update(siteSettings)
-        .set({ ...values, updatedAt: new Date() })
-        .where(sql`${siteSettings.id} = ${existing.id}`)
+      if (existing) {
+        const [updated] = await tx
+          .update(siteSettings)
+          .set({ ...values, updatedAt: new Date() })
+          .where(sql`${siteSettings.id} = ${existing.id}`)
+          .returning();
+
+        return normalizeSiteSettingsAssets(updated);
+      }
+
+      logSiteSettings("warn", "No site_settings row found during save. Creating one from submitted admin values.");
+      const [created] = await tx
+        .insert(siteSettings)
+        .values(buildDefaultSiteSettings(values))
         .returning();
 
-      return normalizeSiteSettingsAssets(updated);
-    }
-
-    logSiteSettings("warn", "No site_settings row found during save. Creating one from submitted admin values.");
-    const [created] = await tx
-      .insert(siteSettings)
-      .values(buildDefaultSiteSettings(values))
-      .returning();
-
-    return normalizeSiteSettingsAssets(created);
-  });
+      return normalizeSiteSettingsAssets(created);
+    }),
+  );
 }
