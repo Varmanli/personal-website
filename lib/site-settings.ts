@@ -94,7 +94,11 @@ export async function getSiteSettingsQueryResult(): Promise<SiteSettingsQueryRes
   } catch (error) {
     const kind = classifySiteSettingsError(error);
     if (kind === "schema") {
-      logSiteSettings("error", "site_settings table/schema is missing. Run migrations or db:push.", error);
+      logSiteSettings(
+        "error",
+        "Database schema is outdated. Run migrations/db push or enable startup bootstrap.",
+        error,
+      );
     } else if (kind === "connection") {
       logSiteSettings("error", "Database connection failed while reading site settings.", error);
     } else {

@@ -15,18 +15,20 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # NEXT_PUBLIC_* values are inlined at build time — Coolify must provide these
-# as build-time variables. DATABASE_URL is also read at build time by pages
-# that import the DB client at module scope, and by db:migrate below — it
-# must be a real, reachable connection string at build time (Coolify's
-# Docker build must be able to reach the database over the network).
+# as build-time variables. DATABASE_URL is not required at build time by
+# default; schema bootstrap runs safely at container startup instead. If your
+# build environment can reach the production database and you explicitly want
+# build-time bootstrap, enable RUN_DB_BOOTSTRAP_AT_BUILD=true.
 ARG NEXT_PUBLIC_SITE_URL
 ARG DATABASE_URL
+ARG RUN_DB_BOOTSTRAP_AT_BUILD=false
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV DATABASE_URL=$DATABASE_URL
+ENV RUN_DB_BOOTSTRAP_AT_BUILD=$RUN_DB_BOOTSTRAP_AT_BUILD
 ENV NODE_ENV=production
 
 RUN npx tsc --noEmit
-RUN npm run db:migrate
+RUN if [ "$RUN_DB_BOOTSTRAP_AT_BUILD" = "true" ]; then node scripts/production-bootstrap.mjs; fi
 RUN npm run build
 
 # ---- runner: minimal production image --------------------------------------
@@ -37,11 +39,14 @@ ENV PORT=3003
 ENV HOSTNAME=0.0.0.0
 ENV UPLOAD_DIR=/app/uploads
 ENV NEXT_PUBLIC_UPLOAD_BASE_URL=/uploads
+ENV RUN_DB_BOOTSTRAP_ON_START=true
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
 
 COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/db/migrations ./db/migrations
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -51,6 +56,7 @@ EXPOSE 3003
 # Mount a persistent volume to /app/uploads in production so admin-uploaded
 # assets survive restarts and redeploys. Real secrets (DATABASE_URL,
 # AUTH_SECRET, etc.) must be provided as runtime environment variables in
-# Coolify — never baked into this image. The schema is applied during the
-# builder stage (above, via db:migrate); no seed command runs here.
-CMD ["node", "server.js"]
+# Coolify — never baked into this image. By default the container runs a
+# startup-time database bootstrap (migrations + ensure site_settings row)
+# before launching Next.js.
+CMD ["node", "scripts/start-production.mjs"]

@@ -60,7 +60,7 @@ function warnOnce(scope: string, error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
   console.warn(
     `[data] Database unavailable (${scope}: ${message}). Falling back to placeholder content. ` +
-      `Set DATABASE_URL and run \`npm run db:push && npm run db:seed\` to use real data.`,
+      `Set DATABASE_URL and enable startup bootstrap or run \`npm run db:push\` to use real data.`,
   );
 }
 
