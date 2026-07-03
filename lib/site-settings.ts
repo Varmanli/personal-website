@@ -4,7 +4,12 @@ import { siteSettings, type NewSiteSettings, type SiteSettings } from "@/db/sche
 import { placeholderProfile } from "@/lib/placeholder-data";
 import { normalizeSiteSettingsAssets } from "@/lib/uploads";
 
-type SiteSettingsErrorKind = "connection" | "schema" | "unknown";
+type SiteSettingsErrorKind =
+  | "connection"
+  | "tableMissing"
+  | "schemaDrift"
+  | "permission"
+  | "unknown";
 
 export interface SiteSettingsQueryResult {
   settings: SiteSettings | null;
@@ -22,6 +27,61 @@ function logSiteSettings(level: "warn" | "error", message: string, error?: unkno
     return;
   }
   logger(`[site-settings] ${message}`);
+}
+
+const EXPECTED_SITE_SETTINGS_COLUMNS = [
+  "id", "owner_name", "headline", "bio", "avatar_url", "resume_url",
+  "logo_url", "favicon_url", "hero_image_url", "email", "location", "skills",
+  "owner_name_fa", "owner_name_en", "headline_fa", "headline_en", "bio_fa",
+  "bio_en", "location_fa", "location_en", "skills_fa", "skills_en",
+  "about_intro", "about_intro_fa", "about_intro_en", "about_page_content",
+  "about_page_content_fa", "about_page_content_en", "contact_page_content",
+  "contact_page_content_fa", "contact_page_content_en", "contact_settings",
+  "social_links", "created_at", "updated_at",
+];
+
+/**
+ * Server-only diagnostic snapshot for troubleshooting settings save/load
+ * failures. Never exposed to the client — only ever written to server logs.
+ * Deliberately tolerant: any failure here is logged and swallowed so a
+ * diagnostic query never masks or replaces the original error.
+ */
+export async function logSiteSettingsDiagnostics(): Promise<void> {
+  try {
+    const [info] = await db.execute<{ current_database: string; current_schema: string }>(
+      sql`select current_database(), current_schema()`,
+    );
+    const [{ exists: tableExists }] = await db.execute<{ exists: boolean }>(
+      sql`select exists (
+        select 1 from information_schema.tables
+        where table_schema = current_schema() and table_name = 'site_settings'
+      ) as exists`,
+    );
+
+    let missingColumns: string[] = [];
+    let rowCount = 0;
+    if (tableExists) {
+      const existingColumns = await db.execute<{ column_name: string }>(
+        sql`select column_name from information_schema.columns
+            where table_schema = current_schema() and table_name = 'site_settings'`,
+      );
+      const existingSet = new Set(existingColumns.map((c) => c.column_name));
+      missingColumns = EXPECTED_SITE_SETTINGS_COLUMNS.filter((c) => !existingSet.has(c));
+
+      const [{ count }] = await db.execute<{ count: string }>(
+        sql`select count(*)::text as count from site_settings`,
+      );
+      rowCount = Number(count);
+    }
+
+    logSiteSettings(
+      "error",
+      `Diagnostics: database=${info?.current_database} schema=${info?.current_schema} ` +
+        `tableExists=${tableExists} missingColumns=[${missingColumns.join(", ")}] rowCount=${rowCount}`,
+    );
+  } catch (diagnosticError) {
+    logSiteSettings("error", "Diagnostics query itself failed (likely a real connection issue).", diagnosticError);
+  }
 }
 
 function stripProfileMeta(profile: typeof placeholderProfile): NewSiteSettings {
@@ -43,16 +103,41 @@ export function buildDefaultSiteSettings(
   };
 }
 
-export function isSiteSettingsSchemaError(error: unknown): boolean {
+/** Postgres 42P01: relation does not exist — table/schema was never created. */
+export function isSiteSettingsTableMissingError(error: unknown): boolean {
   const code = (error as { code?: string })?.code;
-  if (code === "42P01" || code === "42703") return true;
+  if (code === "42P01") return true;
   const message = error instanceof Error ? error.message : String(error);
-  return /does not exist|relation .*site_settings.* does not exist/i.test(message);
+  return /relation .*site_settings.* does not exist/i.test(message);
+}
+
+/** Postgres 42703: column does not exist — table exists but migrations are behind. */
+export function isSiteSettingsColumnDriftError(error: unknown): boolean {
+  const code = (error as { code?: string })?.code;
+  if (code === "42703") return true;
+  const message = error instanceof Error ? error.message : String(error);
+  return /column .* does not exist/i.test(message);
+}
+
+/** True for either kind of schema problem (missing table or missing column). */
+export function isSiteSettingsSchemaError(error: unknown): boolean {
+  return isSiteSettingsTableMissingError(error) || isSiteSettingsColumnDriftError(error);
+}
+
+/** Postgres 42501: insufficient_privilege — DB user lacks grants on the table. */
+export function isSiteSettingsPermissionError(error: unknown): boolean {
+  const code = (error as { code?: string })?.code;
+  if (code === "42501") return true;
+  const message = error instanceof Error ? error.message : String(error);
+  return /permission denied/i.test(message);
 }
 
 export function isSiteSettingsConnectionError(error: unknown): boolean {
   const code = (error as { code?: string })?.code;
-  if (typeof code === "string" && ["28P01", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(code)) {
+  if (
+    typeof code === "string" &&
+    ["08000", "08003", "08006", "28P01", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(code)
+  ) {
     return true;
   }
 
@@ -63,7 +148,11 @@ export function isSiteSettingsConnectionError(error: unknown): boolean {
 }
 
 export function classifySiteSettingsError(error: unknown): SiteSettingsErrorKind {
-  if (isSiteSettingsSchemaError(error)) return "schema";
+  // Schema problems first: their Postgres messages can otherwise be caught by
+  // the broader connection regex (e.g. "database ... does not exist").
+  if (isSiteSettingsTableMissingError(error)) return "tableMissing";
+  if (isSiteSettingsColumnDriftError(error)) return "schemaDrift";
+  if (isSiteSettingsPermissionError(error)) return "permission";
   if (isSiteSettingsConnectionError(error)) return "connection";
   return "unknown";
 }
@@ -93,16 +182,28 @@ export async function getSiteSettingsQueryResult(): Promise<SiteSettingsQueryRes
     };
   } catch (error) {
     const kind = classifySiteSettingsError(error);
-    if (kind === "schema") {
+    if (kind === "tableMissing") {
       logSiteSettings(
         "error",
-        "Database schema is outdated. Run migrations/db push or enable startup bootstrap.",
+        "site_settings table does not exist. Run migrations/db push or enable startup bootstrap.",
         error,
       );
+    } else if (kind === "schemaDrift") {
+      logSiteSettings(
+        "error",
+        "site_settings is missing columns. Newer migrations need to be applied.",
+        error,
+      );
+    } else if (kind === "permission") {
+      logSiteSettings("error", "Database user lacks permission to read site_settings.", error);
     } else if (kind === "connection") {
       logSiteSettings("error", "Database connection failed while reading site settings.", error);
     } else {
       logSiteSettings("error", "Unexpected error while reading site settings.", error);
+    }
+
+    if (kind !== "connection") {
+      await logSiteSettingsDiagnostics();
     }
 
     return {

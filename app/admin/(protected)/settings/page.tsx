@@ -15,12 +15,14 @@ export default async function AdminSettingsPage() {
   const { dict } = await getI18n();
   const result = await getSiteSettingsQueryResult();
   const t = dict.admin.settings;
-  const loadError =
-    result.errorKind === "schema"
-      ? dict.admin.errors.schema
-      : result.errorKind
-        ? dict.admin.errors.db
-        : undefined;
+  const errorMessages: Record<string, string> = {
+    tableMissing: dict.admin.errors.tableMissing,
+    schemaDrift: dict.admin.errors.schemaDrift,
+    permission: dict.admin.errors.permission,
+    connection: dict.admin.errors.db,
+    unknown: dict.admin.errors.unknown,
+  };
+  const loadError = result.errorKind ? errorMessages[result.errorKind] : undefined;
 
   return (
     <>

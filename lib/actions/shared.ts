@@ -3,7 +3,10 @@ import { getI18n } from "@/lib/i18n/server";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import {
   isSiteSettingsConnectionError,
-  isSiteSettingsSchemaError,
+  isSiteSettingsPermissionError,
+  isSiteSettingsTableMissingError,
+  isSiteSettingsColumnDriftError,
+  logSiteSettingsDiagnostics,
 } from "@/lib/site-settings";
 
 /** Resolve the locale-appropriate admin error messages. */
@@ -14,7 +17,14 @@ export async function getAdminErrors(): Promise<Dictionary["admin"]["errors"]> {
 
 /**
  * Map a thrown DB/runtime error into a friendly ActionState.
- * Used by every admin write action so failures never look like successes.
+ *
+ * Every branch here is checked and ordered deliberately: schema/permission
+ * errors must be classified before the connection check, since Postgres
+ * messages for missing tables/columns can otherwise be mistaken for
+ * connection failures (e.g. "database ... does not exist"). Anything that
+ * doesn't match a known Postgres error code is logged in full and reported
+ * as a generic save error — it must NOT be reported as a connection failure,
+ * since that hides the real cause and misleads whoever is debugging it.
  */
 export function toActionError(
   error: unknown,
@@ -31,14 +41,32 @@ export function toActionError(
     return { error: errs.slugTaken };
   }
 
-  if (isSiteSettingsSchemaError(error)) {
-    return { error: errs.schema };
+  if (isSiteSettingsTableMissingError(error)) {
+    console.error("[admin-action] Table missing while saving:", error);
+    void logSiteSettingsDiagnostics();
+    return { error: errs.tableMissing };
+  }
+
+  if (isSiteSettingsColumnDriftError(error)) {
+    console.error("[admin-action] Column drift while saving:", error);
+    void logSiteSettingsDiagnostics();
+    return { error: errs.schemaDrift };
+  }
+
+  if (isSiteSettingsPermissionError(error)) {
+    console.error("[admin-action] Permission denied while saving:", error);
+    void logSiteSettingsDiagnostics();
+    return { error: errs.permission };
   }
 
   if (isSiteSettingsConnectionError(error)) {
+    console.error("[admin-action] Database connection failed while saving:", error);
     return { error: errs.db };
   }
 
-  // Connection failures — surface clearly rather than faking success.
-  return { error: errs.db };
+  // Unknown cause — log the full error so it's traceable, but don't claim a
+  // connection failure when we don't actually know that's what happened.
+  console.error("[admin-action] Unclassified error while saving:", error);
+  void logSiteSettingsDiagnostics();
+  return { error: errs.unknown };
 }
