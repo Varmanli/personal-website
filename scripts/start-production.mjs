@@ -11,11 +11,14 @@ function isFailHardEnabled() {
 }
 
 async function maybeRunBootstrap() {
+  console.log(`[start] RUN_DB_BOOTSTRAP_ON_START=${JSON.stringify(process.env.RUN_DB_BOOTSTRAP_ON_START ?? "(unset)")}`);
+
   if (!isBootstrapEnabled()) {
-    console.log("[start] RUN_DB_BOOTSTRAP_ON_START is not 'true'. Skipping startup bootstrap.");
+    console.log("[start] Startup bootstrap is SKIPPED (RUN_DB_BOOTSTRAP_ON_START is not 'true').");
     return;
   }
 
+  console.log("[start] Startup bootstrap is ENABLED. Running scripts/production-bootstrap.mjs.");
   try {
     const mod = await import("./production-bootstrap.mjs");
     await mod.runProductionBootstrap();
@@ -46,6 +49,13 @@ async function main() {
     "bin",
     "next",
   );
+  const serverPathUsed = fs.existsSync(serverEntry)
+    ? "server.js"
+    : fs.existsSync(standaloneServerEntry)
+      ? ".next/standalone/server.js"
+      : "next start";
+  console.log(`[start] Server entry: ${serverPathUsed}`);
+
   const entry =
     fs.existsSync(serverEntry)
       ? [process.execPath, [serverEntry]]

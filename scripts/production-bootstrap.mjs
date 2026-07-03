@@ -79,6 +79,20 @@ function buildDefaultSiteSettings() {
   };
 }
 
+// Columns that have repeatedly drifted out of sync with production because
+// they were added by migrations layered on top of a `drizzle-kit push`
+// baseline. These must exist with these exact types/defaults, matching
+// db/schema.ts (`siteSettings`) — all nullable jsonb, no defaults.
+const REQUIRED_SITE_SETTINGS_COLUMNS = [
+  { name: "about_page_content", ddl: `add column if not exists "about_page_content" jsonb` },
+  { name: "about_page_content_fa", ddl: `add column if not exists "about_page_content_fa" jsonb` },
+  { name: "about_page_content_en", ddl: `add column if not exists "about_page_content_en" jsonb` },
+  { name: "contact_page_content", ddl: `add column if not exists "contact_page_content" jsonb` },
+  { name: "contact_page_content_fa", ddl: `add column if not exists "contact_page_content_fa" jsonb` },
+  { name: "contact_page_content_en", ddl: `add column if not exists "contact_page_content_en" jsonb` },
+  { name: "contact_settings", ddl: `add column if not exists "contact_settings" jsonb` },
+];
+
 // Postgres "already exists" codes: duplicate_object, duplicate_table,
 // duplicate_column, duplicate_function, duplicate_schema. If a migration
 // creates something that's already there, the desired end-state already
@@ -103,6 +117,103 @@ function isSchemaDriftError(error) {
   return /does not exist|column .* does not exist|relation .* does not exist/i.test(message);
 }
 
+async function siteSettingsTableExists(sqlClient) {
+  const [{ exists: tableExists }] = await sqlClient`
+    select exists (
+      select 1 from information_schema.tables
+      where table_schema = current_schema() and table_name = 'site_settings'
+    ) as exists
+  `;
+  return tableExists;
+}
+
+async function getSiteSettingsColumns(sqlClient) {
+  const rows = await sqlClient`
+    select column_name from information_schema.columns
+    where table_schema = current_schema() and table_name = 'site_settings'
+  `;
+  return new Set(rows.map((row) => row.column_name));
+}
+
+/**
+ * Compare the actual columns on production's `site_settings` table against
+ * what the migrations are supposed to have created, and log the result.
+ * This never trusts `__app_bootstrap_migrations` blindly — a migration can be
+ * marked applied (e.g. via the "already exists" fallback in applyMigrations,
+ * or from a stale/partial run before this check existed) while the columns
+ * it was supposed to add are still missing.
+ */
+async function verifySiteSettingsSchema(sqlClient, label) {
+  const tableExists = await siteSettingsTableExists(sqlClient);
+  if (!tableExists) {
+    console.error(`[bootstrap] [verify:${label}] site_settings table does not exist.`);
+    return { tableExists: false, missingColumns: REQUIRED_SITE_SETTINGS_COLUMNS.map((c) => c.name) };
+  }
+
+  const existingColumns = await getSiteSettingsColumns(sqlClient);
+  const missingColumns = REQUIRED_SITE_SETTINGS_COLUMNS.map((c) => c.name).filter(
+    (name) => !existingColumns.has(name),
+  );
+
+  if (missingColumns.length === 0) {
+    console.log(`[bootstrap] [verify:${label}] site_settings has all required columns.`);
+  } else {
+    console.error(
+      `[bootstrap] [verify:${label}] site_settings is missing columns: ${missingColumns.join(", ")}`,
+    );
+  }
+
+  return { tableExists: true, missingColumns };
+}
+
+/**
+ * Final safety net: regardless of what the migration tracker says was
+ * applied, force the required site_settings columns to exist using
+ * idempotent `ADD COLUMN IF NOT EXISTS`. Runs inside the same advisory lock
+ * as the rest of bootstrap. Does not touch any other column or row data.
+ */
+async function repairSiteSettingsColumns(sqlClient) {
+  const tableExists = await siteSettingsTableExists(sqlClient);
+  if (!tableExists) {
+    // Creating the table here would risk diverging from what the tracked
+    // migrations define (indexes, defaults, constraints). That's a job for
+    // the migration files, not this repair step.
+    throw new Error(
+      "[bootstrap] site_settings table does not exist. Migrations are responsible for creating it — " +
+        "check that db/migrations/0000_small_alex_power.sql ran, or that the migrations folder was " +
+        "actually copied into the running image.",
+    );
+  }
+
+  const before = await verifySiteSettingsSchema(sqlClient, "before-repair");
+  if (before.missingColumns.length === 0) {
+    console.log("[bootstrap] Column repair: nothing to do, all required columns already present.");
+    return;
+  }
+
+  console.warn(
+    `[bootstrap] Column repair: forcing missing columns onto site_settings regardless of ` +
+      `migration tracker state: ${before.missingColumns.join(", ")}`,
+  );
+
+  for (const column of REQUIRED_SITE_SETTINGS_COLUMNS) {
+    if (!before.missingColumns.includes(column.name)) continue;
+    console.log(`[bootstrap] Column repair: applying "${column.name}".`);
+    await sqlClient.unsafe(`alter table "site_settings" ${column.ddl}`);
+  }
+
+  const after = await verifySiteSettingsSchema(sqlClient, "after-repair");
+  if (after.missingColumns.length > 0) {
+    throw new Error(
+      `[bootstrap] Column repair failed: still missing after ADD COLUMN IF NOT EXISTS: ` +
+        `${after.missingColumns.join(", ")}. This points to a permissions problem (DB user cannot ALTER ` +
+        `TABLE) rather than a migration ordering issue.`,
+    );
+  }
+
+  console.log("[bootstrap] Column repair: all required columns confirmed present.");
+}
+
 async function ensureMigrationsTable(sqlClient) {
   await sqlClient.unsafe(`
     create table if not exists ${MIGRATIONS_TABLE} (
@@ -113,7 +224,15 @@ async function ensureMigrationsTable(sqlClient) {
 }
 
 async function listMigrationFiles() {
-  const entries = await fs.readdir(MIGRATIONS_FOLDER, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await fs.readdir(MIGRATIONS_FOLDER, { withFileTypes: true });
+  } catch (error) {
+    throw new Error(
+      `[bootstrap] Migrations directory not found at ${MIGRATIONS_FOLDER}. ` +
+        `Check that the Dockerfile copies db/migrations into the runtime image. Original error: ${error.message}`,
+    );
+  }
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
     .map((entry) => entry.name)
@@ -121,12 +240,21 @@ async function listMigrationFiles() {
 }
 
 async function applyMigrations(sqlClient) {
+  console.log(`[bootstrap] Working directory: ${process.cwd()}`);
+  console.log(`[bootstrap] Resolved migrations directory: ${MIGRATIONS_FOLDER}`);
+
   await ensureMigrationsTable(sqlClient);
   const appliedRows = await sqlClient`
-    select name from ${sqlClient(MIGRATIONS_TABLE)}
+    select name from ${sqlClient(MIGRATIONS_TABLE)} order by name
   `;
   const applied = new Set(appliedRows.map((row) => row.name));
   const files = await listMigrationFiles();
+
+  console.log(`[bootstrap] Migration files found on disk (${files.length}): ${files.join(", ") || "(none)"}`);
+  console.log(
+    `[bootstrap] Rows already in ${MIGRATIONS_TABLE} (${appliedRows.length}): ` +
+      `${appliedRows.map((r) => r.name).join(", ") || "(none)"}`,
+  );
 
   const pending = files.filter((file) => !applied.has(file));
   if (pending.length === 0) {
@@ -280,6 +408,13 @@ export async function runProductionBootstrap() {
     await client`select pg_advisory_lock(${BOOTSTRAP_LOCK_KEY})`;
     await applyMigrations(client);
     console.log("[bootstrap] Schema migrations complete.");
+
+    // Never trust the migration tracker alone — verify the actual columns,
+    // then force-repair anything still missing regardless of what
+    // __app_bootstrap_migrations says was applied.
+    await verifySiteSettingsSchema(client, "post-migration");
+    await repairSiteSettingsColumns(client);
+
     await ensureInitialSiteSettings(client);
     console.log("[bootstrap] Database bootstrap finished successfully.");
   } catch (error) {
