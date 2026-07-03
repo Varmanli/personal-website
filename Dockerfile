@@ -35,8 +35,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3003
 ENV HOSTNAME=0.0.0.0
+ENV UPLOAD_DIR=/app/uploads
+ENV NEXT_PUBLIC_UPLOAD_BASE_URL=/uploads
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -45,9 +48,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 3003
 
-# Real secrets (DATABASE_URL, AUTH_SECRET, S3_*) must be provided as runtime
-# environment variables in Coolify — never baked into this image. No
-# environment variables in Coolify — never baked into this image. The schema
-# is applied during the builder stage (above, via db:migrate); no seed
-# command runs here.
+# Mount a persistent volume to /app/uploads in production so admin-uploaded
+# assets survive restarts and redeploys. Real secrets (DATABASE_URL,
+# AUTH_SECRET, etc.) must be provided as runtime environment variables in
+# Coolify — never baked into this image. The schema is applied during the
+# builder stage (above, via db:migrate); no seed command runs here.
 CMD ["node", "server.js"]

@@ -42,7 +42,7 @@ interface FileUploadFieldProps {
 
 type Status = "idle" | "uploading" | "success" | "error";
 
-const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp,image/gif";
+const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 const ACCEPT_FAVICON = `${ACCEPT_IMAGE},image/x-icon,image/vnd.microsoft.icon`;
 const ACCEPT_DOC = "application/pdf";
 

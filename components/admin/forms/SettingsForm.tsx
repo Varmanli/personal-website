@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   TextInput,
   TextArea,
@@ -12,8 +13,11 @@ import {
 import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { Tabs } from "@/components/admin/ui/Tabs";
 import { FiUser, FiImage } from "react-icons/fi";
-import { type ActionState, initialActionState, linesValue } from "@/lib/form";
-import { updateSettings } from "@/lib/actions/settings";
+import { linesValue } from "@/lib/form";
+import {
+  updateSettings,
+  type SettingsActionState,
+} from "@/lib/actions/settings";
 import { useI18n } from "@/lib/i18n/context";
 import type { SiteSettings } from "@/types";
 
@@ -22,18 +26,56 @@ const L = {
   en: { ownerName: "Owner name", headline: "Headline", bio: "Biography", aboutIntro: "About intro (second paragraph)", location: "Location", skills: "Skills" },
 };
 
+const initialSettingsActionState: SettingsActionState = {};
+
 export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
+  const router = useRouter();
   const { dict } = useI18n();
   const f = dict.admin.forms;
   const s = dict.admin.settings;
+  const [assetUrls, setAssetUrls] = useState({
+    logoUrl: initial?.logoUrl ?? "",
+    heroImageUrl: initial?.heroImageUrl ?? "",
+    avatarUrl: initial?.avatarUrl ?? "",
+    faviconUrl: initial?.faviconUrl ?? "",
+    resumeUrl: initial?.resumeUrl ?? "",
+  });
   const [state, formAction] = useActionState(
     updateSettings as (
-      prev: ActionState,
+      prev: SettingsActionState,
       form: FormData,
-    ) => Promise<ActionState>,
-    initialActionState,
+    ) => Promise<SettingsActionState>,
+    initialSettingsActionState,
   );
   const fieldError = (name: string) => state.fieldErrors?.[name];
+
+  useEffect(() => {
+    setAssetUrls({
+      logoUrl: initial?.logoUrl ?? "",
+      heroImageUrl: initial?.heroImageUrl ?? "",
+      avatarUrl: initial?.avatarUrl ?? "",
+      faviconUrl: initial?.faviconUrl ?? "",
+      resumeUrl: initial?.resumeUrl ?? "",
+    });
+  }, [
+    initial?.logoUrl,
+    initial?.heroImageUrl,
+    initial?.avatarUrl,
+    initial?.faviconUrl,
+    initial?.resumeUrl,
+  ]);
+
+  useEffect(() => {
+    if (!state.persisted) return;
+    setAssetUrls({
+      logoUrl: state.persisted.logoUrl ?? "",
+      heroImageUrl: state.persisted.heroImageUrl ?? "",
+      avatarUrl: state.persisted.avatarUrl ?? "",
+      faviconUrl: state.persisted.faviconUrl ?? "",
+      resumeUrl: state.persisted.resumeUrl ?? "",
+    });
+    router.refresh();
+  }, [router, state.persisted]);
 
   const faPanel = (
     <div className="space-y-5" dir="rtl">
@@ -60,6 +102,11 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
   return (
     <form action={formAction} className="space-y-5">
       <FormError message={state.error} />
+      {state.success && !state.error ? (
+        <div className="fixed end-4 top-4 z-50 max-w-sm rounded-2xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success shadow-[0_12px_40px_-18px_rgba(52,211,153,0.75)] backdrop-blur">
+          {dict.admin.settings.saved}
+        </div>
+      ) : null}
       {!initial && (
         <p className="flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-3.5 text-sm text-primary-light">
           <span aria-hidden className="mt-0.5">ℹ</span>
@@ -78,14 +125,14 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
 
       <FormSection title={f.assets} description={f.assetsHint} icon={<FiImage />}>
         <FormGrid>
-          <FileUploadField name="logoUrl" label={f.logo} type="logo" shape="wide" preview="image" defaultValue={initial?.logoUrl} />
-          <FileUploadField name="heroImageUrl" label={f.heroImage} type="hero" shape="wide" preview="image" defaultValue={initial?.heroImageUrl} />
+          <FileUploadField name="logoUrl" label={f.logo} type="logo" shape="wide" preview="image" value={assetUrls.logoUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, logoUrl: value }))} />
+          <FileUploadField name="heroImageUrl" label={f.heroImage} type="hero" shape="wide" preview="image" value={assetUrls.heroImageUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, heroImageUrl: value }))} />
         </FormGrid>
         <FormGrid>
-          <FileUploadField name="avatarUrl" label={f.avatar} type="profile" shape="avatar" preview="image" defaultValue={initial?.avatarUrl} />
-          <FileUploadField name="faviconUrl" label={f.favicon} type="favicon" shape="favicon" preview="image" defaultValue={initial?.faviconUrl} />
+          <FileUploadField name="avatarUrl" label={f.avatar} type="profile" shape="avatar" preview="image" value={assetUrls.avatarUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, avatarUrl: value }))} />
+          <FileUploadField name="faviconUrl" label={f.favicon} type="favicon" shape="favicon" preview="image" value={assetUrls.faviconUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, faviconUrl: value }))} />
         </FormGrid>
-        <FileUploadField name="resumeUrl" label={f.resume} type="resume" shape="wide" preview="document" accept="application/pdf" defaultValue={initial?.resumeUrl} />
+        <FileUploadField name="resumeUrl" label={f.resume} type="resume" shape="wide" preview="document" accept="application/pdf" value={assetUrls.resumeUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, resumeUrl: value }))} />
       </FormSection>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">

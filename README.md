@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Varmanli.ir
 
-## Getting Started
+Full-stack personal commercial portfolio built with Next.js App Router, TypeScript, Tailwind CSS, PostgreSQL, and Drizzle ORM.
 
-First, run the development server:
+## Development
 
 ```bash
+npm install
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Required environment variables live in [.env.example](/C:/Users/amirhosein/Desktop/Project/multi-project-deploy/varmanli.ir/.env.example).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Persistent Uploads
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Admin-uploaded branding and media assets are stored outside `public/` in a configurable upload directory and served through `/uploads/...`.
 
-## Learn More
+- `UPLOAD_DIR` controls where files are written on disk.
+- `NEXT_PUBLIC_UPLOAD_BASE_URL` controls the public URL prefix for those files.
+- Default local values are `./uploads` and `/uploads`.
 
-To learn more about Next.js, take a look at the following resources:
+Production requirement:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Mount `UPLOAD_DIR` as a persistent volume. Example for Docker/Coolify: mount `/app/uploads`.
+- Do not point uploads at `.next`, `tmp`, or any path replaced during deploys.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Files are served by the app through `GET /uploads/[...path]`, with path traversal protection and cache headers.
 
-## Deploy on Vercel
+## Production
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Build and run:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm run start
+```
+
+If you deploy with the included [Dockerfile](/C:/Users/amirhosein/Desktop/Project/multi-project-deploy/varmanli.ir/Dockerfile), also:
+
+1. Set runtime env vars such as `DATABASE_URL`, `AUTH_SECRET`, `UPLOAD_DIR`, and `NEXT_PUBLIC_UPLOAD_BASE_URL`.
+2. Mount a persistent volume to `/app/uploads`.
+
+## Notes
+
+- Existing absolute asset URLs remain valid.
+- Legacy stored paths like `/uploads/...` and `/public/uploads/...` are normalized on read for backward compatibility.

@@ -139,3 +139,41 @@ export async function deleteObject(key: string): Promise<void> {
     new DeleteObjectCommand({ Bucket: env.bucket, Key: key }),
   );
 }
+
+/**
+ * Confirm an uploaded object is actually reachable at its public URL.
+ *
+ * Some S3-compatible providers silently ignore the `public-read` ACL (e.g.
+ * when the bucket's object-ownership policy is "bucket owner enforced" and
+ * requires a bucket-level public-read policy instead). Without this check an
+ * upload can report success while the stored URL 403s for every visitor —
+ * exactly the "works in dev, broken in prod" symptom this guards against.
+ */
+export async function verifyPublicAccess(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Normalise a stored asset URL for backward compatibility with rows written
+ * before this project moved uploads to object storage (relative paths such
+ * as `/uploads/...` or `/public/uploads/...`). Absolute URLs pass through
+ * unchanged; legacy relative paths are rewritten against the current public
+ * base URL so old rows keep resolving after the storage migration.
+ */
+export function normalizeStoredAssetUrl(url: string | null | undefined): string | null {
+  if (!url) return url ?? null;
+  if (/^https?:\/\//i.test(url)) return url;
+
+  const base = (process.env.S3_PUBLIC_BASE_URL ?? "").replace(/\/+$/, "");
+  if (!base) return url;
+
+  const cleanPath = url
+    .replace(/^\/?public\//, "")
+    .replace(/^\/+/, "");
+  return `${base}/${cleanPath}`;
+}

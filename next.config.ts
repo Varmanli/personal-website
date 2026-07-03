@@ -1,24 +1,24 @@
 import type { NextConfig } from "next";
 
 /**
- * Allow next/image to optimise images served from ArvanCloud Object Storage.
- * Covers all Arvan storage subdomains plus, if set, the host of
- * S3_PUBLIC_BASE_URL — so custom buckets/CDN domains work without edits.
+ * Allow next/image to optimise externally-hosted legacy uploads. Current
+ * uploads are served locally through `/uploads/...`, which needs no remote
+ * image config, but old absolute URLs must keep working unchanged.
  */
 const remotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] = [
   { protocol: "https", hostname: "**.arvanstorage.ir" },
   { protocol: "https", hostname: "**.arvanstorage.com" },
 ];
 
-const publicBase = process.env.S3_PUBLIC_BASE_URL;
-if (publicBase) {
+const externalUploadBase = process.env.NEXT_PUBLIC_UPLOAD_BASE_URL;
+if (externalUploadBase?.startsWith("http")) {
   try {
-    const { hostname } = new URL(publicBase);
+    const { protocol, hostname } = new URL(externalUploadBase);
     if (!remotePatterns.some((p) => p.hostname === hostname)) {
-      remotePatterns.push({ protocol: "https", hostname });
+      remotePatterns.push({ protocol: protocol.replace(":", "") as "http" | "https", hostname });
     }
   } catch {
-    // Ignore an invalid S3_PUBLIC_BASE_URL — the wildcard patterns still apply.
+    // Ignore an invalid NEXT_PUBLIC_UPLOAD_BASE_URL.
   }
 }
 

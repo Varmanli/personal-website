@@ -862,6 +862,7 @@ const en = {
       description: "Manage your profile and site-wide content.",
       newTitle: "Create site settings",
       save: "Save settings",
+      saved: "Settings saved successfully.",
       noticeFirst:
         "No settings row exists yet — saving will create one.",
     },
@@ -1921,6 +1922,7 @@ const fa: DeepPartial<Dictionary> = {
       description: "مدیریت پروفایل و محتوای سراسری سایت.",
       newTitle: "ساخت تنظیمات سایت",
       save: "ذخیره تنظیمات",
+      saved: "تنظیمات با موفقیت ذخیره شد.",
       noticeFirst: "هنوز ردیف تنظیماتی وجود ندارد — با ذخیره ساخته می‌شود.",
     },
     about: {

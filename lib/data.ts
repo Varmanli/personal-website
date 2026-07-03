@@ -33,6 +33,7 @@ import {
   getFallbackContactPageContent,
   normalizeContactPageContent,
 } from "@/lib/contact-page";
+import { normalizeSiteSettingsAssets } from "@/lib/uploads";
 import type { AboutPageContent, ContactPageContent } from "@/types";
 
 /**
@@ -242,7 +243,7 @@ export async function getProfile(
     },
     placeholderProfile,
   );
-  return localizeProfile(row, locale);
+  return localizeProfile(normalizeSiteSettingsAssets(row), locale);
 }
 
 /** Localized About-page content with DB-backed overrides and code fallback. */
@@ -272,7 +273,7 @@ export function getRawProfile(): Promise<SiteSettings | null> {
     "site_settings",
     async () => {
       const [r] = await db.select().from(siteSettings).limit(1);
-      return r ?? null;
+      return r ? normalizeSiteSettingsAssets(r) : null;
     },
     null,
   );
