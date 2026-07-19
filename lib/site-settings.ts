@@ -31,7 +31,7 @@ function logSiteSettings(level: "warn" | "error", message: string, error?: unkno
 }
 
 const EXPECTED_SITE_SETTINGS_COLUMNS = [
-  "id", "owner_name", "headline", "bio", "avatar_url", "resume_url",
+  "id", "website_mode", "owner_name", "headline", "bio", "avatar_url", "resume_url",
   "logo_url", "favicon_url", "hero_image_url", "email", "location", "skills",
   "owner_name_fa", "owner_name_en", "headline_fa", "headline_en", "bio_fa",
   "bio_en", "location_fa", "location_en", "skills_fa", "skills_en",

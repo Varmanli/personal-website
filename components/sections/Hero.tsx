@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { ButtonLink } from "@/components/ui/Button";
+import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
 import { DeveloperHeroVisual } from "@/components/home/DeveloperHeroVisual";
 import { getI18n } from "@/lib/i18n/server";
 import { format } from "@/lib/i18n/dictionaries";
@@ -78,9 +79,9 @@ export async function Hero({ firstName }: { firstName: string }) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/start-project" size="lg" className="w-full sm:w-auto sm:min-w-52">
+            <PublicCtaLink href="/start-project" size="lg" className="w-full sm:w-auto sm:min-w-52">
               {h.primaryCta}
-            </ButtonLink>
+            </PublicCtaLink>
             <ButtonLink
               href="/projects"
               size="lg"

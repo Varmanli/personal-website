@@ -121,7 +121,8 @@ export function ProjectShowcaseHero({
                       alt={title}
                       fill
                       priority
-                      sizes="(max-width: 1024px) 100vw, 52vw"
+                      quality={92}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, (max-width: 1536px) 52vw, 760px"
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                     />
                   ) : (
@@ -169,6 +170,7 @@ export function ProjectShowcaseHero({
                         alt={`${title} ${index + 1}`}
                         fill
                         sizes="(max-width: 768px) 25vw, 10vw"
+                        quality={85}
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                       />
                       <span

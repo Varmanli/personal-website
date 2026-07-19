@@ -12,7 +12,7 @@ import {
 } from "@/components/admin/forms/fields";
 import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { Tabs } from "@/components/admin/ui/Tabs";
-import { FiUser, FiImage } from "react-icons/fi";
+import { FiUser, FiImage, FiBriefcase } from "react-icons/fi";
 import { linesValue } from "@/lib/form";
 import {
   updateSettings,
@@ -141,6 +141,41 @@ export function SettingsForm({
           <FileUploadField name="faviconUrl" label={f.favicon} type="favicon" shape="favicon" preview="image" value={assetUrls.faviconUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, faviconUrl: value }))} />
         </FormGrid>
         <FileUploadField name="resumeUrl" label={f.resume} type="resume" shape="wide" preview="document" accept="application/pdf" value={assetUrls.resumeUrl} onChange={(value) => setAssetUrls((current) => ({ ...current, resumeUrl: value }))} />
+      </FormSection>
+
+      <FormSection
+        title="Website Mode"
+        description="Choose whether the public website presents freelance services or a hiring-focused portfolio."
+        icon={<FiBriefcase />}
+      >
+        <fieldset className="grid gap-3 sm:grid-cols-2">
+          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface-2/40 p-4 transition-colors has-checked:border-primary/60 has-checked:bg-primary/10">
+            <input
+              type="radio"
+              name="websiteMode"
+              value="freelance"
+              defaultChecked={(initial?.websiteMode ?? "freelance") === "freelance"}
+              className="mt-1 accent-primary"
+            />
+            <span>
+              <span className="block text-sm font-semibold text-foreground">Freelance Mode</span>
+              <span className="mt-1 block text-xs leading-relaxed text-faint">Show services, project requests, and project estimates.</span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface-2/40 p-4 transition-colors has-checked:border-primary/60 has-checked:bg-primary/10">
+            <input
+              type="radio"
+              name="websiteMode"
+              value="hiring"
+              defaultChecked={initial?.websiteMode === "hiring"}
+              className="mt-1 accent-primary"
+            />
+            <span>
+              <span className="block text-sm font-semibold text-foreground">Hiring Mode</span>
+              <span className="mt-1 block text-xs leading-relaxed text-faint">Hide commercial services and project-estimate entry points.</span>
+            </span>
+          </label>
+        </fieldset>
       </FormSection>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">

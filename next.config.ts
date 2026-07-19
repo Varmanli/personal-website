@@ -26,7 +26,11 @@ const nextConfig: NextConfig = {
   // Standalone output for Docker/Coolify deployments — bundles only the
   // production dependencies actually needed into .next/standalone.
   output: "standalone",
-  images: { remotePatterns },
+  images: {
+    remotePatterns,
+    // Permit high-quality responsive variants for large portfolio screenshots.
+    qualities: [75, 85, 90, 92, 95],
+  },
 };
 
 export default nextConfig;

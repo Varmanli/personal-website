@@ -15,6 +15,11 @@ import { mainNav, type MainNavItem } from "@/lib/config";
 import { getFooterSocialLinks } from "@/lib/contact-page";
 import { getProfile } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
+import {
+  getWebsiteMode,
+  getWebsiteNavigation,
+  shouldShowWebsiteLink,
+} from "@/lib/website-mode";
 
 const technologies = [
   { name: "Next.js", icon: <SiNextdotjs /> },
@@ -48,7 +53,10 @@ function getSocialIcon(label: string) {
 export async function Footer() {
   const year = new Date().getFullYear();
   const { locale, dict } = await getI18n();
-  const profile = await getProfile(locale);
+  const [profile, mode] = await Promise.all([
+    getProfile(locale),
+    getWebsiteMode(),
+  ]);
   const f = dict.footer;
   const socialLinks = getFooterSocialLinks(profile);
 
@@ -84,7 +92,7 @@ export async function Footer() {
                   {brandName}
                 </span>
                 <span className="text-xs font-medium text-faint">
-                  Full-stack Developer
+                  Front-End Developer
                 </span>
               </span>
             </Link>
@@ -115,7 +123,7 @@ export async function Footer() {
             </h3>
 
             <ul className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2.5">
-              {mainNav.map((link) => (
+              {getWebsiteNavigation(mode, mainNav).map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -128,25 +136,26 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
-          <div className="lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-faint">
-              {f.services}
-            </h3>
+          {shouldShowWebsiteLink(mode, "/services") && (
+            <div className="lg:col-span-2">
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-faint">
+                {f.services}
+              </h3>
 
-            <ul className="mt-4 space-y-2.5">
-              {serviceLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm font-medium text-muted transition-colors hover:text-white"
-                  >
-                    {dict.nav[link.key]}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+              <ul className="mt-4 space-y-2.5">
+                {serviceLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm font-medium text-muted transition-colors hover:text-white"
+                    >
+                      {dict.nav[link.key]}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Connect */}
           <div className="lg:col-span-2">

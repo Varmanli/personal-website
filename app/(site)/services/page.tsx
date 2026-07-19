@@ -16,6 +16,7 @@ import {
 } from "react-icons/fi";
 import { ServicePlanCard } from "@/components/cards/ServicePlanCard";
 import { ButtonLink } from "@/components/ui/Button";
+import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { StatPill } from "@/components/ui/StatPill";
@@ -224,7 +225,7 @@ const servicesPageContent = {
           description:
             "Interactive web apps with backend services, database design, APIs, payments, subscriptions, and custom logic.",
           items: [
-            "Full-stack architecture",
+            "Front-End architecture",
             "API and database",
             "Payments and wallet flows",
             "Notifications",
@@ -407,13 +408,13 @@ export default async function ServicesPage() {
                   </p>
                 </div>
 
-                <ButtonLink
+                <PublicCtaLink
                   href="/start-project"
                   size="lg"
                   className="w-full shrink-0 sm:w-auto"
                 >
                   {dict.planner.cta.servicesButton}
-                </ButtonLink>
+                </PublicCtaLink>
               </div>
             </div>
           </Container>
@@ -498,12 +499,12 @@ export default async function ServicesPage() {
                     </p>
                   </div>
                   <div className="flex flex-col justify-center gap-3 sm:flex-row">
-                    <ButtonLink
+                    <PublicCtaLink
                       href="/start-project"
                       className="w-full sm:w-auto"
                     >
                       {t.emptyPrimary}
-                    </ButtonLink>
+                    </PublicCtaLink>
                     <ButtonLink
                       href="/contact"
                       variant="outline"
@@ -655,21 +656,21 @@ export default async function ServicesPage() {
                   {t.ctaText}
                 </p>
                 <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row">
-                  <ButtonLink
+                  <PublicCtaLink
                     href="/contact"
                     size="lg"
                     className="w-full sm:w-auto"
                   >
                     {t.cta}
-                  </ButtonLink>
-                  <ButtonLink
+                  </PublicCtaLink>
+                  <PublicCtaLink
                     href="/start-project"
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto"
                   >
                     {t.ctaSecondary}
-                  </ButtonLink>
+                  </PublicCtaLink>
                 </div>
               </div>
             </div>

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { mainNav } from "@/lib/config";
+import type { MainNavItem } from "@/lib/config";
 import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 /** Public nav links, highlighting the active route. */
-export function Navigation({ className }: { className?: string }) {
+export function Navigation({ className, items }: { className?: string; items: MainNavItem[] }) {
   const pathname = usePathname();
   const { dict } = useI18n();
 
@@ -18,7 +18,7 @@ export function Navigation({ className }: { className?: string }) {
         className,
       )}
     >
-      {mainNav.map((link) => {
+      {items.map((link) => {
         const isActive =
           link.href === "/"
             ? pathname === "/"

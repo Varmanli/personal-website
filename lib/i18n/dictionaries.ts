@@ -26,7 +26,7 @@ const en = {
   meta: {
     titleSuffix: "Projects & Services",
     description:
-      "Full-stack developer building modern, scalable web products, dashboards, and digital experiences.",
+      "Front-End developer building modern, scalable web products, dashboards, and digital experiences.",
     // Per-page <title> values (resolved through generateMetadata so they
     // respect the active locale instead of being hardcoded English).
     pages: {
@@ -55,7 +55,7 @@ const en = {
     secondaryCta: "View selected work",
     available: "Available for work",
     supportingText:
-      "Full-stack delivery for products that need clean UX, stable architecture, and room to scale.",
+      "Front-End delivery for products that need clean UX, stable architecture, and room to scale.",
   },
   footer: {
     available: "Available for new projects",
@@ -137,13 +137,13 @@ const en = {
       eyebrow: "About me",
       title: "Amirhossein Varmezyani",
       subtitle:
-        "Full-stack designer and developer focused on building fast, scalable, maintainable websites, admin panels, and web applications.",
+        "FFront-End designer and developer focused on building fast, scalable, maintainable websites, admin panels, and web applications.",
       supporting:
         "I help ideas move from design and architecture through implementation, deployment, and optimization into a real product, with technical quality, user experience, and business outcomes in mind.",
       available: "Available for projects",
       primary: "Request project estimate",
       secondary: "View projects",
-      chips: ["Full-stack", "Next.js", "NestJS"],
+      chips: ["Front-End", "Next.js", "NestJS"],
     },
     stats: {
       items: [
@@ -268,7 +268,6 @@ const en = {
   },
   projectDetail: {
     back: "← Back to projects",
-    eyebrow: "Case study",
     screenshots: "Product screenshots",
     screenshotsText:
       "A closer look at the interface, flows, and visual execution across the product.",
@@ -407,8 +406,7 @@ const en = {
       steps: [
         {
           title: "Message review",
-          description:
-            "I review the need, goal, and the details you shared.",
+          description: "I review the need, goal, and the details you shared.",
           icon: "search",
         },
         {
@@ -427,7 +425,8 @@ const en = {
     },
     cta: {
       title: "Not sure where to start?",
-      subtitle: "A short explanation is enough for us to find the right path for your project.",
+      subtitle:
+        "A short explanation is enough for us to find the right path for your project.",
       primary: "Start project estimate",
       secondary: "View services",
     },
@@ -442,7 +441,8 @@ const en = {
       placeholders: {
         name: "Your name",
         email: "you@example.com",
-        subject: "For example: website design, admin panel, or technical consulting",
+        subject:
+          "For example: website design, admin panel, or technical consulting",
         message:
           "Share a bit about the idea, goal, needed features, or your question...",
       },
@@ -471,7 +471,8 @@ const en = {
       },
       send: "Send message",
       sending: "Sending…",
-      success: "Your message was sent successfully. I’ll reply as soon as I can.",
+      success:
+        "Your message was sent successfully. I’ll reply as soon as I can.",
       errorRequired: "Name, email, and message are required.",
       errorEmail: "Please enter a valid email address.",
       errorGeneric: "Your message could not be sent. Please try again.",
@@ -581,7 +582,8 @@ const en = {
     },
     pdf: {
       title: "Preliminary project estimate",
-      subtitle: "Initial estimate based on the details submitted in the project form",
+      subtitle:
+        "Initial estimate based on the details submitted in the project form",
       date: "Date",
       client: "Client information",
       name: "Name",
@@ -613,13 +615,14 @@ const en = {
       notesTitle: "Notes & terms",
       disclaimer:
         "This is a preliminary estimate based on the information provided and is not a final price or a contractual commitment. The final amount and timeline will be determined after a full review of the project scope, features, design, content, infrastructure, and terms of collaboration.",
-      contactNote: "To finalize the proposal, I'll contact you after reviewing the details.",
+      contactNote:
+        "To finalize the proposal, I'll contact you after reviewing the details.",
       none: "—",
     },
     plans: {
       landing: "Landing page",
       cms: "CMS / WordPress build",
-      website: "Full-stack website",
+      website: "Front-End website",
       ecommerce: "E-commerce build",
       dashboard: "Dashboard / admin panel",
       custom: "Custom development",
@@ -693,7 +696,8 @@ const en = {
       tooBig: "The file is too large.",
       failed: "Upload failed. Please try again.",
       addImages: "Add images",
-      galleryHint: "Drag thumbnails to reorder. The first image leads the gallery.",
+      galleryHint:
+        "Drag thumbnails to reorder. The first image leads the gallery.",
     },
     tech: {
       placeholder: "Select technologies",
@@ -718,8 +722,7 @@ const en = {
     },
     estimates: {
       title: "Estimator rules",
-      description:
-        "Duration rules and pricing used by the project estimator.",
+      description: "Duration rules and pricing used by the project estimator.",
       settingsTitle: "Pricing settings",
       weeklyRate: "Weekly rate",
       currency: "Currency",
@@ -863,8 +866,7 @@ const en = {
       newTitle: "Create site settings",
       save: "Save settings",
       saved: "Settings saved successfully.",
-      noticeFirst:
-        "No settings row exists yet — saving will create one.",
+      noticeFirst: "No settings row exists yet — saving will create one.",
     },
     about: {
       title: "About page management",
@@ -941,7 +943,8 @@ const en = {
       english: "English content",
       // Section group titles + helper text
       content: "Content",
-      contentHint: "Add Persian and English versions — either can be left blank.",
+      contentHint:
+        "Add Persian and English versions — either can be left blank.",
       essentials: "Essentials",
       essentialsHint: "Slug, status, and where this appears.",
       advanced: "Advanced",
@@ -963,7 +966,8 @@ const en = {
       profile: "Profile",
       profileHint: "Your name, headline, bio, and skills per language.",
       sharedFields: "Shared details",
-      sharedFieldsHint: "Email, avatar, and résumé — the same across languages.",
+      sharedFieldsHint:
+        "Email, avatar, and résumé — the same across languages.",
       cancel: "Cancel",
       saving: "Saving…",
       createProject: "Create project",
@@ -1036,22 +1040,24 @@ const en = {
       coverRequired: "A cover image is required.",
       notSignedIn: "You must be signed in to do that.",
       db: "Couldn't reach the database, so nothing was saved. Check your connection and try again.",
-      schema: "Database schema is not initialized. Run migrations or db push before using site settings.",
-      tableMissing: "The database structure isn't set up yet. Run migrations or db:push first.",
-      schemaDrift: "The database structure is out of date. Newer migrations need to be applied.",
+      schema:
+        "Database schema is not initialized. Run migrations or db push before using site settings.",
+      tableMissing:
+        "The database structure isn't set up yet. Run migrations or db:push first.",
+      schemaDrift:
+        "The database structure is out of date. Newer migrations need to be applied.",
       permission: "The database user doesn't have permission to save settings.",
-      unknown: "Something went wrong while saving. Please try again, or check the server logs for details.",
+      unknown:
+        "Something went wrong while saving. Please try again, or check the server logs for details.",
       slugTaken: "That slug is already in use. Choose a different one.",
       invalidId: "Invalid id.",
       invalidHomeOrder: "Homepage order must be a valid non-negative number.",
-      invalidMetric:
-        "Each metric row must include both a label and a value.",
+      invalidMetric: "Each metric row must include both a label and a value.",
       invalidAboutContent:
         "About page content is incomplete or invalid. Review the required fields and try again.",
       invalidContactContent:
         "Contact page content is incomplete or invalid. Review the required fields and try again.",
-      invalidUrl:
-        "CTA links must be valid internal paths or full URLs.",
+      invalidUrl: "CTA links must be valid internal paths or full URLs.",
     },
     auth: {
       title: "Admin sign in",
@@ -1279,8 +1285,7 @@ const fa: DeepPartial<Dictionary> = {
       items: [
         {
           title: "طراحی و توسعه وب‌سایت",
-          description:
-            "وب‌سایت‌های سریع، ریسپانسیو، سئو محور و قابل مدیریت.",
+          description: "وب‌سایت‌های سریع، ریسپانسیو، سئو محور و قابل مدیریت.",
         },
         {
           title: "ساخت پنل مدیریت",
@@ -1334,7 +1339,6 @@ const fa: DeepPartial<Dictionary> = {
   },
   projectDetail: {
     back: "← بازگشت به پروژه‌ها",
-    eyebrow: "کیس استادی",
     screenshots: "اسکرین‌شات‌های پروژه",
     screenshotsText:
       "نگاهی نزدیک‌تر به رابط، فلوها و اجرای بصری محصول در بخش‌های مختلف.",
@@ -1408,8 +1412,7 @@ const fa: DeepPartial<Dictionary> = {
       },
     ],
     ctaTitle: "مطمئن نیستید کدام پلن مناسب است؟",
-    ctaText:
-      "درباره پروژه‌ات بگو تا مسیر درست و پیشنهاد مناسب‌تری دریافت کنی.",
+    ctaText: "درباره پروژه‌ات بگو تا مسیر درست و پیشنهاد مناسب‌تری دریافت کنی.",
     cta: "دریافت پیشنهاد",
     ctaSecondary: "درخواست برآورد پروژه",
   },
@@ -1439,8 +1442,7 @@ const fa: DeepPartial<Dictionary> = {
         },
         {
           title: "مناسب برای",
-          description:
-            "وب‌سایت، پنل مدیریتی، وب‌اپلیکیشن و توسعه پروژه موجود.",
+          description: "وب‌سایت، پنل مدیریتی، وب‌اپلیکیشن و توسعه پروژه موجود.",
           icon: "briefcase",
         },
         {
@@ -1508,8 +1510,7 @@ const fa: DeepPartial<Dictionary> = {
         name: "نام شما",
         email: "you@example.com",
         subject: "مثلاً طراحی سایت، پنل مدیریت یا مشاوره فنی",
-        message:
-          "کمی درباره ایده، هدف یا نیاز پروژه‌ات توضیح بده...",
+        message: "کمی درباره ایده، هدف یا نیاز پروژه‌ات توضیح بده...",
       },
       options: {
         empty: "انتخاب کنید",
@@ -1647,8 +1648,7 @@ const fa: DeepPartial<Dictionary> = {
     },
     pdf: {
       title: "پیش‌فاکتور اولیه پروژه",
-      subtitle:
-        "برآورد اولیه بر اساس اطلاعات ثبت‌شده در فرم برآورد پروژه",
+      subtitle: "برآورد اولیه بر اساس اطلاعات ثبت‌شده در فرم برآورد پروژه",
       date: "تاریخ",
       client: "اطلاعات کارفرما",
       name: "نام",
@@ -1736,8 +1736,7 @@ const fa: DeepPartial<Dictionary> = {
     caseStudy: "مطالعه موردی →",
     from: "از",
     getStarted: "شروع کنید",
-    customNote:
-      "محدوده، زمان‌بندی و قیمت سفارشی پیش از شروع قابل گفتگو است.",
+    customNote: "محدوده، زمان‌بندی و قیمت سفارشی پیش از شروع قابل گفتگو است.",
     contactQuote: "برای قیمت تماس بگیرید",
     types: {
       commercial: "تجاری",
@@ -1760,7 +1759,8 @@ const fa: DeepPartial<Dictionary> = {
       tooBig: "حجم فایل بیش از حد مجاز است.",
       failed: "آپلود با خطا مواجه شد. دوباره تلاش کنید.",
       addImages: "افزودن تصویر",
-      galleryHint: "برای تغییر ترتیب، تصاویر را بکشید. تصویر اول، نخستین تصویر گالری است.",
+      galleryHint:
+        "برای تغییر ترتیب، تصاویر را بکشید. تصویر اول، نخستین تصویر گالری است.",
     },
     tech: {
       placeholder: "انتخاب تکنولوژی‌ها",
@@ -2004,7 +2004,8 @@ const fa: DeepPartial<Dictionary> = {
       persian: "محتوای فارسی",
       english: "محتوای انگلیسی",
       content: "محتوا",
-      contentHint: "نسخه‌ی فارسی و انگلیسی را وارد کنید — هرکدام می‌تواند خالی بماند.",
+      contentHint:
+        "نسخه‌ی فارسی و انگلیسی را وارد کنید — هرکدام می‌تواند خالی بماند.",
       essentials: "اطلاعات اصلی",
       essentialsHint: "اسلاگ، وضعیت و محل نمایش.",
       advanced: "پیشرفته",
@@ -2082,7 +2083,8 @@ const fa: DeepPartial<Dictionary> = {
       avatarUrl: "آدرس آواتار",
       resumeUrl: "آدرس رزومه",
       assets: "برندینگ و رسانه",
-      assetsHint: "لوگو، فاوآیکون و تصویر هیرو که در سراسر سایت استفاده می‌شوند.",
+      assetsHint:
+        "لوگو، فاوآیکون و تصویر هیرو که در سراسر سایت استفاده می‌شوند.",
       logo: "لوگو",
       favicon: "فاوآیکون",
       heroImage: "تصویر هیرو",
@@ -2096,23 +2098,25 @@ const fa: DeepPartial<Dictionary> = {
       coverRequired: "تصویر کاور الزامی است.",
       notSignedIn: "برای انجام این کار باید وارد شوید.",
       db: "ارتباط با پایگاه‌داده برقرار نشد، چیزی ذخیره نشد. اتصال را بررسی و دوباره تلاش کنید.",
-      schema: "اسکیما یا جدول‌های پایگاه‌داده آماده نیستند. قبل از استفاده از تنظیمات سایت، migration یا db push را اجرا کنید.",
-      tableMissing: "ساختار دیتابیس آماده نیست. migration یا db:push باید اجرا شود.",
-      schemaDrift: "ساختار دیتابیس قدیمی است. migrationهای جدید باید اعمال شوند.",
+      schema:
+        "اسکیما یا جدول‌های پایگاه‌داده آماده نیستند. قبل از استفاده از تنظیمات سایت، migration یا db push را اجرا کنید.",
+      tableMissing:
+        "ساختار دیتابیس آماده نیست. migration یا db:push باید اجرا شود.",
+      schemaDrift:
+        "ساختار دیتابیس قدیمی است. migrationهای جدید باید اعمال شوند.",
       permission: "کاربر دیتابیس دسترسی لازم برای ذخیره تنظیمات را ندارد.",
-      unknown: "خطایی هنگام ذخیره رخ داد. دوباره تلاش کنید یا لاگ‌های سرور را بررسی کنید.",
+      unknown:
+        "خطایی هنگام ذخیره رخ داد. دوباره تلاش کنید یا لاگ‌های سرور را بررسی کنید.",
       slugTaken: "این اسلاگ قبلاً استفاده شده است. مورد دیگری انتخاب کنید.",
       invalidId: "شناسه نامعتبر است.",
       invalidHomeOrder:
         "ترتیب نمایش در صفحه اصلی باید یک عدد معتبر و صفر یا بیشتر باشد.",
-      invalidMetric:
-        "هر متریک باید هم برچسب و هم مقدار داشته باشد.",
+      invalidMetric: "هر متریک باید هم برچسب و هم مقدار داشته باشد.",
       invalidAboutContent:
         "محتوای صفحه درباره ناقص یا نامعتبر است. فیلدهای ضروری را بررسی و دوباره تلاش کنید.",
       invalidContactContent:
         "محتوای صفحه تماس ناقص یا نامعتبر است. فیلدهای ضروری را بررسی و دوباره تلاش کنید.",
-      invalidUrl:
-        "لینک‌های CTA باید مسیر داخلی یا URL کامل معتبر باشند.",
+      invalidUrl: "لینک‌های CTA باید مسیر داخلی یا URL کامل معتبر باشند.",
     },
     auth: {
       title: "ورود مدیر",
@@ -2132,9 +2136,7 @@ const fa: DeepPartial<Dictionary> = {
 };
 
 function isObject(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === "object" && value !== null && !Array.isArray(value)
-  );
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** Deep-merge Persian overrides onto the English base (English fallback). */

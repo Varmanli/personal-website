@@ -123,206 +123,211 @@ export default async function ContactPage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden
-          className="absolute inset-0 grid-bg mask-[radial-gradient(ellipse_at_center,black,transparent_76%)] opacity-60"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/15 blur-[120px]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-accent/10 blur-[120px]"
-        />
-
-        <Container className="relative py-12 sm:py-14 lg:py-16">
-          <div className="max-w-3xl space-y-4">
-            <SectionHeader
-              eyebrow={content.hero.badge}
-              title={content.hero.title}
-              subtitle={content.hero.subtitle}
-            />
-            <p className="text-sm leading-7 text-faint">
-              {content.hero.supportingText}
-            </p>
-          </div>
-        </Container>
-      </section>
-
       <main className="relative overflow-hidden">
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-32 h-120 w-120 -translate-x-1/2 rounded-full bg-primary/8 blur-[150px]"
+          className="
+      pointer-events-none
+      absolute
+      left-1/2
+      top-0
+      h-96
+      w-96
+      -translate-x-1/2
+      rounded-full
+      bg-primary/10
+      blur-[140px]
+      "
         />
 
-        <div className="relative flex flex-col gap-12 py-12 sm:py-16 lg:gap-16">
-          <Container as="section">
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-              <div className="neon-card rounded-[1.75rem] p-5 sm:p-6">
-                <ContactForm />
-              </div>
+        <div className="relative py-12 sm:py-16 lg:py-20">
+          <Container>
+            <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+              {/* Form */}
 
-              <div className="space-y-5">
+              <section
+                className="
+            rounded-[2rem]
+            border
+            border-border
+            bg-surface
+            p-6
+            sm:p-8
+            "
+              >
+                <div className="mb-8 space-y-2">
+                  <p
+                    className="
+                text-xs
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-primary-light
+                "
+                  >
+                    Contact
+                  </p>
+
+                  <h1
+                    className="
+                text-3xl
+                font-bold
+                tracking-tight
+                "
+                  >
+                    بیا صحبت کنیم
+                  </h1>
+
+                  <p
+                    className="
+                text-sm
+                leading-7
+                text-muted
+                "
+                  >
+                    اگر ایده‌ای دارید یا می‌خواهید درباره یک پروژه صحبت کنیم،
+                    خوشحال می‌شوم بشنوم.
+                  </p>
+                </div>
+
+                <ContactForm />
+              </section>
+
+              {/* Contact Methods */}
+
+              <aside
+                className="
+            space-y-6
+            "
+              >
                 {methods.length > 0 && (
-                  <article className="neon-card rounded-[1.75rem] p-5 sm:p-6">
-                    <div className="space-y-1.5">
-                      <h2 className="text-lg font-semibold tracking-tight text-foreground">
-                        {t.methodsTitle}
+                  <section
+                    className="
+                rounded-[2rem]
+                border
+                border-border
+                bg-surface
+                p-6
+                sm:p-8
+                "
+                  >
+                    <div className="space-y-2">
+                      <h2
+                        className="
+                    text-xl
+                    font-bold
+                    tracking-tight
+                    "
+                      >
+                        راه‌های ارتباطی
                       </h2>
-                      <p className="text-sm leading-6 text-faint">
-                        {t.methodsSubtitle}
+
+                      <p
+                        className="
+                    text-sm
+                    leading-6
+                    text-muted
+                    "
+                      >
+                        از هر روشی که راحت‌تر هستید پیام بدهید.
                       </p>
                     </div>
 
-                    <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                    <div className="mt-6 space-y-3">
                       {methods.map((item) => {
                         const Icon = contactIconByKey(item.key);
-                        const contentNode = (
+
+                        const content = (
                           <>
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-background/55 text-sm text-primary-light backdrop-blur">
+                            <span
+                              className="
+                          flex
+                          h-11
+                          w-11
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-2xl
+                          bg-primary/10
+                          text-primary-light
+                          "
+                            >
                               <Icon />
                             </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-faint">
+
+                            <span>
+                              <span
+                                className="
+                            block
+                            text-xs
+                            text-faint
+                            "
+                              >
                                 {item.label}
                               </span>
+
                               <span
-                                className="mt-1 block truncate text-sm font-medium text-foreground"
-                                dir={item.key === "email" ? "ltr" : undefined}
+                                className="
+                            mt-1
+                            block
+                            text-sm
+                            font-medium
+                            "
                               >
                                 {item.value}
                               </span>
                             </span>
-                            {item.href && (
-                              <span
-                                aria-hidden
-                                className="shrink-0 text-primary-light opacity-70"
-                              >
-                                ↗
-                              </span>
-                            )}
                           </>
                         );
 
                         if (!item.href) {
                           return (
                             <div
-                              key={`${item.key}-${item.value}`}
-                              className="flex items-center gap-3 rounded-2xl border border-border bg-surface-2/45 px-3.5 py-2.5"
+                              key={item.key}
+                              className="
+                          flex
+                          items-center
+                          gap-4
+                          rounded-2xl
+                          bg-surface-2
+                          p-4
+                          "
                             >
-                              {contentNode}
+                              {content}
                             </div>
                           );
                         }
 
                         return (
                           <a
-                            key={`${item.key}-${item.value}`}
+                            key={item.key}
                             href={item.href}
                             target={
                               item.href.startsWith("http")
                                 ? "_blank"
                                 : undefined
                             }
-                            rel={
-                              item.href.startsWith("http")
-                                ? "noopener noreferrer"
-                                : undefined
-                            }
-                            className="group flex items-center gap-3 rounded-2xl border border-border bg-surface-2/45 px-3.5 py-2.5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10"
+                            rel="noopener noreferrer"
+                            className="
+                        flex
+                        items-center
+                        gap-4
+                        rounded-2xl
+                        bg-surface-2
+                        p-4
+                        transition
+                        hover:-translate-y-1
+                        hover:bg-primary/10
+                        "
                           >
-                            {contentNode}
+                            {content}
                           </a>
                         );
                       })}
                     </div>
-                  </article>
+                  </section>
                 )}
-              </div>
-            </div>
-          </Container>
-
-          {content.processSection.steps.length > 0 && (
-            <Container as="section" className="space-y-6">
-              <SectionHeader
-                eyebrow={content.processSection.badge}
-                title={content.processSection.title}
-                subtitle={content.processSection.subtitle}
-              />
-              <div className="grid gap-4 md:grid-cols-3">
-                {content.processSection.steps.map((step, index) => {
-                  const Icon = infoIconByKey(step.icon);
-                  return (
-                    <article
-                      key={`${step.order}-${step.title}`}
-                      className="neon-card rounded-3xl p-5"
-                    >
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/55 text-sm text-primary-light backdrop-blur">
-                            <Icon />
-                          </span>
-                          <span className="text-xs font-semibold tracking-[0.18em] text-faint">
-                            0{index + 1}
-                          </span>
-                        </div>
-                        <div className="space-y-1">
-                          <h3 className="text-base font-semibold tracking-tight text-foreground">
-                            {step.title}
-                          </h3>
-                          <p className="text-sm leading-6 text-muted">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </Container>
-          )}
-
-          <Container as="section">
-            <div className="neon-card relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8">
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-accent/10"
-              />
-
-              <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-2xl space-y-3">
-                  <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/60 px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-primary-light backdrop-blur">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_14px_rgba(52,211,153,0.7)]" />
-                    {dict.footer.available}
-                  </p>
-                  <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {content.cta.title}
-                  </h2>
-                  <p className="text-sm leading-7 text-muted sm:text-base">
-                    {content.cta.subtitle}
-                  </p>
-                </div>
-
-                <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                  <ButtonLink
-                    href={content.cta.primaryCta.href}
-                    size="lg"
-                    className="w-full sm:w-auto"
-                  >
-                    {content.cta.primaryCta.label}
-                  </ButtonLink>
-                  <ButtonLink
-                    href={content.cta.secondaryCta.href}
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                  >
-                    {content.cta.secondaryCta.label}
-                  </ButtonLink>
-                </div>
-              </div>
+              </aside>
             </div>
           </Container>
         </div>

@@ -19,6 +19,7 @@ import { getAboutPageContent, getProfile } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 import { buildMetadata } from "@/lib/seo";
 import { TechBadge } from "@/components/sections/TechStack";
+import { FreelanceOnly } from "@/components/layout/WebsiteModeContent";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { locale, dict } = await getI18n();
@@ -95,13 +96,13 @@ export default async function AboutPage() {
               </p>
 
               <div className="flex flex-col gap-3 sm:flex-row">
-                <ButtonLink
+                <FreelanceOnly><ButtonLink
                   href={aboutContent.hero.primaryCta.href}
                   size="lg"
                   className="w-full sm:w-auto"
                 >
                   {aboutContent.hero.primaryCta.label}
-                </ButtonLink>
+                </ButtonLink></FreelanceOnly>
                 <ButtonLink
                   href={aboutContent.hero.secondaryCta.href}
                   variant="outline"
@@ -318,7 +319,7 @@ export default async function AboutPage() {
             </Container>
           )}
 
-          {aboutContent.philosophySection.cards.length > 0 && (
+          <FreelanceOnly>{aboutContent.philosophySection.cards.length > 0 && (
             <Container as="section" className="space-y-8">
             <SectionHeader
               eyebrow={aboutContent.philosophySection.badge}
@@ -348,9 +349,9 @@ export default async function AboutPage() {
               })}
             </div>
             </Container>
-          )}
+          )}</FreelanceOnly>
 
-          {aboutContent.helpSection.cards.length > 0 && (
+          <FreelanceOnly>{aboutContent.helpSection.cards.length > 0 && (
             <Container as="section" className="space-y-8">
             <SectionHeader
               eyebrow={aboutContent.helpSection.badge}
@@ -380,9 +381,9 @@ export default async function AboutPage() {
               })}
             </div>
             </Container>
-          )}
+          )}</FreelanceOnly>
 
-          <Container as="section">
+          <FreelanceOnly><Container as="section">
             <div className="neon-card relative overflow-hidden rounded-[2rem] p-6 sm:p-8 lg:p-10">
               <div
                 aria-hidden
@@ -430,7 +431,7 @@ export default async function AboutPage() {
                 </div>
               </div>
             </div>
-          </Container>
+          </Container></FreelanceOnly>
         </div>
       </main>
     </div>

@@ -5,6 +5,8 @@ import { CustomSelect } from "@/components/admin/forms/CustomSelect";
 import { Button } from "@/components/ui/Button";
 import type { SelectOption } from "@/lib/admin/options";
 import { useI18n } from "@/lib/i18n/context";
+import { useWebsiteMode } from "@/components/layout/WebsiteModeProvider";
+import { isFreelanceMode } from "@/lib/website-mode-config";
 import type { ApiResponse, ContactMessage } from "@/types";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -15,6 +17,7 @@ const inputClasses = "field-control";
 /** Public contact form. Submits to POST /api/contact. */
 export function ContactForm() {
   const { dict, dir } = useI18n();
+  const isFreelance = isFreelanceMode(useWebsiteMode());
   const f = dict.contact.form;
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -58,9 +61,13 @@ export function ContactForm() {
       email: String(data.get("email") ?? ""),
       subject: String(data.get("subject") ?? ""),
       message: String(data.get("message") ?? ""),
-      projectType: String(data.get("projectType") ?? ""),
-      budgetRange: String(data.get("budgetRange") ?? ""),
-      timeline: String(data.get("timeline") ?? ""),
+      ...(isFreelance
+        ? {
+            projectType: String(data.get("projectType") ?? ""),
+            budgetRange: String(data.get("budgetRange") ?? ""),
+            timeline: String(data.get("timeline") ?? ""),
+          }
+        : {}),
     };
 
     if (!payload.name.trim() || !payload.email.trim() || !payload.message.trim()) {
@@ -152,7 +159,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="grid gap-3.5 sm:grid-cols-3">
+      {isFreelance && <div className="grid gap-3.5 sm:grid-cols-3">
         <div className="space-y-1">
           <label
             htmlFor="projectType"
@@ -201,7 +208,7 @@ export function ContactForm() {
             className="w-full"
           />
         </div>
-      </div>
+      </div>}
       <div className="space-y-1">
         <label htmlFor="message" className="text-sm font-medium text-foreground">
           {f.message}

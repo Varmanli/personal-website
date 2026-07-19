@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
-import { ButtonLink } from "@/components/ui/Button";
+import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
+import { HiringOnly } from "@/components/layout/WebsiteModeContent";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
 import { ProjectTabs } from "@/components/sections/ProjectTabs";
 import { ProjectLabels } from "@/components/sections/ProjectLabels";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import type { ProjectMetric } from "@/types";
+import { getProjectImageSources, getProjectPrimaryImage } from "@/lib/project-images";
 import {
   FiArrowUpRight,
   FiChevronLeft,
@@ -34,11 +36,7 @@ export async function generateMetadata({
   const project = await getProjectBySlug(slug, locale);
   if (!project) return { title: dict.meta.pages.project };
 
-  const image =
-    project.coverImageUrl ||
-    project.previewImageUrl ||
-    project.thumbnailUrl ||
-    null;
+  const image = getProjectPrimaryImage(project);
 
   return buildMetadata({
     title: project.title,
@@ -59,7 +57,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const t = dict.projectDetail;
   const isRtl = locale === "fa";
 
-  const cover = project.coverImageUrl || project.thumbnailUrl;
   const tags = (project.tags ?? []).filter(Boolean);
   const technologies = (project.technologies ?? []).filter(Boolean);
   const metrics = normalizeMetrics(project.homeMetrics ?? []);
@@ -68,13 +65,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     (c) => c.title?.trim() || c.description?.trim(),
   );
 
-  const galleryImages = Array.from(
-    new Set(
-      [project.previewImageUrl, cover, ...(project.galleryImages ?? [])].filter(
-        Boolean,
-      ) as string[],
-    ),
-  );
+  const galleryImages = getProjectImageSources(project);
   const hasGallery = galleryImages.length > 0;
 
   // Reference facts for the meta sidebar.
@@ -160,7 +151,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Link>
 
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary-light/80">
-              {t.eyebrow}
+              {t.cover}
             </p>
 
             <div className="space-y-5">
@@ -175,7 +166,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
 
             <div className="pt-1">
-              <ButtonLink
+                    <PublicCtaLink
                 href={heroAction.href}
                 external={heroAction.external}
                 size="lg"
@@ -183,7 +174,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               >
                 {heroAction.label}
                 <FiArrowUpRight className={cn(isRtl && "rotate-180")} />
-              </ButtonLink>
+                    </PublicCtaLink>
             </div>
           </div>
 
@@ -388,7 +379,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         ) : null}
 
         {/* ========================================================== CTA */}
-        <section className="relative mt-20 overflow-hidden rounded-4xl border border-border/70 bg-linear-to-br from-primary/12 via-surface/85 to-accent/10 px-6 py-10 shadow-[0_24px_90px_rgba(11,14,32,0.45)] sm:mt-28 sm:px-10 sm:py-12">
+        <HiringOnly><section className="relative mt-20 overflow-hidden rounded-4xl border border-border/70 bg-linear-to-br from-primary/12 via-surface/85 to-accent/10 px-6 py-10 shadow-[0_24px_90px_rgba(11,14,32,0.45)] sm:mt-28 sm:px-10 sm:py-12">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(79,124,255,0.20),transparent_30%),radial-gradient(circle_at_90%_100%,rgba(166,107,255,0.18),transparent_30%)]"
@@ -402,12 +393,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {t.ctaText}
               </p>
             </div>
-            <ButtonLink href="/start-project" size="lg" className="shrink-0">
+            <PublicCtaLink href="/start-project" size="lg" className="shrink-0">
               {t.cta}
               <FiArrowUpRight className={cn(isRtl && "rotate-180")} />
-            </ButtonLink>
+            </PublicCtaLink>
           </div>
-        </section>
+        </section></HiringOnly>
       </Container>
     </article>
   );

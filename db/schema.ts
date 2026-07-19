@@ -378,6 +378,9 @@ export const pageViews = pgTable(
  */
 export const siteSettings = pgTable("site_settings", {
   id: serial("id").primaryKey(),
+  // Global public-site presentation mode. Freelance preserves the existing
+  // commercial experience; hiring removes commercial entry points.
+  websiteMode: varchar("website_mode", { length: 20 }).notNull().default("freelance"),
   ownerName: varchar("owner_name", { length: 200 }).notNull(),
   headline: varchar("headline", { length: 320 }),
   bio: text("bio"),

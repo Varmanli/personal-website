@@ -12,6 +12,7 @@ import {
 import { formatPrice, cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
+import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
 import { useI18n } from "@/lib/i18n/context";
 
 interface ServicePlanCardProps {
@@ -174,14 +175,14 @@ export function ServicePlanCard({ service }: ServicePlanCardProps) {
 
         {/* CTA */}
         <footer className="mt-7 space-y-3 border-t border-border/55 pt-5">
-          <ButtonLink
+          <PublicCtaLink
             href={`/start-project?service=${service.slug}`}
             variant={service.isFeatured ? "primary" : "outline"}
             className="w-full"
           >
             {service.ctaLabel ?? dict.planner.cta.start}
             <span aria-hidden>←</span>
-          </ButtonLink>
+          </PublicCtaLink>
 
           <ButtonLink
             href="/contact"

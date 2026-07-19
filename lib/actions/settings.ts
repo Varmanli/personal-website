@@ -13,6 +13,7 @@ import {
   deleteStoredUploadFile,
   normalizeStoredAssetUrl,
 } from "@/lib/uploads";
+import { normalizeWebsiteMode } from "@/lib/website-mode-config";
 
 type PersistedSettingsAssets = Pick<
   NewSiteSettings,
@@ -51,8 +52,10 @@ export async function updateSettings(
   const skillsEn = list(form, "skillsEn");
   const aboutIntroFa = str(form, "aboutIntroFa") ?? null;
   const aboutIntroEn = str(form, "aboutIntroEn") ?? null;
+  const websiteMode = normalizeWebsiteMode(str(form, "websiteMode"));
 
   const values: Omit<NewSiteSettings, "socialLinks"> = {
+    websiteMode,
     ownerName: baseName,
     headline: headlineFa ?? headlineEn,
     bio: bioFa ?? bioEn,

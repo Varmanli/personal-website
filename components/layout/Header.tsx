@@ -7,11 +7,14 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { ButtonLink } from "@/components/ui/Button";
 import { getI18n } from "@/lib/i18n/server";
 import { getProfile } from "@/lib/data";
+import { getWebsiteMode, getWebsiteNavigation, shouldShowWebsiteLink } from "@/lib/website-mode";
+import { mainNav } from "@/lib/config";
 
 /** Global site header with brand, centered nav, language switch, and a CTA. */
 export async function Header() {
   const { locale, dict } = await getI18n();
-  const profile = await getProfile(locale);
+  const [profile, mode] = await Promise.all([getProfile(locale), getWebsiteMode()]);
+  const navigation = getWebsiteNavigation(mode, mainNav);
   const brand = "Varmanli";
 
   return (
@@ -40,18 +43,16 @@ export async function Header() {
         </Link>
 
         {/* Centered desktop nav */}
-        <Navigation className="absolute left-1/2 hidden -translate-x-1/2 md:flex" />
+        <Navigation items={navigation} className="absolute left-1/2 hidden -translate-x-1/2 md:flex" />
 
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
-          <ButtonLink
-            href="/start-project"
-            size="sm"
-            className="hidden sm:inline-flex"
-          >
-            {dict.common.startProject}
-          </ButtonLink>
-          <MobileNav />
+          {shouldShowWebsiteLink(mode, "/start-project") && (
+            <ButtonLink href="/start-project" size="sm" className="hidden sm:inline-flex">
+              {dict.common.startProject}
+            </ButtonLink>
+          )}
+          <MobileNav items={navigation} showCommercialCta={shouldShowWebsiteLink(mode, "/start-project")} />
         </div>
       </Container>
     </header>

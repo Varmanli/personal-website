@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { useI18n } from "@/lib/i18n/context";
 import type { Project } from "@/types";
+import { getProjectPrimaryImage } from "@/lib/project-images";
 
 interface ProjectCardProps {
   project: Project;
@@ -13,6 +14,7 @@ interface ProjectCardProps {
 /** Premium neon project preview used in grids; links to the case-study detail page. */
 export function ProjectCard({ project }: ProjectCardProps) {
   const { dict } = useI18n();
+  const image = getProjectPrimaryImage(project);
   return (
     <article className="neon-card group relative flex h-full flex-col overflow-hidden rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_24px_90px_rgba(79,124,255,0.16)]">
       {/* Glow border on hover */}
@@ -23,12 +25,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden border-b border-border bg-surface-2">
-        {project.coverImageUrl || project.thumbnailUrl ? (
+        {image ? (
           <Image
-            src={(project.coverImageUrl || project.thumbnailUrl)!}
+            src={image}
             alt={project.title}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
+            quality={90}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 480px"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

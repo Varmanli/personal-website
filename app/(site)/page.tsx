@@ -1,6 +1,8 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/Button";
+import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
+import { FreelanceOnly } from "@/components/layout/WebsiteModeContent";
 import { Hero } from "@/components/sections/Hero";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
@@ -143,7 +145,7 @@ export default async function HomePage() {
           </Container>
 
           {/* Tech stack */}
-          <Container as="section" className="space-y-8">
+          <FreelanceOnly><Container as="section" className="space-y-8">
             <SectionHeader
               eyebrow={t.skills.eyebrow}
               title={t.skills.title}
@@ -208,10 +210,10 @@ export default async function HomePage() {
                 </article>
               ))}
             </div>
-          </Container>
+          </Container></FreelanceOnly>
 
           {/* Process */}
-          <Container as="section" className="space-y-8">
+          <FreelanceOnly><Container as="section" className="space-y-8">
             <SectionHeader
               eyebrow={t.process.eyebrow}
               title={t.process.title}
@@ -266,10 +268,10 @@ export default async function HomePage() {
                 );
               })}
             </ol>
-          </Container>
+          </Container></FreelanceOnly>
 
           {/* Testimonials */}
-          <Container as="section" className="space-y-8">
+          <FreelanceOnly><Container as="section" className="space-y-8">
             <SectionHeader
               eyebrow={t.testimonials.eyebrow}
               title={t.testimonials.title}
@@ -284,9 +286,9 @@ export default async function HomePage() {
                 />
               ))}
             </div>
-          </Container>
+          </Container></FreelanceOnly>
 
-          <Container as="section">
+          <FreelanceOnly><Container as="section">
             <div className="neon-card relative overflow-hidden rounded-[2rem] p-6 sm:p-8 lg:p-10">
               <div
                 aria-hidden
@@ -316,9 +318,9 @@ export default async function HomePage() {
                 </div>
 
                 <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                  <ButtonLink href="/start-project" size="lg" className="w-full sm:w-auto">
+                  <PublicCtaLink href="/start-project" size="lg" className="w-full sm:w-auto">
                     {t.cta.cta}
-                  </ButtonLink>
+                  </PublicCtaLink>
                   <ButtonLink
                     href="/projects"
                     size="lg"
@@ -330,7 +332,7 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
-          </Container>
+          </Container></FreelanceOnly>
         </div>
       </main>
     </>

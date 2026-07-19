@@ -30,6 +30,7 @@ const SITE_SETTINGS_LOCK_KEY = 214748102;
 const CREATE_TABLE_SQL = `
   create table if not exists "site_settings" (
     "id" serial primary key not null,
+    "website_mode" varchar(20) not null default 'freelance',
     "owner_name" varchar(200) not null,
     "headline" varchar(320),
     "bio" text,
@@ -73,6 +74,10 @@ const CREATE_TABLE_SQL = `
 // CREATE_TABLE_SQL; a table missing "id" is a different problem than schema
 // drift and isn't something ADD COLUMN can safely fix.
 const EXPECTED_COLUMNS = [
+  {
+    name: "website_mode",
+    addColumnDdl: `varchar(20) not null default 'freelance'`,
+  },
   { name: "owner_name", addColumnDdl: `varchar(200) not null default ''` },
   { name: "headline", addColumnDdl: `varchar(320)` },
   { name: "bio", addColumnDdl: `text` },
@@ -105,8 +110,14 @@ const EXPECTED_COLUMNS = [
   { name: "contact_page_content_en", addColumnDdl: `jsonb` },
   { name: "contact_settings", addColumnDdl: `jsonb` },
   { name: "social_links", addColumnDdl: `jsonb default '[]'::jsonb` },
-  { name: "created_at", addColumnDdl: `timestamp with time zone default now() not null` },
-  { name: "updated_at", addColumnDdl: `timestamp with time zone default now() not null` },
+  {
+    name: "created_at",
+    addColumnDdl: `timestamp with time zone default now() not null`,
+  },
+  {
+    name: "updated_at",
+    addColumnDdl: `timestamp with time zone default now() not null`,
+  },
 ];
 
 function log(message) {
@@ -133,9 +144,10 @@ async function getExistingColumns(tx) {
 
 function buildDefaultRow() {
   return {
+    website_mode: "freelance",
     owner_name: "Varmanli",
-    headline: "Full-stack developer building commercial web apps",
-    bio: "I'm a full-stack developer who helps founders and small teams turn ideas into fast, reliable web products.",
+    headline: "Front-End developer building commercial web apps",
+    bio: "I'm a Front-End developer who helps founders and small teams turn ideas into fast, reliable web products.",
     avatar_url: null,
     resume_url: null,
     logo_url: null,
@@ -189,7 +201,7 @@ async function insertDefaultRow(tx) {
   // column defaults already declared in CREATE_TABLE_SQL/EXPECTED_COLUMNS.
   await tx`
     insert into site_settings (
-      owner_name, headline, bio, avatar_url, resume_url, logo_url, favicon_url,
+      website_mode, owner_name, headline, bio, avatar_url, resume_url, logo_url, favicon_url,
       hero_image_url, email, location, skills, owner_name_fa, owner_name_en,
       headline_fa, headline_en, bio_fa, bio_en, location_fa, location_en,
       skills_fa, skills_en, about_intro, about_intro_fa, about_intro_en,
@@ -197,7 +209,7 @@ async function insertDefaultRow(tx) {
       contact_page_content, contact_page_content_fa, contact_page_content_en,
       contact_settings, social_links, created_at, updated_at
     ) values (
-      ${d.owner_name}, ${d.headline}, ${d.bio}, ${d.avatar_url}, ${d.resume_url},
+      ${d.website_mode}, ${d.owner_name}, ${d.headline}, ${d.bio}, ${d.avatar_url}, ${d.resume_url},
       ${d.logo_url}, ${d.favicon_url}, ${d.hero_image_url}, ${d.email}, ${d.location},
       ${d.skills}::jsonb, ${d.owner_name_fa}, ${d.owner_name_en}, ${d.headline_fa},
       ${d.headline_en}, ${d.bio_fa}, ${d.bio_en}, ${d.location_fa}, ${d.location_en},
@@ -236,7 +248,9 @@ export async function ensureSiteSettingsTableAndRow(sql) {
     }
 
     const existingColumns = await getExistingColumns(tx);
-    const missing = EXPECTED_COLUMNS.filter((c) => !existingColumns.has(c.name));
+    const missing = EXPECTED_COLUMNS.filter(
+      (c) => !existingColumns.has(c.name),
+    );
 
     if (missing.length > 0) {
       log(`missing columns: ${missing.map((c) => c.name).join(", ")}`);
@@ -253,9 +267,9 @@ export async function ensureSiteSettingsTableAndRow(sql) {
   // the transaction above (which already committed), so it reflects the real
   // persisted state, not just what we expect happened.
   const columnsAfterRepair = await getExistingColumns(sql);
-  const stillMissing = EXPECTED_COLUMNS.filter((c) => !columnsAfterRepair.has(c.name)).map(
-    (c) => c.name,
-  );
+  const stillMissing = EXPECTED_COLUMNS.filter(
+    (c) => !columnsAfterRepair.has(c.name),
+  ).map((c) => c.name);
   if (stillMissing.length > 0) {
     throw new Error(
       `[site-settings-bootstrap] column repair verification failed, still missing: ${stillMissing.join(", ")}`,
@@ -265,7 +279,8 @@ export async function ensureSiteSettingsTableAndRow(sql) {
   await sql.begin(async (tx) => {
     await tx`select pg_advisory_xact_lock(${SITE_SETTINGS_LOCK_KEY})`;
 
-    const [{ count }] = await tx`select count(*)::int as count from site_settings`;
+    const [{ count }] =
+      await tx`select count(*)::int as count from site_settings`;
     if (count === 0) {
       log("row missing, creating initial row");
       await insertDefaultRow(tx);

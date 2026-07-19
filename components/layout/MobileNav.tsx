@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { mainNav } from "@/lib/config";
+import type { MainNavItem } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/Button";
 import { useI18n } from "@/lib/i18n/context";
 
 /** Collapsible mobile navigation menu (no dependencies). */
-export function MobileNav() {
+export function MobileNav({ items, showCommercialCta }: { items: MainNavItem[]; showCommercialCta: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { dict } = useI18n();
@@ -73,7 +73,7 @@ export function MobileNav() {
             />
 
             <nav className="relative flex flex-col gap-1">
-              {mainNav.map((link) => {
+              {items.map((link) => {
                 const isActive =
                   link.href === "/"
                     ? pathname === "/"
@@ -116,17 +116,14 @@ export function MobileNav() {
                 );
               })}
 
-              <div className="mt-2 border-t border-border/80 p-2">
-                <ButtonLink
-                  href="/start-project"
-                  size="sm"
-                  className="w-full justify-center"
-                  onClick={() => setOpen(false)}
-                >
-                  {dict.common.startProject}
-                  <span aria-hidden>→</span>
-                </ButtonLink>
-              </div>
+              {showCommercialCta && (
+                <div className="mt-2 border-t border-border/80 p-2">
+                  <ButtonLink href="/start-project" size="sm" className="w-full justify-center" onClick={() => setOpen(false)}>
+                    {dict.common.startProject}
+                    <span aria-hidden>→</span>
+                  </ButtonLink>
+                </div>
+              )}
             </nav>
           </div>
         </div>

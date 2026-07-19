@@ -3,13 +3,11 @@ import { cn } from "@/lib/utils";
 interface SectionHeaderProps {
   title: string;
   subtitle?: string;
-  /** Optional eyebrow/label above the title. */
   eyebrow?: string;
   align?: "left" | "center";
   className?: string;
 }
 
-/** Reusable heading block for page and section intros. */
 export function SectionHeader({
   title,
   subtitle,
@@ -24,30 +22,33 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "relative space-y-4",
-        align === "center" && "mx-auto max-w-3xl text-center",
+        "space-y-2",
+        align === "center" && "mx-auto max-w-2xl text-center",
         className,
       )}
     >
       {eyebrow && (
-        <div
+        <p
           className={cn(
-            "flex",
-            align === "center" ? "justify-center" : "justify-start",
+            "text-xs font-medium tracking-[0.18em] uppercase text-primary-light",
+            align === "center" && "text-center",
           )}
         >
-          <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary-light backdrop-blur">
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full bg-linear-to-r from-primary to-accent shadow-[0_0_14px_rgba(166,107,255,0.75)]"
-            />
-            {eyebrow}
-          </p>
-        </div>
+          {eyebrow}
+        </p>
       )}
 
-      <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+      <h2
+        className="
+        text-2xl
+        font-bold
+        tracking-tight
+        text-foreground
+        sm:text-3xl
+        "
+      >
         {titleStart}
+
         {titleHighlight && (
           <>
             {" "}
@@ -58,10 +59,13 @@ export function SectionHeader({
 
       {subtitle && (
         <p
-          className={cn(
-            "max-w-2xl text-base leading-relaxed text-muted sm:text-lg",
-            align === "center" && "mx-auto",
-          )}
+          className="
+          max-w-xl
+          text-sm
+          leading-6
+          text-muted
+          sm:text-base
+          "
         >
           {subtitle}
         </p>
