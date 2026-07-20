@@ -3,6 +3,8 @@ import { ButtonLink } from "@/components/ui/Button";
 import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
 import { DeveloperHeroVisual } from "@/components/home/DeveloperHeroVisual";
 import type { HeroConfiguration } from "@/types";
+import type { Locale } from "@/lib/i18n/config";
+import { getHeroContent } from "@/lib/hero-config";
 import { getTechnology } from "@/lib/admin/technologies";
 import { FaReact, FaNodeJs } from "react-icons/fa";
 import {
@@ -39,9 +41,9 @@ const techs = [
   },
 ];
 
-export function Hero({ config }: { config: HeroConfiguration }) {
-  const h = config.content[config.activeMode][config.activeLanguage];
-  const direction = config.activeLanguage === "fa" ? "rtl" : "ltr";
+export function Hero({ config, locale }: { config: HeroConfiguration; locale: Locale }) {
+  const h = getHeroContent(config, { mode: config.activeMode, locale });
+  const direction = locale === "fa" ? "rtl" : "ltr";
 
   return (
     <section className="relative overflow-hidden border-b border-border" dir={direction}>

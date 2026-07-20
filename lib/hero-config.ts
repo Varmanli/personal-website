@@ -5,6 +5,7 @@ import type {
   HeroMode,
   SiteSettings,
 } from "@/types";
+import type { Locale } from "@/lib/i18n/config";
 
 const freelanceEn: HeroContent = {
   greeting: "Hey, I'm Varmanli",
@@ -93,6 +94,20 @@ export function normalizeHeroConfiguration(value: unknown, websiteMode?: string 
   return { activeMode, activeLanguage, content };
 }
 
-export function getHeroConfiguration(settings: SiteSettings | null): HeroConfiguration {
+export function getHeroConfiguration(
+  settings: Partial<Pick<SiteSettings, "heroConfig" | "websiteMode">> | null,
+): HeroConfiguration {
   return normalizeHeroConfiguration(settings?.heroConfig, settings?.websiteMode);
+}
+
+/**
+ * Resolve public Hero copy from the site's locale. `activeLanguage` is an
+ * admin editing/default preference only; it must never override the visitor's
+ * selected website locale.
+ */
+export function getHeroContent(
+  configuration: HeroConfiguration,
+  { mode, locale }: { mode: HeroMode; locale: Locale },
+): HeroContent {
+  return configuration.content[mode][locale];
 }

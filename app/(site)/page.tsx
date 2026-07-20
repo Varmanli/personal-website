@@ -90,7 +90,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero config={heroConfig} />
+      <Hero config={heroConfig} locale={locale} />
 
       <main className="relative overflow-hidden">
         {/* Background glows */}

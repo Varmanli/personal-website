@@ -15,7 +15,7 @@ import {
   normalizeStoredAssetUrl,
 } from "@/lib/uploads";
 import { normalizeWebsiteMode } from "@/lib/website-mode-config";
-import { normalizeHeroConfiguration } from "@/lib/hero-config";
+import { getHeroConfiguration } from "@/lib/hero-config";
 
 type PersistedSettingsAssets = Pick<
   NewSiteSettings,
@@ -32,16 +32,21 @@ export async function updateHeroConfiguration(_prev: SettingsActionState, form: 
   const errs = await getAdminErrors();
   if (!admin) return { error: errs.notSignedIn };
   const activeMode = str(form, "heroActiveMode") === "hiring" ? "hiring" : "freelancer";
-  const heroConfig = normalizeHeroConfiguration({
-    activeMode,
-    activeLanguage: str(form, "heroActiveLanguage") === "en" ? "en" : "fa",
-    content: {
-      freelancer: { fa: heroContentFromForm(form, "freelancerFa"), en: heroContentFromForm(form, "freelancerEn") },
-      hiring: { fa: heroContentFromForm(form, "hiringFa"), en: heroContentFromForm(form, "hiringEn") },
-    },
-  });
+  const activeLanguage = str(form, "heroActiveLanguage") === "en" ? "en" : "fa";
   try {
     const current = (await readSiteSettingsRow()) ?? buildDefaultSiteSettings();
+    // Only the visible mode/language editor is authoritative. Merge it into
+    // the persisted configuration so omitted hidden fields can never erase or
+    // copy over the other three localized Hero variants.
+    const heroConfig = getHeroConfiguration(current);
+    heroConfig.activeMode = activeMode;
+    heroConfig.activeLanguage = activeLanguage;
+    const prefix = `${activeMode}${activeLanguage === "fa" ? "Fa" : "En"}`;
+    heroConfig.content[activeMode][activeLanguage] = heroContentFromForm(
+      form,
+      prefix,
+      heroConfig.content[activeMode][activeLanguage],
+    );
     const { id, createdAt, updatedAt, socialLinks, ...values } = current;
     void id; void createdAt; void updatedAt; void socialLinks;
     await saveSiteSettings({ ...values, websiteMode: activeMode === "hiring" ? "hiring" : "freelance", heroConfig });
@@ -53,21 +58,33 @@ export async function updateHeroConfiguration(_prev: SettingsActionState, form: 
   }
 }
 
-function heroContentFromForm(form: FormData, prefix: string): HeroContent {
+function formValue(form: FormData, name: string, fallback: string): string {
+  if (!form.has(name)) return fallback;
+  const value = form.get(name);
+  return typeof value === "string" ? value.trim() : fallback;
+}
+
+function heroContentFromForm(
+  form: FormData,
+  prefix: string,
+  fallback: HeroContent,
+): HeroContent {
   return {
-    greeting: str(form, `${prefix}Greeting`) ?? "",
-    headlineLead: str(form, `${prefix}HeadlineLead`) ?? "",
-    headlineHighlight: str(form, `${prefix}HeadlineHighlight`) ?? "",
-    subtitle: str(form, `${prefix}Subtitle`) ?? "",
+    greeting: formValue(form, `${prefix}Greeting`, fallback.greeting),
+    headlineLead: formValue(form, `${prefix}HeadlineLead`, fallback.headlineLead),
+    headlineHighlight: formValue(form, `${prefix}HeadlineHighlight`, fallback.headlineHighlight),
+    subtitle: formValue(form, `${prefix}Subtitle`, fallback.subtitle),
     primaryCta: {
-      label: str(form, `${prefix}PrimaryCtaLabel`) ?? "",
-      href: str(form, `${prefix}PrimaryCtaHref`) ?? "/",
+      label: formValue(form, `${prefix}PrimaryCtaLabel`, fallback.primaryCta.label),
+      href: formValue(form, `${prefix}PrimaryCtaHref`, fallback.primaryCta.href),
     },
     secondaryCta: {
-      label: str(form, `${prefix}SecondaryCtaLabel`) ?? "",
-      href: str(form, `${prefix}SecondaryCtaHref`) ?? "/",
+      label: formValue(form, `${prefix}SecondaryCtaLabel`, fallback.secondaryCta.label),
+      href: formValue(form, `${prefix}SecondaryCtaHref`, fallback.secondaryCta.href),
     },
-    technologies: list(form, `${prefix}Technologies`),
+    technologies: form.has(`${prefix}Technologies`)
+      ? list(form, `${prefix}Technologies`)
+      : fallback.technologies,
   };
 }
 
