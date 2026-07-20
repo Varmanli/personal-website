@@ -1,19 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { type NewSiteSettings } from "@/db/schema";
+import { type HeroContent, type NewSiteSettings } from "@/db/schema";
 import { getCurrentAdmin } from "@/lib/auth";
 import { type ActionState, list, str } from "@/lib/form";
 import { getAdminErrors, toActionError } from "@/lib/actions/shared";
 import {
   readSiteSettingsRow,
   saveSiteSettings,
+  buildDefaultSiteSettings,
 } from "@/lib/site-settings";
 import {
   deleteStoredUploadFile,
   normalizeStoredAssetUrl,
 } from "@/lib/uploads";
 import { normalizeWebsiteMode } from "@/lib/website-mode-config";
+import { normalizeHeroConfiguration } from "@/lib/hero-config";
 
 type PersistedSettingsAssets = Pick<
   NewSiteSettings,
@@ -24,6 +26,50 @@ export type SettingsActionState = ActionState & {
   success?: string;
   persisted?: PersistedSettingsAssets;
 };
+
+export async function updateHeroConfiguration(_prev: SettingsActionState, form: FormData): Promise<SettingsActionState> {
+  const admin = await getCurrentAdmin();
+  const errs = await getAdminErrors();
+  if (!admin) return { error: errs.notSignedIn };
+  const activeMode = str(form, "heroActiveMode") === "hiring" ? "hiring" : "freelancer";
+  const heroConfig = normalizeHeroConfiguration({
+    activeMode,
+    activeLanguage: str(form, "heroActiveLanguage") === "en" ? "en" : "fa",
+    content: {
+      freelancer: { fa: heroContentFromForm(form, "freelancerFa"), en: heroContentFromForm(form, "freelancerEn") },
+      hiring: { fa: heroContentFromForm(form, "hiringFa"), en: heroContentFromForm(form, "hiringEn") },
+    },
+  });
+  try {
+    const current = (await readSiteSettingsRow()) ?? buildDefaultSiteSettings();
+    const { id, createdAt, updatedAt, socialLinks, ...values } = current;
+    void id; void createdAt; void updatedAt; void socialLinks;
+    await saveSiteSettings({ ...values, websiteMode: activeMode === "hiring" ? "hiring" : "freelance", heroConfig });
+    revalidatePath("/admin/hero");
+    revalidatePath("/", "layout");
+    return { success: "saved" };
+  } catch (error) {
+    return toActionError(error, errs);
+  }
+}
+
+function heroContentFromForm(form: FormData, prefix: string): HeroContent {
+  return {
+    greeting: str(form, `${prefix}Greeting`) ?? "",
+    headlineLead: str(form, `${prefix}HeadlineLead`) ?? "",
+    headlineHighlight: str(form, `${prefix}HeadlineHighlight`) ?? "",
+    subtitle: str(form, `${prefix}Subtitle`) ?? "",
+    primaryCta: {
+      label: str(form, `${prefix}PrimaryCtaLabel`) ?? "",
+      href: str(form, `${prefix}PrimaryCtaHref`) ?? "/",
+    },
+    secondaryCta: {
+      label: str(form, `${prefix}SecondaryCtaLabel`) ?? "",
+      href: str(form, `${prefix}SecondaryCtaHref`) ?? "/",
+    },
+    technologies: list(form, `${prefix}Technologies`),
+  };
+}
 
 /**
  * Create or update the single site-settings/profile row (bilingual).
@@ -36,6 +82,8 @@ export async function updateSettings(
   const admin = await getCurrentAdmin();
   const errs = await getAdminErrors();
   if (!admin) return { error: errs.notSignedIn };
+  let currentSettings: Awaited<ReturnType<typeof readSiteSettingsRow>> = null;
+  try { currentSettings = await readSiteSettingsRow(); } catch { /* save below returns the translated database error */ }
 
   const ownerNameFa = str(form, "ownerNameFa") ?? null;
   const ownerNameEn = str(form, "ownerNameEn") ?? null;
@@ -52,7 +100,7 @@ export async function updateSettings(
   const skillsEn = list(form, "skillsEn");
   const aboutIntroFa = str(form, "aboutIntroFa") ?? null;
   const aboutIntroEn = str(form, "aboutIntroEn") ?? null;
-  const websiteMode = normalizeWebsiteMode(str(form, "websiteMode"));
+  const websiteMode = normalizeWebsiteMode(currentSettings?.websiteMode);
 
   const values: Omit<NewSiteSettings, "socialLinks"> = {
     websiteMode,

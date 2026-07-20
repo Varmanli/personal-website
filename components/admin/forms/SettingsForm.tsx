@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState, useState } from "react";
 import {
   TextInput,
   TextArea,
@@ -12,7 +11,7 @@ import {
 } from "@/components/admin/forms/fields";
 import { FileUploadField } from "@/components/admin/forms/FileUploadField";
 import { Tabs } from "@/components/admin/ui/Tabs";
-import { FiUser, FiImage, FiBriefcase } from "react-icons/fi";
+import { FiUser, FiImage, FiBriefcase, FiLayout } from "react-icons/fi";
 import { linesValue } from "@/lib/form";
 import {
   updateSettings,
@@ -20,6 +19,8 @@ import {
 } from "@/lib/actions/settings";
 import { useI18n } from "@/lib/i18n/context";
 import type { SiteSettings } from "@/types";
+import type { HeroContent } from "@/types";
+import { getHeroConfiguration } from "@/lib/hero-config";
 
 const L = {
   fa: { ownerName: "نام مالک", headline: "تیتر", bio: "بیوگرافی", aboutIntro: "معرفی صفحه درباره (پاراگراف دوم)", location: "موقعیت", skills: "مهارت‌ها" },
@@ -37,7 +38,6 @@ export function SettingsForm({
   missingRow: boolean;
   loadError?: string;
 }) {
-  const router = useRouter();
   const { dict } = useI18n();
   const f = dict.admin.forms;
   const s = dict.admin.settings;
@@ -56,34 +56,7 @@ export function SettingsForm({
     initialSettingsActionState,
   );
   const fieldError = (name: string) => state.fieldErrors?.[name];
-
-  useEffect(() => {
-    setAssetUrls({
-      logoUrl: initial?.logoUrl ?? "",
-      heroImageUrl: initial?.heroImageUrl ?? "",
-      avatarUrl: initial?.avatarUrl ?? "",
-      faviconUrl: initial?.faviconUrl ?? "",
-      resumeUrl: initial?.resumeUrl ?? "",
-    });
-  }, [
-    initial?.logoUrl,
-    initial?.heroImageUrl,
-    initial?.avatarUrl,
-    initial?.faviconUrl,
-    initial?.resumeUrl,
-  ]);
-
-  useEffect(() => {
-    if (!state.persisted) return;
-    setAssetUrls({
-      logoUrl: state.persisted.logoUrl ?? "",
-      heroImageUrl: state.persisted.heroImageUrl ?? "",
-      avatarUrl: state.persisted.avatarUrl ?? "",
-      faviconUrl: state.persisted.faviconUrl ?? "",
-      resumeUrl: state.persisted.resumeUrl ?? "",
-    });
-    router.refresh();
-  }, [router, state.persisted]);
+  const heroConfig = getHeroConfiguration(initial);
 
   const faPanel = (
     <div className="space-y-5" dir="rtl">
@@ -106,6 +79,39 @@ export function SettingsForm({
       <TextArea name="skillsEn" label={L.en.skills} dir="ltr" rows={3} hint={f.listHint} defaultValue={linesValue(initial?.skillsEn)} />
     </div>
   );
+
+  const heroPanel = (
+    prefix: string,
+    content: HeroContent,
+    language: "fa" | "en",
+  ) => {
+    const isFa = language === "fa";
+    const labels = isFa
+      ? { greeting: "متن خوش‌آمد", lead: "بخش اول تیتر", highlight: "بخش برجسته تیتر", subtitle: "توضیح", primary: "دکمه اصلی", secondary: "دکمه دوم", label: "متن دکمه", link: "لینک دکمه" }
+      : { greeting: "Greeting", lead: "Headline lead", highlight: "Headline highlight", subtitle: "Description", primary: "Primary button", secondary: "Secondary button", label: "Button label", link: "Button link" };
+    return (
+      <div className="space-y-5" dir={isFa ? "rtl" : "ltr"}>
+        <TextInput name={`${prefix}Greeting`} label={labels.greeting} dir={isFa ? "rtl" : "ltr"} defaultValue={content.greeting} />
+        <TextInput name={`${prefix}HeadlineLead`} label={labels.lead} dir={isFa ? "rtl" : "ltr"} defaultValue={content.headlineLead} />
+        <TextInput name={`${prefix}HeadlineHighlight`} label={labels.highlight} dir={isFa ? "rtl" : "ltr"} defaultValue={content.headlineHighlight} />
+        <TextArea name={`${prefix}Subtitle`} label={labels.subtitle} dir={isFa ? "rtl" : "ltr"} rows={3} defaultValue={content.subtitle} />
+        <div className="rounded-2xl border border-border bg-surface-2/30 p-4">
+          <p className="mb-3 text-sm font-semibold text-foreground">{labels.primary}</p>
+          <FormGrid>
+            <TextInput name={`${prefix}PrimaryCtaLabel`} label={labels.label} dir={isFa ? "rtl" : "ltr"} defaultValue={content.primaryCta.label} />
+            <TextInput name={`${prefix}PrimaryCtaHref`} label={labels.link} dir="ltr" defaultValue={content.primaryCta.href} />
+          </FormGrid>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface-2/30 p-4">
+          <p className="mb-3 text-sm font-semibold text-foreground">{labels.secondary}</p>
+          <FormGrid>
+            <TextInput name={`${prefix}SecondaryCtaLabel`} label={labels.label} dir={isFa ? "rtl" : "ltr"} defaultValue={content.secondaryCta.label} />
+            <TextInput name={`${prefix}SecondaryCtaHref`} label={labels.link} dir="ltr" defaultValue={content.secondaryCta.href} />
+          </FormGrid>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <form action={formAction} className="space-y-5">
@@ -144,38 +150,55 @@ export function SettingsForm({
       </FormSection>
 
       <FormSection
+        title="Hero Section"
+        description="Select the live Hero variation, then edit every Freelancer and Hiring version in Persian and English. Changes appear on the homepage immediately after saving."
+        icon={<FiLayout />}
+      >
+        <FormGrid>
+          <fieldset>
+            <legend className="mb-2 text-sm font-semibold text-foreground">Active mode</legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(["freelancer", "hiring"] as const).map((mode) => (
+                <label key={mode} className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface-2/40 p-3 text-sm has-checked:border-primary/60 has-checked:bg-primary/10">
+                  <input type="radio" name="heroActiveMode" value={mode} defaultChecked={heroConfig.activeMode === mode} className="accent-primary" />
+                  {mode === "freelancer" ? "Freelancer" : "Hiring"}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend className="mb-2 text-sm font-semibold text-foreground">Active language</legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(["fa", "en"] as const).map((language) => (
+                <label key={language} className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface-2/40 p-3 text-sm has-checked:border-primary/60 has-checked:bg-primary/10">
+                  <input type="radio" name="heroActiveLanguage" value={language} defaultChecked={heroConfig.activeLanguage === language} className="accent-primary" />
+                  {language === "fa" ? "فارسی" : "English"}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </FormGrid>
+
+        <div className="mt-6">
+          <Tabs
+            items={[
+              { id: "freelancer-fa", label: "Freelancer · فارسی", content: heroPanel("freelancerFa", heroConfig.content.freelancer.fa, "fa") },
+              { id: "freelancer-en", label: "Freelancer · EN", content: heroPanel("freelancerEn", heroConfig.content.freelancer.en, "en") },
+              { id: "hiring-fa", label: "Hiring · فارسی", content: heroPanel("hiringFa", heroConfig.content.hiring.fa, "fa") },
+              { id: "hiring-en", label: "Hiring · EN", content: heroPanel("hiringEn", heroConfig.content.hiring.en, "en") },
+            ]}
+          />
+        </div>
+      </FormSection>
+
+      <FormSection
         title="Website Mode"
-        description="Choose whether the public website presents freelance services or a hiring-focused portfolio."
+        description="The active Hero mode controls this setting when you save, keeping the public navigation and Hero aligned."
         icon={<FiBriefcase />}
       >
-        <fieldset className="grid gap-3 sm:grid-cols-2">
-          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface-2/40 p-4 transition-colors has-checked:border-primary/60 has-checked:bg-primary/10">
-            <input
-              type="radio"
-              name="websiteMode"
-              value="freelance"
-              defaultChecked={(initial?.websiteMode ?? "freelance") === "freelance"}
-              className="mt-1 accent-primary"
-            />
-            <span>
-              <span className="block text-sm font-semibold text-foreground">Freelance Mode</span>
-              <span className="mt-1 block text-xs leading-relaxed text-faint">Show services, project requests, and project estimates.</span>
-            </span>
-          </label>
-          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface-2/40 p-4 transition-colors has-checked:border-primary/60 has-checked:bg-primary/10">
-            <input
-              type="radio"
-              name="websiteMode"
-              value="hiring"
-              defaultChecked={initial?.websiteMode === "hiring"}
-              className="mt-1 accent-primary"
-            />
-            <span>
-              <span className="block text-sm font-semibold text-foreground">Hiring Mode</span>
-              <span className="mt-1 block text-xs leading-relaxed text-faint">Hide commercial services and project-estimate entry points.</span>
-            </span>
-          </label>
-        </fieldset>
+        <p className="rounded-2xl border border-border bg-surface-2/40 p-4 text-sm leading-relaxed text-muted">
+          Current public mode: <span className="font-semibold text-foreground">{heroConfig.activeMode === "freelancer" ? "Freelance" : "Hiring"}</span>. Change the active Hero mode above to update it.
+        </p>
       </FormSection>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">

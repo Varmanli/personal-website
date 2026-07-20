@@ -41,6 +41,29 @@ export interface CtaLink {
   href: string;
 }
 
+export const heroModes = ["freelancer", "hiring"] as const;
+export type HeroMode = (typeof heroModes)[number];
+export const heroLanguages = ["fa", "en"] as const;
+export type HeroLanguage = (typeof heroLanguages)[number];
+
+/** Editable copy and links for one Hero mode/language combination. */
+export interface HeroContent {
+  greeting: string;
+  headlineLead: string;
+  headlineHighlight: string;
+  subtitle: string;
+  primaryCta: CtaLink;
+  secondaryCta: CtaLink;
+  technologies: string[];
+}
+
+/** The complete homepage Hero configuration, managed as one admin setting. */
+export interface HeroConfiguration {
+  activeMode: HeroMode;
+  activeLanguage: HeroLanguage;
+  content: Record<HeroMode, Record<HeroLanguage, HeroContent>>;
+}
+
 export interface AboutHeroContent {
   badge: string;
   name: string;
@@ -381,6 +404,7 @@ export const siteSettings = pgTable("site_settings", {
   // Global public-site presentation mode. Freelance preserves the existing
   // commercial experience; hiring removes commercial entry points.
   websiteMode: varchar("website_mode", { length: 20 }).notNull().default("freelance"),
+  heroConfig: jsonb("hero_config").$type<HeroConfiguration | null>(),
   ownerName: varchar("owner_name", { length: 200 }).notNull(),
   headline: varchar("headline", { length: 320 }),
   bio: text("bio"),

@@ -7,10 +7,11 @@ import { Hero } from "@/components/sections/Hero";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
 import { getFeaturedProjects, getProfile } from "@/lib/data";
+import { getSiteSettingsQueryResult } from "@/lib/site-settings";
+import { getHeroConfiguration } from "@/lib/hero-config";
 import { getTechStack, getTestimonials } from "@/lib/content";
 import { getI18n } from "@/lib/i18n/server";
 import { buildMetadata } from "@/lib/seo";
-import { getDisplayFirstName } from "@/lib/utils";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { FaNodeJs } from "react-icons/fa";
@@ -76,12 +77,12 @@ const techBadgeIcons: Record<string, ReactNode> = {
 
 export default async function HomePage() {
   const { locale, dict } = await getI18n();
-  const [profile, featuredProjects] = await Promise.all([
-    getProfile(locale),
+  const [featuredProjects, siteSettings] = await Promise.all([
     getFeaturedProjects(3, locale),
+    getSiteSettingsQueryResult(),
   ]);
 
-  const firstName = getDisplayFirstName(profile.ownerName);
+  const heroConfig = getHeroConfiguration(siteSettings.settings);
   const techStack = getTechStack(locale);
   const testimonials = getTestimonials(locale);
   const t = dict.home;
@@ -89,7 +90,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero firstName={firstName} />
+      <Hero config={heroConfig} />
 
       <main className="relative overflow-hidden">
         {/* Background glows */}

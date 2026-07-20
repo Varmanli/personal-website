@@ -31,6 +31,7 @@ const CREATE_TABLE_SQL = `
   create table if not exists "site_settings" (
     "id" serial primary key not null,
     "website_mode" varchar(20) not null default 'freelance',
+    "hero_config" jsonb,
     "owner_name" varchar(200) not null,
     "headline" varchar(320),
     "bio" text,
@@ -78,6 +79,7 @@ const EXPECTED_COLUMNS = [
     name: "website_mode",
     addColumnDdl: `varchar(20) not null default 'freelance'`,
   },
+  { name: "hero_config", addColumnDdl: `jsonb` },
   { name: "owner_name", addColumnDdl: `varchar(200) not null default ''` },
   { name: "headline", addColumnDdl: `varchar(320)` },
   { name: "bio", addColumnDdl: `text` },
@@ -145,6 +147,7 @@ async function getExistingColumns(tx) {
 function buildDefaultRow() {
   return {
     website_mode: "freelance",
+    hero_config: null,
     owner_name: "Varmanli",
     headline: "Front-End developer building commercial web apps",
     bio: "I'm a Front-End developer who helps founders and small teams turn ideas into fast, reliable web products.",
@@ -201,7 +204,7 @@ async function insertDefaultRow(tx) {
   // column defaults already declared in CREATE_TABLE_SQL/EXPECTED_COLUMNS.
   await tx`
     insert into site_settings (
-      website_mode, owner_name, headline, bio, avatar_url, resume_url, logo_url, favicon_url,
+      website_mode, hero_config, owner_name, headline, bio, avatar_url, resume_url, logo_url, favicon_url,
       hero_image_url, email, location, skills, owner_name_fa, owner_name_en,
       headline_fa, headline_en, bio_fa, bio_en, location_fa, location_en,
       skills_fa, skills_en, about_intro, about_intro_fa, about_intro_en,
@@ -209,7 +212,7 @@ async function insertDefaultRow(tx) {
       contact_page_content, contact_page_content_fa, contact_page_content_en,
       contact_settings, social_links, created_at, updated_at
     ) values (
-      ${d.website_mode}, ${d.owner_name}, ${d.headline}, ${d.bio}, ${d.avatar_url}, ${d.resume_url},
+      ${d.website_mode}, ${d.hero_config}::jsonb, ${d.owner_name}, ${d.headline}, ${d.bio}, ${d.avatar_url}, ${d.resume_url},
       ${d.logo_url}, ${d.favicon_url}, ${d.hero_image_url}, ${d.email}, ${d.location},
       ${d.skills}::jsonb, ${d.owner_name_fa}, ${d.owner_name_en}, ${d.headline_fa},
       ${d.headline_en}, ${d.bio_fa}, ${d.bio_en}, ${d.location_fa}, ${d.location_en},

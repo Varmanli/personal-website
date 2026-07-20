@@ -132,6 +132,7 @@ export const placeholderProfile: SiteSettings = {
   ...profileL10nNull,
   id: 1,
   websiteMode: "freelance",
+  heroConfig: null,
   ownerName: "Varmanli",
   headline: "Full-stack developer building commercial web apps",
   bio: "I'm a full-stack developer who helps founders and small teams turn ideas into fast, reliable web products. From marketing sites to data-heavy dashboards, I handle design, development, and deployment — so you get a finished product, not just code.",

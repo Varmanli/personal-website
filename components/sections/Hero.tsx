@@ -2,8 +2,8 @@ import { Container } from "@/components/ui/Container";
 import { ButtonLink } from "@/components/ui/Button";
 import { PublicCtaLink } from "@/components/ui/PublicCtaLink";
 import { DeveloperHeroVisual } from "@/components/home/DeveloperHeroVisual";
-import { getI18n } from "@/lib/i18n/server";
-import { format } from "@/lib/i18n/dictionaries";
+import type { HeroConfiguration } from "@/types";
+import { getTechnology } from "@/lib/admin/technologies";
 import { FaReact, FaNodeJs } from "react-icons/fa";
 import {
   SiDocker,
@@ -39,12 +39,12 @@ const techs = [
   },
 ];
 
-export async function Hero({ firstName }: { firstName: string }) {
-  const { dict } = await getI18n();
-  const h = dict.hero;
+export function Hero({ config }: { config: HeroConfiguration }) {
+  const h = config.content[config.activeMode][config.activeLanguage];
+  const direction = config.activeLanguage === "fa" ? "rtl" : "ltr";
 
   return (
-    <section className="relative overflow-hidden border-b border-border">
+    <section className="relative overflow-hidden border-b border-border" dir={direction}>
       {/* Grid & radial glows */}
       <div
         aria-hidden
@@ -63,7 +63,7 @@ export async function Hero({ firstName }: { firstName: string }) {
         <div className="order-1 space-y-6">
           <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/55 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-primary-light backdrop-blur sm:text-sm">
             <span className="h-2 w-2 rounded-full bg-success shadow-[0_0_14px_rgba(52,211,153,0.75)]" />
-            {format(h.greeting, { name: firstName })}
+            {h.greeting}
           </p>
 
           <div className="space-y-5">
@@ -79,29 +79,32 @@ export async function Hero({ firstName }: { firstName: string }) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <PublicCtaLink href="/start-project" size="lg" className="w-full sm:w-auto sm:min-w-52">
-              {h.primaryCta}
+            <PublicCtaLink href={h.primaryCta.href} size="lg" className="w-full sm:w-auto sm:min-w-52">
+              {h.primaryCta.label}
             </PublicCtaLink>
             <ButtonLink
-              href="/projects"
+              href={h.secondaryCta.href}
               size="lg"
               variant="outline"
               className="w-full sm:w-auto sm:min-w-44"
             >
-              {h.secondaryCta}
+              {h.secondaryCta.label}
             </ButtonLink>
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
-            {techs.map((tech) => (
+            {h.technologies.map((name) => {
+              const tech = getTechnology(name);
+              return (
               <span
-                key={tech.name}
+                key={name}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/50 px-3 py-1.5 text-xs font-medium text-muted backdrop-blur"
               >
-                {tech.icon}
-                {tech.name}
+                {tech?.icon}
+                {tech?.label ?? name}
               </span>
-            ))}
+              );
+            })}
           </div>
         </div>
 
